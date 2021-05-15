@@ -1,5 +1,5 @@
 {
-  "name": "admin-center",
+  "name": "courier-management",
   "script": "npm -- start",
   "instances": "1"
 }

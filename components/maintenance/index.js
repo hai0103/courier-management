@@ -11,7 +11,7 @@ function Maintenance() {
             <div className="card card-no-border px-1 py-1 m-0 shadow-none">
               <div className="card-body">
                   <span className="card-title text-center">
-                      <img src={IMAGES.SHORT_LOGO} className="img-fluid mx-auto d-block pt-2" width="250" alt="logo" />
+                      {/*<img src={IMAGES.SHORT_LOGO} className="img-fluid mx-auto d-block pt-2" width="250" alt="logo" />*/}
                   </span>
               </div>
               <div className="card-body text-center">

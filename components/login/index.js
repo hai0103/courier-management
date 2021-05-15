@@ -23,7 +23,8 @@ const Login = () => {
 
         try {
             const response = await Authentication.login(data);
-            if (Response.isSuccess(response)) {
+            console.log("re", response)
+            if (Response.isSuccessCode(response)) {
                 setAuthenticated(true);
             } else {
                 setLoginError(Response.getAPIError(response));

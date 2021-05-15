@@ -30,9 +30,9 @@ function Default({Component, pageProps}) {
                             headerHref: Component.Href || '#'
                         }}>
                             <Layout>
-                                <SocketProvider>
+                                {/*<SocketProvider>*/}
                                     <Component {...pageProps} />
-                                </SocketProvider>
+                                {/*</SocketProvider>*/}
                             </Layout>
                         </GlobalProvider>
                     </ToastProvider>
