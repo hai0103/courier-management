@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",
+      "target": "es6",
+      "baseUrl": "./",
+      "paths": {
+        "style/*": ["./shared/common-style/*"],
+        "providers/*": ["./shared/common-packages/providers/*"],
+        "utils/*": ["./shared/common-packages/utils/*"],
+        "hooks/*": ["./shared/common-packages/hooks/*"],
+        "hocs/*": ["./shared/common-packages/hocs/*"],
+        "sharedComponents/*": ["./shared/common-packages/components/*"],
+        "layouts/*": ["./shared/common-packages/layouts/*"],
+        "services/*": ["./shared/common-packages/services/*"],
+        "globalConstants/*": ["./shared/common-packages/globalConstants/*"]
+      }
+    },
+    "exclude": ["node_modules", ".next", ".idea"]
+}

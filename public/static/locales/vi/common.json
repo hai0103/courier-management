@@ -1,0 +1,616 @@
+{
+  "common": {
+    "button": {
+      "cancel": "Hủy",
+      "close": "Đóng",
+      "submit": "Xác nhận",
+      "delete": "Xóa",
+      "clear": "Xóa",
+      "lock": "Khóa",
+      "unlock": "Mở khóa",
+      "accept": "Chấp nhận",
+      "confirm": "Xác nhận",
+      "back": "Quay lại",
+      "edit": "Sửa",
+      "filter": "Lọc",
+      "save": "Lưu",
+      "create": "Tạo",
+      "createNew": "Tạo mới",
+      "update": "Cập nhật",
+      "add": "Thêm",
+      "changePassword": "Đổi mật khẩu",
+      "logout": "Thoát",
+      "assign": "Phân công",
+      "ok": "Đồng ý"
+    },
+    "titlePage": "Admin Center",
+    "action": "Hành động",
+    "noData": "Không có dữ liệu.",
+    "search": "Tìm kiếm",
+    "select": "Chọn",
+    "of": "của",
+    "manager": "Cán bộ quản lý",
+    "in": "trong",
+    "attachment": "Đính kèm",
+    "selectAll": "Tất cả",
+    "selectDate": "Chọn ngày",
+    "block": "Vô hiệu hóa",
+    "unBlock": "Khôi phục",
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "reason": "Lý do vô hiệu hóa",
+    "message": {
+      "createSuccess": "Tạo thành công.",
+      "editSuccess": "Đã lưu.",
+      "blockSuccess": "Khóa thành công.",
+      "requestBlockSuccess": "Đã xác nhận khóa.",
+      "changePasswordSuccess": "Đổi mật khẩu thành công.",
+      "unblockSuccess": "Mở khóa thành công.",
+      "deActiveSuccess": "Đã vô hiệu hóa.",
+      "requestDeActiveSuccess": "Đã xác nhận vô hiệu hóa.",
+      "ActiveSuccess": "Khôi phục thành công.",
+      "deleteSuccess": "Xóa thành công.",
+      "resendActiveSuccess": "Đã gửi yêu cầu.",
+      "resendActiveError": "Gửi yêu cầu thất bại.",
+      "createErr": "Tạo thất bại.",
+      "editErr": "Lưu thất bại.",
+      "deleteErr": "Xóa thất bại.",
+      "blockErr": "Khóa thất bại.",
+      "unblockErr": "Mở khóa thất bại.",
+      "getHistoryErr": "Không thể lấy lại lịch sử chỉnh sửa.",
+      "newPassErr": "Vui lòng chọn mật khẩu khác với mật khẩu của 3 lần gần nhất",
+      "partnerNameExisted": "Tên đối tác phân phối đã tồn tại.",
+      "taxNumberExisted": "Mã số thuế này đã tồn tại.",
+      "identityNumberPartnerExisted": "Một đối tác phân phối với số ID này đã tồn tại.",
+      "blockListChildWarning": "Các đối tác phân phối trưc thuộc sẽ bị vô hiệu hóa!",
+      "superiorPartnerIsInactive": "Đối tác cấp trên đang bị vô hiệu hóa.",
+      "reinsuranceNameENExisted": "Tên Tiếng Anh đã tồn tại.",
+      "reinsuranceTaxNumberExisted": "Một Nhà tái, Đối tác bảo hiểm với Mã số thuế này đã tồn tại."
+    }
+  },
+  "mainMenu": {
+    "general": "Tổng quan",
+    "dashboard": "Bảng điều khiển",
+    "settings": "Thiết lập",
+    "reinsurance": "Danh mục nhà tái",
+    "reinsuranceClass": "Danh mục mã tái"
+  },
+  "inputRequired": "Trường thông tin bắt buộc.",
+  "minLengthError": "Nhập ít nhất {{length}} kí tự.",
+  "maxLengthError": "Nhập tối đa {{length}} kí tự.",
+  "selectedValue": "{{count}} chức năng đang chọn",
+  "reasonRequired": "Cần nhập lý do vô hiệu hóa.",
+  "reasonRequiredUser": "Cần nhập lý do khóa.",
+  "invalidEmail": "Định dạng email không đúng",
+  "invalidName": "Tên đăng nhập không được chứa kí tự đặc biệt.",
+  "Invalid Number": "Sai định dạng số điện thoại",
+  "login": {
+    "username": "Tài khoản",
+    "password": "Mật khẩu",
+    "usernamePlaceholder": "Tên đăng nhập",
+    "passwordPlaceholder": "Mật khẩu",
+    "forgotPassword": "Quên mật khẩu",
+    "register": " Đăng ký",
+    "login": " Đăng nhập",
+    "rememberMe": "Nhớ thông tin của tôi",
+    "loginFailure": "Tên người dùng hoặc mật khẩu không đúng.",
+    "loginBlocked": "Tài khoản của bạn đang bị khóa."
+  },
+  "register": {
+    "title": "Tạo tài khoản",
+    "username": "Tên tài khoản",
+    "password": "Nhập mật khẩu",
+    "email": "Nhập địa chỉ Email",
+    "register": " Đăng ký",
+    "login": " Đăng nhập",
+    "question": "Bạn đã có tài khoản ?"
+  },
+  "forgotPassword": {
+    "title": "Chúng tôi sẽ gửi bạn Link khôi phục mật khẩu.",
+    "placeHolder": "Email hoặc tên đăng nhập của bạn",
+    "recoverPass": "Khôi phục mật khẩu",
+    "login": "Đăng nhập lại",
+    "createAccount": "Tạo tài khoản",
+    "success": "Đặt lại mật khẩu thành công.",
+    "enterEmailAndUsername": "Nhập địa chỉ Email hoặc tên đăng nhập",
+    "errUserName": "Tên đăng nhập hoặc email không tồn tại."
+  },
+  "changePassword": {
+    "title": "THAY ĐỔI MẬT KHẨU",
+    "placeHolder1": "Mật khẩu mới",
+    "placeHolder2": "Xác nhận mật khẩu mới",
+    "confirm": "XÁC NHẬN"
+  },
+  "createUser": {
+    "title1": "Tạo người dùng",
+    "title2": "Chỉnh sửa người dùng",
+    "loginName": "Tên đăng nhập",
+    "loginNamePlaceHolder": "Nhập tên đăng nhập",
+    "fullName": "Họ và tên ",
+    "fullNamePlaceHolder": "Nhập họ và tên ",
+    "email": "Email",
+    "emailPlaceHolder": "Nhập email",
+    "phone": "Số điện thoại",
+    "phonePlaceHolder": "Nhập số điện thoại",
+    "company": "Đơn Vị",
+    "department": "Phòng ban",
+    "position": "Chức năng",
+    "role": "Vai trò",
+    "placeholderCompany": "Chọn Đơn Vị",
+    "placeholderDepartment": "Chọn phòng ban",
+    "placeholderPosition": "Chọn chức năng",
+    "placeholderRole": "Chọn vai trò",
+    "titleRole": "Chức danh",
+    "titleRolePlaceHolder": "Nhập chức danh",
+    "titlePermission": "System Role",
+    "titlePermissionPlaceHolder": "Nhập quyền hệ thống",
+    "selectCom": "Chọn Đơn Vị",
+    "notifySuccessCreate": "User đã được tạo.",
+    "notifyErrCreate": "Tạo người dùng không thành công.",
+    "notifySuccessEdit": "Chỉnh sửa người dùng thành công.",
+    "notifyErrEdit": "Chỉnh sửa người dùng không thành công.",
+    "notifyUserNameErrCreate": "Tên đăng nhập đã tồn tại.",
+    "notifyEmailErrCreate": "Một user với email này đã tồn tại.",
+    "userNameErrCreate": "Tên username không hợp lệ.",
+    "reqMess": "Trường thông tin bắt buộc",
+    "InputNotePlaceHolder": "Nhập ghi chú",
+    "overView": "Tổng quan",
+    "under": "Trực thuộc",
+    "concurrently": "Kiêm nhiệm",
+    "efficiency": "Hiệu lực",
+    "unlimited": "Vô thời hạn",
+    "note": "Ghi chú"
+  },
+  "completeInformation": {
+    "title": "Xác thực tài khoản",
+    "username": "Tên đăng nhập",
+    "password": "Mật khẩu",
+    "confirm": "Xác nhận mật khẩu",
+    "placeholderPass": "Nhập mật khẩu",
+    "placeholderConfirm": "Nhập lại mật khẩu",
+    "save": "Lưu",
+    "passwordError": "Mật khẩu từ 8 đến 40 kí tự.",
+    "confirmError": "Mật khẩu xác nhận không trùng khớp.",
+    "activeSuccess": "Kích hoạt tài khoản thành công."
+  },
+  "recoveryPassword": {
+    "title": "Đặt lại mật khẩu",
+    "titleExpirePass": "Mật khẩu hết hạn",
+    "description": "Mật khẩu của bạn đã hết hạn, vui lòng đặt mật khẩu mới.",
+    "username": "Tên đăng nhập",
+    "password": "Mật khẩu",
+    "confirm": "Xác nhận mật khẩu",
+    "placeholderPass": "Nhập mật khẩu mới",
+    "placeholderOldPassword": "Nhập mật khẩu cũ",
+    "placeholderConfirm": "Nhập lại mật khẩu mới",
+    "save": "Lưu và đăng nhập",
+    "passwordError": "Mật khẩu từ 8 đến 40 kí tự.",
+    "confirmError": "Mật khẩu xác nhận không trùng khớp.",
+    "activeSuccess": "Kích hoạt tài khoản mới thành công."
+  },
+  "profile": {
+    "profile": "Hồ sơ",
+    "title": "Thông tin cá nhân",
+    "name": "Họ và tên",
+    "phone": "Số điện thoại",
+    "email": "Email",
+    "address": "Địa chỉ",
+    "DOB": "Ngày sinh",
+    "IC": "CMND/CCCD",
+    "licenseDate": "Ngày cấp",
+    "licensePlace": "Nơi cấp",
+    "gender": "Giới tính",
+    "gen-1": "Nam",
+    "gen-2": "Nữ",
+    "changeInfo": "Thay đổi thông tin",
+    "changePass": "Đổi mật khẩu ",
+    "confirm": "Xác nhận",
+    "cancel": "Hủy",
+    "logout": "Đăng xuất"
+  },
+  "changePass": {
+    "title": "Dổi mật khẩu",
+    "newPass": "Mật khẩu mới",
+    "oldPass": "Mật khẩu cũ",
+    "confirmPass": "Xác nhận khẩu mới",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận"
+  },
+  "pagination": {
+    "in": "trong",
+    "results": "kết quả",
+    "next": "Trang sau",
+    "previous": "Trang trước",
+    "firstPage": "Trang đầu",
+    "lastPage": "Trang cuối",
+    "total": "Tổng",
+    "searchPlaceholder": "Tìm",
+    "reload": "Tải lại",
+    "filters": "Bộ lọc",
+    "settings": "Thiết lập",
+    "of": "của",
+    "users": "người dùng",
+    "items": "mục"
+  },
+  "status": {
+    "open": "Chờ giải quyết",
+    "rejected": "Bị từ chối",
+    "documentWaiting": "Chờ bổ sung hồ sơ",
+    "addedDocument": "Hồ sơ được bổ sung",
+    "approved": "Đã chấp thuận",
+    "documentHardCopyWaiting": "Chờ hồ sơ gốc",
+    "documentHardCopy": "Đã nhận hồ sơ gốc",
+    "calculateClaim": "Tính toán bồi thường",
+    "processWaiting": "Chờ giải quyết",
+    "sentClaim": "Đã gửi thông báo bồi thường",
+    "feedbackWaiting": "Chờ khách hàng phản hồi",
+    "confirmWaiting": "Chờ khách hàng xác nhận",
+    "confirmed": "Khách hàng đã xác nhận",
+    "done": "Hoàn tất",
+    "active": "Đang hoạt động",
+    "delete": "Đã xóa",
+    "waitActive": "Chờ xác nhận",
+    "waitConfirmEmail": "Chờ xác nhận email",
+    "unActive": "Không hoạt động",
+    "inactive": "Ngừng hoạt động",
+    "block": "Bị khóa",
+    "inEffect": "Đang có hiệu lực",
+    "invalid": "Hết hiệu lực"
+  },
+  "filter": {
+    "title": "Lọc kết quả",
+    "clear": "Xóa",
+    "fromDate": "Từ ngày",
+    "toDate": "Đến ngày"
+  },
+  "modal": {
+    "deleteUser": {
+      "title": "Xóa user này vĩnh viễn ?",
+      "content": "Bạn có chắc chắn muốn xóa người dùng này không?"
+    },
+    "blockUser": {
+      "title": "Khóa user này ?",
+      "content": "Bạn có chắc chắn muốn chặn người dùng này không?"
+    },
+    "unBlockUser": {
+      "title": "Mở khóa user này ?",
+      "content": "Bạn có chắc chắn muốn chặn người dùng này không?"
+    },
+    "deleteClient": {
+      "title": "Xóa khách hàng",
+      "content": "Bạn có chắc chắn muốn xóa khách hàng này không?"
+    },
+    "deleteCompany": {
+      "title": "Xóa công ty này vĩnh viễn",
+      "content": "Bạn có chắc chắn muốn xóa công ty này không?"
+    },
+    "blockCompany": {
+      "title": "Vô hiệu Đơn Vị này",
+      "placeHolder": "Nhập lý do"
+    },
+    "unblockCompany": {
+      "title": "Khôi phục Đơn Vị này",
+      "content": "Bạn có chắc chắn muốn xóa công ty này không?"
+    },
+    "blockDepartment": {
+      "title": "Vô hiệu phòng ban này",
+      "placeHolder": "Nhập lý do"
+    },
+    "unblockDepartment": {
+      "title": "Khôi phục phòng ban này"
+    },
+    "updatePrimaryRole": {
+      "title": "Chỉnh sửa trực thuộc"
+    },
+    "createSecondaryRole": {
+      "title": "Phân công kiêm nhiệm"
+    },
+    "updateSecondaryRole": {
+      "title": "Chỉnh sửa kiêm nhiệm"
+    },
+    "deleteSecondaryRole": {
+      "title": "Xóa kiêm nhiệm",
+      "content": "Các quyền của người dùng đối với vai trò kiêm nhiệm này sẽ bị mất."
+    },
+    "updateBank": {
+      "title": "Cập nhật ngân hàng"
+    },
+    "editRating": {
+      "title": "Cập nhật hạng tín nhiệm"
+    },
+    "editRatingWarning": {
+      "title": "ERROR",
+      "content": "Hạng tín nhiệm trong thời gian hiệu lực này đã được ghi nhận. Vui lòng chọn ngày hiệu lực khác."
+    }
+  },
+  "passwordBlock": {
+    "invalidPassword": "Mật khẩu không hợp lệ.",
+    "atLeastCharacter": "Tối thiều 6 ký tự",
+    "lowerCaseAndUpperCase": "Ký tự hoa và thường",
+    "atLeastSpecialCharacter": "Tối thiểu 1 ký tự đặc biệt",
+    "invalidConfirmPassword": "Mật khẩu xác nhận không đúng.",
+    "placeholder": {
+      "oldPassword": "Nhập mật khẩu hiện tại",
+      "password": "Nhập mật khẩu mới",
+      "verifyPassword": "Xác nhận mật khẩu mới",
+      "passwordNew": "Nhập mật khẩu",
+      "verifyPasswordNew": "Xác nhận mật khẩu"
+    }
+  },
+  "history": {
+    "editingHistory": "Lịch Sử Chỉnh Sửa",
+    "editingHistoryTitle": "Lịch Sử Chỉnh Sửa",
+    "assignHistory": "Phân công kiêm nhiệm",
+    "PrimaryRole": "Trực Thuộc",
+    "Document": "một tệp",
+    "SecondaryRole": "Kiêm Nhiệm",
+    "editing": "Chỉnh sửa",
+    "saving": "Lưu Chỉnh sửa",
+    "historyReason": "Lý do",
+    "channelName": "Tên Kênh",
+    "affectedDate": "Hiệu lực",
+    "created": "tạo",
+    "note": "Ghi chú",
+    "documentName": "Tên tài liệu",
+    "added": "thêm",
+    "updated": "cập nhật",
+    "turned_on": "bật",
+    "turned_off": "tắt",
+    "bankBranch": "Chi Nhánh",
+    "BankAccount": "Ngân Hàng",
+    "accountNumber": "Số Tài Khoản",
+    "hierarchy_updated": "cập nhật",
+    "document_uploaded": "tải lên",
+    "document_deleted": "xóa",
+    "Hierarchy": "phân cấp",
+    "bankId": "Ngân Hàng",
+    "Permission": "quyền",
+    "blocked": "vô hiệu",
+    "userBlocked": "khóa",
+    "userUnblocked": "mở khóa",
+    "deleted": "xóa",
+    "unblocked": "khôi phục",
+    "status": "Trạng thái",
+    "companyFullNameEN": "Tên Đầy Đủ (Anh)",
+    "companyFullNameVN": "Tên Đầy Đủ (Việt)",
+    "functionName": "Tên Chức Năng",
+    "gender": "Giới Tính",
+    "dateOfBirth": "Ngày Sinh",
+    "identityType": "Loại ID",
+    "identityNumber": "Số ID",
+    "phone": "Số Điện Thoại",
+    "address": "Địa Chỉ",
+    "agentTax": "Thuế Đại Lý",
+    "contactInfo": "Thông Tin Người Liên Hệ",
+    "AddressInfo": "Thông Tin Địa Chỉ",
+    "distributionChannelId": "Kênh Phân Phối",
+    "superiorAgentId": "Đại Lý Cấp Trên",
+    "companyCode": "Mã Đơn Vị",
+    "companyId": "Đơn Vị",
+    "systemRoleId": "Quyền Hệ Thống",
+    "departmentId": "phòng ban",
+    "companyName": "Tên Đơn Vị",
+    "taxNumber": "Mã Số Thuế",
+    "previousContent": "Nội dung cũ",
+    "previousValue": "Giá trị cũ",
+    "unNamed": "Ai đó",
+    "departmentCode": "Mã Phòng Ban",
+    "departmentSymbol": "Mã Ký Hiệu",
+    "departmentName": "Tên Phòng Ban",
+    "phoneNumber": "Số Điện Thoại",
+    "roleId": "Vai Trò",
+    "email": "Email",
+    "fullName": "Họ Và Tên",
+    "title": "Chức Danh",
+    "historyChanged": "chuyển",
+    "addressVN": "Địa Chỉ (Việt)",
+    "addressEN": "Địa Chỉ (Anh)",
+    "updatedWithFrom": "từ",
+    "updatedWithTo": "sang",
+    "updatedWithValueFrom": "{{from}}",
+    "updatedWithValueTo": "{{to}}",
+    "accountName": "Tên Tài Khoản",
+    "startAffectedDate": "Ngày Hiệu Lực",
+    "endAffectedDate": "Ngày Hết Hiệu Lực",
+    "agencyCode": "Mã Đại Lý",
+    "agencyName": "Tên Đại Lý",
+    "type": "Loại",
+    "distributionChannel": "Kênh Phân Phối",
+    "contractNumber": "Số HĐ Đại Lý",
+    "certificateNumber": "Số GCN Đại Lý",
+    "listFunctionId": "Chức Năng",
+    "partnerName": "Tên Đối Tác",
+    "partnerCode": "Mã Đối Tác",
+    "distributionPartnerId": "Đối Tác Phân Phối",
+    "addressInfo": "Thông Tin Địa Chỉ",
+    "taxNumberPersonal": "Mã Số Thuế Cá Nhân",
+    "taxNumberOrganization": "Mã Số Thuế",
+    "addressType": "Địa Chỉ Liên Hệ",
+    "Allocation": "Phòng Ban",
+    "UpdateDepartment": "Phân Bổ Phòng Ban"
+  },
+  "verifyAccount": {
+    "titleVerifyAccount": "Xác thực tài khoản",
+    "titleResetPass": "Đặt lại mật khẩu",
+    "update": "Cập nhật",
+    "login": "Đăng nhập",
+    "confirm": "Xác nhận",
+    "setPassFor": "Đặt mật khẩu cho",
+    "expireLink": "Liên kết bạn mở đã hết hạn hoặc không hợp lệ.",
+    "expireRequest": "Yêu cầu đã hết hạn hoặc không hợp lệ."
+  },
+  "forbidden": {
+    "systemRole": "Phân quyền hệ thống",
+    "notAllowed": "Bạn không có quyền truy cập trang này."
+  },
+  "distribution": {
+    "distributionPartner": {
+      "headerTitle": "Đối tác phân phối"
+    },
+    "agency": {
+      "headerTitle": "Đại lý"
+    },
+    "allocation": {
+      "headerTitle": "Phân bổ"
+    }
+  },
+  "uploadAttachment": {
+    "title": "Đính kèm tài liệu",
+    "header": {
+      "no": "STT",
+      "attachmentName": "Tên tài liệu",
+      "uploadedDate": "Thời gian upload",
+      "uploadedBy": "Người upload",
+      "note": "Ghi chú",
+      "attachment": "File đính kèm"
+    },
+    "placeholder": {
+      "nameAttachment": "Nhập tên tài liệu",
+      "dropItem": "Kéo thả một file vào đây hoặc nhấn để chọn file.",
+      "inputNote": "Nhập ghi chú",
+      "inputDocumentName": "Nhập ghi chú"
+    },
+    "button": {
+      "upload": "Tải lên",
+      "deleteDocument": "Xóa tài liệu"
+    },
+    "errors": {
+      "fileTooLarge": "Dung lượng vượt quá {{size}} MB.",
+      "fileInvalidType": "Định dạng này không được hỗ trợ",
+      "fileEmpty": "Vui lòng chọn file"
+    },
+    "messages": {
+      "uploadSuccessfully": "Tải lên tài liệu thành công.",
+      "uploadFailure": "Tải lên tài liệu thất bại.",
+      "deleteSuccessfully": "Xóa tài liệu thành công.",
+      "deleteFailure": "Xóa tài liệu thất bại.",
+      "deleteConfirmation": "Bạn muốn xóa tài liệu này không?",
+      "acceptedFileDesc": "(Chỉ chấp nhận file PDF, Word, Excel, ZIP và ảnh)"
+    }
+  },
+  "reinsuranceManagement": {
+    "headerTitle": "Danh mục nhà tái, đối tác tái bảo hiểm",
+    "titleSearch": "nhà tái, đối tác bảo hiểm",
+    "headerDetail": "Thông tin chi tiết nhà tái, đối tác tái bảo hiểm",
+    "typeReinsurer": "Nhà tái",
+    "typeBroker": "Môi giới tái",
+    "header": {
+      "reinsuranceCode": "Mã",
+      "shortName": "Tên tắt",
+      "nameVN": "Tên",
+      "nameEN": "Tên (EN)",
+      "type": "Loại",
+      "taxNumber": "Mã thuế",
+      "nation": "Quốc gia",
+      "rating": "Hạng tín nhiệm",
+      "lastEdit": "Chỉnh sửa lần cuối",
+      "status": "Trạng thái"
+    },
+    "createTitle": "Tạo nhà tái, đối tác tái bảo hiểm",
+    "create": {
+      "businessType": "Loại hình kinh doanh",
+      "businessTypePlaceholder": "Chọn loại hình kinh doanh",
+      "generalInfo": "Thông tin chung",
+      "otherInfo": "Thông tin khác",
+      "buttonUpdateRating": "Cập nhật hạng tín nhiệm",
+      "label": {
+        "code": "Mã",
+        "reinsuranceNameShort": "Tên tắt",
+        "reinsuranceName": "Tên",
+        "reinsuranceNameEN": "Tên (E)",
+        "national": "Quốc gia",
+        "taxNumber": "Mã số thuế",
+        "bankName": "Ngân hàng",
+        "accountNumber": "Số tài khoản",
+        "phone": "Số điện thoại",
+        "fax": "Fax",
+        "address": "Địa chỉ",
+        "companyParent": "Công ty cha",
+        "expertiseId": "Lĩnh vực chuyên môn",
+        "agencyRate": "Cơ quan xếp hạng",
+        "creditRating": "Hạng tín nhiệm",
+        "affectDate": "Ngày hiệu lực",
+        "endDate": "Ngày Kết thúc",
+        "nameContact": "Người liên lạc",
+        "positionContact": "Chức vụ",
+        "phoneContact": "Số điện thoại",
+        "emailContact": "Email người liên lạc",
+        "scopeContact": "Lĩnh vực hoạt động",
+        "note": "Ghi chú",
+        "status": "Trạng thái"
+      },
+      "placeHolder": {
+        "reinsuranceCode": "Nhập mã",
+        "reinsuranceNameShort": "Nhập tên viết tắt",
+        "reinsuranceName": "Nhập tên tiếng việt",
+        "reinsuranceNameEN": "Nhập tên tiếng anh",
+        "national": "Chọn quốc gia",
+        "taxNumber": "Nhập mã số thuế",
+        "bankName": "Nhập tên ngân hàng thụ hưởng",
+        "accountNumber": "Nhập mã số tài khoản thụ hưởng",
+        "phone": "Nhập số điện thoại",
+        "fax": "Nhập mã số fax",
+        "address": "Nhập địa chỉ",
+        "companyParent": "Chọn công ty cha",
+        "expertiseId": "Lĩnh vực chuyên môn",
+        "agencyRate": "Chọn loại",
+        "creditRating": "Nhập hạng tín nhiệm",
+        "affectDate": "Chọn ngày hiệu lực",
+        "nameContact": "Người liên lạc",
+        "positionContact": "Chức vụ",
+        "phoneContact": "Nhập số điện thoại",
+        "emailContact": "Nhập email người liên lạc",
+        "scopeContact": "Chọn lĩnh vực hoạt động",
+        "note": "Nhập ghi chú"
+      }
+    },
+    "detail": {
+      "listReinsurance": "Danh sách nhà tái phụ thuộc",
+      "companyInsurance": "Công ty bảo hiểm gốc"
+    },
+    "titleModal": {
+      "createContact": "Tạo mới người liên lạc",
+      "editContact": "Cập nhật người liên lạc"
+    }
+  },
+  "reinsuranceClassManagement": {
+    "headerTitle": "Danh mục mã tái",
+    "titleSearch": "mã tái",
+    "headerDetail": "Danh mục mã tái",
+    "tabReinsuranceClassList": {
+      "title": "Danh mục mã tái"
+    },
+    "tabBusiness": {
+      "title": "Nghiệp vụ không tái"
+    },
+    "createTitle": "Tạo mã tái",
+    "create": {
+      "label": {
+        "parentReinsuranceClass": "Mã tái cha",
+        "reinsuranceClass": "Mã tái",
+        "reinsuranceClassName": "Tên",
+        "reinsuranceClassNameEN": "Tên (E)"
+      },
+      "placeHolder": {
+        "reinsuranceClass": "Nhập mã tái",
+        "reinsuranceClassName": "Nhập tên tiếng việt",
+        "reinsuranceClassNameEN": "Nhập tên tiếng anh"
+      },
+      "business": {
+        "title": "Mã nghiệp vụ",
+        "buttonAdd": "Thêm nghiệp vụ"
+      }
+    }
+  },
+  "global": {
+    "male": "Nam",
+    "feMale": "Nữ",
+    "other": "Khác",
+    "businessAddress": "Địa chỉ đăng ký kinh doanh",
+    "tradingAddress": "Địa chỉ giao dịch",
+    "personal": "Cá nhân",
+    "organizational": "Tổ chức",
+    "agency": "Đại lý",
+    "partner": "Đối tác phân phối"
+  }
+}

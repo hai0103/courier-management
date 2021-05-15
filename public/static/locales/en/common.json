@@ -1,0 +1,293 @@
+{
+  "common": {
+    "button": {
+      "close": "Close",
+      "submit": "Submit",
+      "clear": "Clear",
+      "accept": "Accept",
+      "confirm": "Confirm",
+      "save": "Save",
+      "back": "Back",
+      "edit": "Edit"
+    },
+    "titlePage": "Admin Center"
+  },
+  "mainMenu": {
+    "general": "General",
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "users": "Users",
+    "management": "Management"
+  },
+  "action": "Action",
+  "active": "Active",
+  "internal": "Internal",
+  "inputRequired": "This field is required.",
+  "minLengthError": "This field must be at least {{length}} characters long.",
+  "maxLengthError": "This field can be max {{length}} characters long.",
+  "invalidEmail": "Invalid email address.",
+  "rememberMe": "Remember Me",
+  "login": {
+    "username": "User name",
+    "password": "Password",
+    "usernamePlaceholder": "Your User Name",
+    "register": "Register",
+    "forgotPassword": "Forgot Password"
+  },
+  "register": {
+    "title": "Create Account",
+    "username": "User Name",
+    "password": "Enter Password",
+    "email": "Your Email Address",
+    "register": "Register",
+    "login": " Login",
+    "question": "Already have an account ?"
+  },
+  "forgotPassword": {
+    "title": "We will send a recovery link to your email!",
+    "placeHolder": "Email",
+    "recoverPass": "Recover password",
+    "login": "Login",
+    "createAccount": "Register"
+  },
+  "changePassword": {
+    "title": "CHANGE PASSWORD",
+    "placeHolder1": "New password",
+    "placeHolder2": "Re-password",
+    "confirm": "CONFIRM"
+  },
+  "createUser": {
+    "title1": "Create User",
+    "title2": "Edit User",
+    "loginName": "Login Name",
+    "fullName": "Full Name",
+    "email": "Email",
+    "phone": "Contact Phone",
+    "company": "Company",
+    "selectCom": "Select Company",
+    "notifySuccess": "Tạo người dùng thành công !",
+    "notifyErr": "Tạo người dùng không thành công !",
+    "notifyUserNameErr": "Tên đăng nhập đã được sử dụng !",
+    "notifyEmailErrCreate": "Một user với email này đã tồn tại !"
+  },
+  "completeInformation": {
+    "title": "Complete Information",
+    "username": "Username",
+    "password": "Password",
+    "confirm": "Confirm Password",
+    "placeholderPass": "Enter Password",
+    "placeholderConfirm": "Confirm Password",
+    "save": "Save and Login",
+    "passwordError": "Password from 8 to 40 characters.",
+    "confirmError": "Confirmation password does not match.",
+    "activeSuccess": "Successfully activated the new account"
+  },
+  "profile": {
+    "title1": "Personal Info",
+    "title2": "Additional Info",
+    "name": "Full Name",
+    "phone": "Contact Number",
+    "email": "E-mail",
+    "address": "Address",
+    "DOB": "Date of Birth",
+    "IC": "Identity Card",
+    "licenseDate": "License Date",
+    "licensePlace": "License Place",
+    "gender": "Gender",
+    "gen-1": "Male",
+    "gen-2": "Female",
+    "changeInfo": "Change Info",
+    "changePass": "Change Password",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "logout": "Log out"
+  },
+  "changePass": {
+    "title": "Change Password",
+    "newPass": "New Password",
+    "oldPass": "Old Password",
+    "confirmPass": "Confirm New Password",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "pagination": {
+    "in": "in",
+    "results": "results",
+    "next": "Next Page",
+    "previous": "Previous Page",
+    "firstPage": "First Page",
+    "lastPage": "Last Page",
+    "total": "Total",
+    "searchPlaceholder": "Search",
+    "reload": "Reload",
+    "filters": "Filters",
+    "settings": "Settings",
+    "of": "of",
+    "users": "users"
+  },
+  "policy": {
+    "policyTable": "Policy table",
+    "header": {
+      "PolicyNo": "Policy No.",
+      "CustomerFullName": "Full Name",
+      "InsuredName": "Insured Name",
+      "StartDate": "Start Date",
+      "EndDate": "End Date",
+      "ProductName": "Product Name",
+      "SourceSystem": "Source System",
+      "OriginalPremium": "Original Premium",
+      "SumInsured": "Sum Insured",
+      "PaymentDate": "Payment Date",
+      "CreatedDate": "Created Date",
+      "Status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "extensionPeriod": "Extension Period",
+      "graceTemporary": "Grace Temporary",
+      "gracePermanently": "Grace Permanently",
+      "closedContract": "Closed Contract",
+      "expiredContract": "Expired Contract"
+    }
+  },
+  "claim": {
+    "claimTable": "Claim table",
+    "header": {
+      "claimId": "Claim ID",
+      "claimantName": "Claimant Name",
+      "createdDate": "Create date",
+      "lastModified": "Last Modified",
+      "policyNumber": "Policy Number",
+      "proposerName": "Proposer Name",
+      "updateBy": "Update by",
+      "status": "Status"
+    }
+  },
+  "status": {
+    "open": "Opened",
+    "rejected": "Rejected",
+    "documentWaiting": "Waiting document",
+    "addedDocument": "Document Added",
+    "approved": "Approved",
+    "documentHardCopyWaiting": "Waiting Hard Copy Document",
+    "documentHardCopy": "Hard Copy Document",
+    "calculateClaim": "Calculate Claim",
+    "processWaiting": "Waiting Process",
+    "sentClaim": "Sent Claim",
+    "feedbackWaiting": "Wait Customer Feedback",
+    "confirmWaiting": "Wait Customer Confirmed",
+    "confirmed": "Customer Confirmed",
+    "done": "Done",
+    "active": "Active",
+    "unActive": "Un-active"
+  },
+  "filter": {
+    "title": "Filter",
+    "clear": "Clear",
+    "fromDate": "From Date",
+    "toDate": "To Date"
+  },
+  "usersManagement": {
+    "title": "Users Management",
+    "headerTitle": "Users Management",
+    "header": {
+      "username": "Username",
+      "name": "Full name",
+      "phoneNumber": "Phone number",
+      "company": "Company",
+      "email": "Email",
+      "lastActivity": "Last activity",
+      "verified": "Verified",
+      "role": "Role",
+      "status": "Status",
+      "createdDate": "Created date",
+      "action": "Action"
+    },
+    "data": {
+      "verified": "Verified",
+      "unverified": "Unverified"
+    },
+    "userDetail": {
+      "headerTitle": "User Detail",
+      "addNew": "Add new",
+      "title": "User Detail",
+      "detail": "Detail",
+      "organisation": "Organisation",
+      "role": "Role"
+    },
+    "actionBlock": {
+      "edit": "Edit User",
+      "delete": "Delete User",
+      "block": "Block User"
+    }
+  },
+  "companyManagement": {
+    "title": "Company Management",
+    "headerTitle": "Company",
+    "header": {
+      "code": "Company code",
+      "name": "Company name",
+      "region": "Region",
+      "address": "Address",
+      "status": "Status"
+    },
+    "data": {
+      "verified": "Verified",
+      "unverified": "Unverified"
+    },
+    "buttonCreate": "Create",
+    "buttonEdit": "Edit company",
+    "buttonDelete": "Delete company",
+    "actionCreate": {
+      "title": "Create company",
+      "code": "Company code",
+      "name": "Company name",
+      "fullName": "Company fullname",
+      "region": "Region",
+      "address": "Address",
+      "tax": "Tax code",
+      "selectRegion": "Select region",
+      "notifySuccess": "Create company successfully !",
+      "notifyError": "Error create company !",
+      "nameError": "Company name already exists !",
+      "codeError": "Company code already exists !"
+    },
+    "actionUpdate": {
+      "title": "Edit company information",
+      "notifySuccess": "Update company successfully !",
+      "notifyError": "Error update company !",
+      "nameError": "Company name already exists !",
+      "codeError": "Company code already exists !"
+    }
+  },
+  "clientManagement": {
+    "table": {
+      "name": "Name",
+      "status": "Status",
+      "userType": "User type",
+      "redirectUrl": "Redirect url",
+      "permissionGroup": "Permission groups"
+    },
+    "permissions": "Permissions",
+    "newClient": "New client",
+    "updateClient": "Update client"
+  },
+  "modal": {
+    "deleteUser": {
+      "title": "Delete user",
+      "content": "Are you sure you want delete this user?"
+    },
+    "blockUser": {
+      "title": "Block user",
+      "content": "Are you sure you want block this user?"
+    },
+    "deleteClient": {
+      "title": "Delete client",
+      "content": "Are you sure you want delete this client?"
+    },
+    "deleteCompany": {
+      "title": "Delete company",
+      "content": "Are you sure you want delete this company?"
+    }
+  }
+}

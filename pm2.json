@@ -1,0 +1,5 @@
+{
+  "name": "admin-center",
+  "script": "npm -- start",
+  "instances": "1"
+}

@@ -1,0 +1,98 @@
+/*html body {*/
+/*    background-color: #ffffff;*/
+/*}*/
+/*.scrollbar-container {*/
+/*    position: relative;*/
+/*}*/
+
+/*.scrollable-menu {*/
+/*    height: auto;*/
+/*    max-height: 250px;*/
+/*    overflow-x: hidden;*/
+/*}*/
+
+/*!*---------Table Sorting Style------------*!*/
+/*.table.has-sorting .sorting ,*/
+/*.table.has-sorting .sortingDesc,*/
+/*.table.has-sorting .sortingAsc*/
+/*{*/
+/*    position: absolute;*/
+/*    cursor: pointer;*/
+/*    right: 0.5em;*/
+/*    top: 0.5em;*/
+/*    opacity: 1;*/
+/*    font-size: 1.2em;*/
+/*}*/
+/*.table.has-sorting .sorting:before,*/
+/*.table.has-sorting .sortingDesc:before,*/
+/*.table.has-sorting .sortingAsc:before*/
+/*{*/
+/*    content: "\2191";*/
+/*}*/
+/*.table.has-sorting .sorting:after ,*/
+/*.table.has-sorting .sortingDesc:after,*/
+/*.table.has-sorting .sortingAsc:after*/
+/*{*/
+/*    content: "\2193";*/
+/*}*/
+
+/*.table.has-sorting .sortingDesc:before,*/
+/*.table.has-sorting .sortingAsc:after {*/
+/*    opacity: 0*/
+/*}*/
+/*!*---------End Table Sorting Style------------*!*/
+
+/*.card.card-no-border{*/
+/*    border: 0;*/
+/*    box-shadow: 0 0;*/
+/*}*/
+/*.card.card-no-border .card-header{*/
+/*    padding-left: 0;*/
+/*    padding-right: 0;*/
+/*}*/
+/*.card.card-no-border .card-content .card-body{*/
+/*    padding-left: 0;*/
+/*    padding-right: 0;*/
+/*}*/
+
+/*.url-link{*/
+/*    cursor: pointer;*/
+
+/*}*/
+/*.url-link:hover{*/
+/*    font-weight: bold;*/
+/*}*/
+/*.nav.nav-tabs.nav-top-border .nav-item a {*/
+/*    color: #404E67;*/
+/*}*/
+/*.nav.nav-tabs.nav-top-border .nav-item a.nav-link.active {*/
+/*    !*border-top: 3px solid #404E67;*!*/
+/*    border-top-color: #404E67;*/
+/*}*/
+/*.select-role{*/
+/*    cursor: pointer;*/
+/*}*/
+/*.select-role:hover{*/
+/*    background-color: #a3b0c9;*/
+/*}*/
+/*button.action-icon {*/
+/*    padding: 0.35rem 0.5rem;*/
+/*    border: 1px solid #E6E6E6;*/
+/*}*/
+/*button.action-icon:hover {*/
+/*    background-color: #404E67;*/
+/*    color: #FFF;*/
+/*}*/
+/*.ReactModal__Content:focus, button:focus {*/
+/*    outline: none;*/
+/*}*/
+/*.dropdown .dropdown-menu{*/
+/*    transition: none !important;*/
+/*}*/
+/*.dropdown-menu.dropdown-menu-right.show{*/
+/*    !*transform: translate3d(-77px, 19px, 0px) !important;*!*/
+/*}*/
+/*.action-button .dropdown-toggle::after{*/
+/*    content: none !important;*/
+/*}*/
+
