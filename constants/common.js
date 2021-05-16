@@ -43,6 +43,7 @@ export const ROUTES = {
     ALLOCATION_NEW: '/distribution/allocation/new',
     INSURANCE_COMPANY: '/partner/insurance-company',
     INSURANCE_COMPANY_NEW: '/partner/insurance-company/new',
+
 };
 
 export const MAIN_MENU = [

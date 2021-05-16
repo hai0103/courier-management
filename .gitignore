@@ -29,4 +29,3 @@ yarn-error.log*
 !.idea/vcs.xml
 package-lock.json
 .vscode
-/shared

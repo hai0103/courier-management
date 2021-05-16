@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAmBI,gBAAI;EACA,aAAa,EAAC,iBAAiB;AAEnC,qBAAS;EACL,WAAW,ECsQA,OAA6D;EDrQxE,4BAAQ;IACJ,cAAc,EAAE,GAAG;IACnB,aAAa,EAAE,iBAAkB;IACjC,aAAa,EAAE,IAAI;;AAM3B,6BAAa;EACT,WAAW,EAAC,GAAG",
+"sources": ["search.scss","../core/variables/_variables.scss"],
+"names": [],
+"file": "search.css"
+}

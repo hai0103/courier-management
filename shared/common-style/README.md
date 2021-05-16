@@ -1,0 +1,1 @@
+Common SASS styles for Alpaca project
