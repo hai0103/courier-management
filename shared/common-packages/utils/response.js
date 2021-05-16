@@ -4,11 +4,11 @@ export default class Response {
     }
 
     static isSuccessCode(response) {
-        return response.code && response.code === 200;
+        return (response.code && response.code === 200) || (response.data.code && response.data.code === 200);
     }
 
     static isSuccessAPI(response) {
-        return this.isSuccess(response) && response.data && response.data.Success === true;
+        return (this.isSuccess(response) && response.data && response.data.Success === true) || this.isSuccessCode(response);
     }
 
     static getErrorMessage(error) {

@@ -13,23 +13,39 @@ export const AddressApi = {
     async getProvinces(useInternal = false, headers = {}) {
         return await request(
             'GET',
-            `${Utility.getRemoteHost(useInternal)}admin-query/address-info/get-list-province`,
+            `${Utility.getRemoteHost(useInternal)}api/location/provinces`,
             {},
             headers
         )
     },
-    async getDistricts(provinceId, useInternal = false, headers = {}) {
+    async getDistricts(useInternal = false, headers = {}) {
         return await request(
             'GET',
-            `${Utility.getRemoteHost(useInternal)}admin-query/address-info/get-list-district-by-province-id/${provinceId}`,
+            `${Utility.getRemoteHost(useInternal)}api/location/districts`,
             {},
             headers
         )
     },
-    async getWards(districtId, useInternal = false, headers = {}) {
+    async getWards(useInternal = false, headers = {}) {
         return await request(
             'GET',
-            `${Utility.getRemoteHost(useInternal)}admin-query/address-info/get-list-ward-by-district-id/${districtId}`,
+            `${Utility.getRemoteHost(useInternal)}api/location/wards`,
+            {},
+            headers
+        )
+    },
+    async getDistrictsById(provinceId, useInternal = false, headers = {}) {
+        return await request(
+            'GET',
+            `${Utility.getRemoteHost(useInternal)}api/location/districts/${provinceId}`,
+            {},
+            headers
+        )
+    },
+    async getWardsById(districtId, useInternal = false, headers = {}) {
+        return await request(
+            'GET',
+            `${Utility.getRemoteHost(useInternal)}api/location/wards/${districtId}`,
             {},
             headers
         )

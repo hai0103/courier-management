@@ -11,7 +11,8 @@ const CommonLayout = ({children, ...restProps}) => {
             "vertical-layout",
             "vertical-menu",
             "fixed-navbar",
-            "2-columns"
+            "2-columns",
+            "bg-light-primary"
         );
         document.body.setAttribute('data-menu', 'vertical-menu');
         document.body.setAttribute('data-col', '2-columns');
@@ -44,9 +45,9 @@ const CommonLayout = ({children, ...restProps}) => {
             <Nav/>
             <MainMenu/>
 
-            <div className="app-content content">
+            <div className="app-content content bg-light-primary">
                 <div className="content-overlay"/>
-                <div className="content-wrapper p-0">{children}</div>
+                <div className="content-wrapper p-0 bg-light-primary">{children}</div>
             </div>
 
             <div className="sidenav-overlay" style={{}}/>

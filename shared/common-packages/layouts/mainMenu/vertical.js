@@ -81,13 +81,13 @@ function MainMenu() {
         <div className="main-menu menu-fixed menu-light menu-accordion menu-shadow border-right-0">
             <div className="main-menu-content">
                 <ul className="navigation" style={{height: 56}}>
-                    <li className="navigation-header h-100 p-0 border-bottom navbar-shadow nav-item">
+                    <li className="navigation-header h-100 p-0 py-25 border-bottom navbar-shadow nav-item">
                         {/*<div className="avatar avatar-online">*/}
                         {/*    <img src="/app-assets/images/portrait/small/no-avt.jpg" alt="avatar"/>*/}
                         {/*</div>*/}
                         {/*<h4 className="font-weight-bold mb-0 text-white text-truncate">{loggedUser?.full_name}</h4>*/}
                             <Link href={ROUTES.HOME}>
-                                <a className="navbar-brand p-0 m-0 pl-2 h-100 text-decoration-none">
+                                <a className="navbar-brand p-0 m-0 pl-4 h-100 text-decoration-none">
                                     <img className="brand-logo h-100" alt="Alpaca admin logo" src={IMAGES.WHITE_LOGO}/>
                                 </a>
                             </Link>

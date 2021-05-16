@@ -21,7 +21,7 @@
       "logout": "Thoát",
       "assign": "Phân công"
     },
-    "titlePage": "Admin Center",
+    "titlePage": "Courier Center",
     "action": "Hành động",
     "noData": "Không có dữ liệu.",
     "search": "Tìm kiếm",
@@ -69,6 +69,25 @@
     "general": "Tổng quan",
     "dashboard": "Bảng điều khiển",
     "settings": "Thiết lập",
+    "organizationsManagement": "Quản lý tổ chức",
+    "employee": "Nhân viên",
+    "postOffice": "Bưu cục",
+    "dealer": "Khách hàng",
+    "deliveryManagement": "Quản lý vận chuyển",
+    "order": "Đơn hàng",
+    "processStatus": "Trạng thái đơn",
+    "configFormula": "Cấu hình tính toán",
+    "permissionManagement": "Quản lý phân quyền",
+    "userType": "Loại người dùng",
+    "configPermission": "Cấu hình quyền",
+    "otherManagement": "Quản lý khác",
+    "service": "Dịch vụ",
+    "voucher": "Voucher",
+    "dispatch": "Văn bản - tài liệu",
+    "post": "Bài viết",
+    "feedback": "Phản hồi",
+    "report": "Báo cáo thống kê",
+
     "users": "Người dùng",
     "management": "Quản lý",
     "company": "Đơn Vị",
@@ -85,6 +104,7 @@
     "allocation": "Phân bổ",
     "partner": "Danh mục đối tác",
     "insuranceCompany": "Công ty bảo hiểm"
+
   },
   "inputRequired": "Trường thông tin bắt buộc.",
   "minLengthError": "Nhập ít nhất {{length}} kí tự.",
@@ -220,7 +240,7 @@
     "logout": "Đăng xuất"
   },
   "changePass": {
-    "title": "Dổi mật khẩu",
+    "title": "Đổi mật khẩu",
     "newPass": "Mật khẩu mới",
     "oldPass": "Mật khẩu cũ",
     "confirmPass": "Xác nhận khẩu mới",
@@ -274,6 +294,7 @@
     "fromDate": "Từ ngày",
     "toDate": "Đến ngày"
   },
+
   "usersManagement": {
     "title": "Người dùng",
     "headerTitle": "Người dùng",

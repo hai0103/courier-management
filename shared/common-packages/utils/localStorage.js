@@ -1,6 +1,21 @@
 const userProfileKey = 'user-profile';
 const userPermissionKey = 'user-permissions';
 
+export function storeData(name, data) {
+    localStorage.setItem(name, JSON.stringify(data));
+}
+
+export function getData(name) {
+    const data = localStorage.getItem(name);
+    return JSON.parse(data);
+}
+
+export function removeData(name) {
+    if (typeof localStorage !== 'undefined') {
+        return localStorage.removeItem(name);
+    }
+}
+
 export function storeUserProfile(user) {
     localStorage.setItem(userProfileKey, JSON.stringify(user));
 }

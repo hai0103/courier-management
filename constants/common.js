@@ -5,7 +5,8 @@ export const APP_SETTINGS = {
 };
 
 export const IMAGES = {
-    LOGO: '/app-assets/images/logo/alpaca-logo.svg',
+    // LOGO: '/app-assets/images/logo/alpaca-logo.svg',
+    LOGO: '/app-assets/images/logo/img_2.png',
     SHORT_LOGO: '/app-assets/images/logo/logo.svg',
     WHITE_LOGO: '/app-assets/images/logo/img_1.png',
     // WHITE_LOGO: '/app-assets/images/logo/alpaca-logo-white.png',
@@ -18,6 +19,14 @@ export const ROUTES = {
     REGISTER: '/register',
     FORGOT_PASSWORD: '/forgot-password',
     PROFILE: '/profile',
+    EMPLOYEE: '/organization/employee',
+    NEW_EMPLOYEE: '/organization/employee/new',
+    POST_OFFICE: '/organization/post-office',
+    NEW_POST_OFFICE: '/organization/post-office/new',
+    DEALER: '/organization/dealer',
+    NEW_DEALER: '/organization/dealer/new',
+
+
     REINSURANCE: '/reinsurance',
     NEW_REINSURANCE: '/reinsurance/new',
     REINSURANCE_CLASS: '/reinsurance-class',
@@ -48,86 +57,96 @@ export const ROUTES = {
 
 export const MAIN_MENU = [
     {
-        title: 'mainMenu.users',
-        falIcon: 'fa-user',
-        href: ROUTES.USER,
+        title: 'mainMenu.dashboard',
+        falIcon: 'fa-tachometer-alt',
+        href: ROUTES.HOME,
     },
     {
-        title: 'mainMenu.reinsurance',
-        falIcon: 'fa-user',
-        href: ROUTES.REINSURANCE,
-    },
-    {
-        title: 'mainMenu.organization',
+        title: 'mainMenu.organizationsManagement',
         isLabel: true,
     },
     {
-        title: 'mainMenu.company',
-        falIcon: 'fa-building',
+        title: 'mainMenu.employee',
+        falIcon: 'fa-user',
+        href: ROUTES.EMPLOYEE,
+    },
+    {
+        title: 'mainMenu.postOffice',
+        falIcon: 'fa-mailbox',
+        href: ROUTES.POST_OFFICE,
+    },
+    {
+        title: 'mainMenu.dealer',
+        falIcon: 'fa-users',
+        href: ROUTES.DEALER,
+    },
+    {
+        title: 'mainMenu.deliveryManagement',
+        isLabel: true,
+    },
+    {
+        title: 'mainMenu.order',
+        falIcon: 'fa-truck-loading',
         href: ROUTES.COMPANY,
     },
     {
-        title: 'mainMenu.department',
-        falIcon: 'fa-warehouse-alt',
+        title: 'mainMenu.processStatus',
+        falIcon: 'fa-signal',
         href: ROUTES.DEPARTMENT,
     },
     {
-        title: 'mainMenu.function',
-        falIcon: 'fa-project-diagram',
+        title: 'mainMenu.configFormula',
+        falIcon: 'fa-calculator-alt',
         href: ROUTES.POSITION,
     },
     {
-        title: 'mainMenu.decentralization',
+        title: 'mainMenu.permissionManagement',
         isLabel: true,
     },
     {
-        title: 'mainMenu.hierarchy',
-        falIcon: 'fa-layer-group',
+        title: 'mainMenu.userType',
+        falIcon: 'fa-user-tag',
         href: ROUTES.HIERARCHY
     },
     {
-        title: 'mainMenu.systemDecentralization',
-        falIcon: 'fa-sitemap',
+        title: 'mainMenu.configPermission',
+        falIcon: 'fa-user-shield',
         href: ROUTES.SYSTEM_DECENTRALIZATION,
     },
     {
-        title: 'mainMenu.businessDecentralization',
-        falIcon: 'fa-boxes',
-        href: ROUTES.BUSINESS_DECENTRALIZATION,
-    },
-    {
-        title: 'mainMenu.distributionChannel',
+        title: 'mainMenu.otherManagement',
         isLabel: true,
     },
     {
-        title: 'mainMenu.distributionChannel',
+        title: 'mainMenu.service',
         falIcon: 'fa-chart-network',
         href: ROUTES.DISTRIBUTION_CHANNEL,
     },
     {
-        title: 'mainMenu.agency',
-        falIcon: 'fa-users',
+        title: 'mainMenu.voucher',
+        falIcon: 'fa-percentage',
         href: ROUTES.AGENCY,
     },
     {
-        title: 'mainMenu.distributionPartner',
-        falIcon: 'fa-handshake',
+        title: 'mainMenu.dispatch',
+        falIcon: 'fa-file-alt',
         href: ROUTES.DISTRIBUTION_PARTNER,
     },
     {
-        title: 'mainMenu.allocation',
-        falIcon: 'fa-user-plus',
+        title: 'mainMenu.post',
+        falIcon: 'fa-newspaper',
         href: ROUTES.ALLOCATION,
     },
     {
-        title: 'mainMenu.partner',
-        isLabel: true,
+        title: 'mainMenu.feedback',
+        falIcon: 'fa-file-chart-line',
+        href: ROUTES.ALLOCATION,
     },
     {
-        title: 'mainMenu.insuranceCompany',
-        falIcon: 'fa-hospital-user',
-        href: ROUTES.INSURANCE_COMPANY,
-    },
+        title: 'mainMenu.report',
+        falIcon: 'fa-user-plus',
+        href: ROUTES.ALLOCATION,
+    }
 ]
 
 export const API_HOST = process.env.API_HOST;

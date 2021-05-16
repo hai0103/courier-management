@@ -1,6 +1,6 @@
-# Apalca Front-end Project
+# Front-end Project
 
-This is one of Apalca Front-end Project
+This is one of Front-end Project
 
 ## Installation
 
