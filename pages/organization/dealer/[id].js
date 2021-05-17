@@ -8,6 +8,7 @@ import {UserApi} from "services/user";
 import {ROUTES} from "constants/common";
 import cookies from "next-cookies";
 import {PostOfficeApi} from "services/postOffice";
+import {AddressInfoProvider} from "providers/addressInfoProvider";
 
 export default function EmployeeDetailPage(props) {
     return (
@@ -15,7 +16,9 @@ export default function EmployeeDetailPage(props) {
             <Head>
                 <title>Quản lý nhân viên</title>
             </Head>
-            <UserForm {...props}/>
+            <AddressInfoProvider>
+                <UserForm {...props} />
+            </AddressInfoProvider>
         </React.Fragment>
     );
 }

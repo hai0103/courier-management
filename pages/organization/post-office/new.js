@@ -7,6 +7,7 @@ import CommonLayout from "layouts/commonLayout";
 import CreateUser from "components/userManagement/components/userForm";
 import cookies from "next-cookies";
 import {PostOfficeApi} from "services/postOffice";
+import {AddressInfoProvider} from "providers/addressInfoProvider";
 
 export default function CreateEmployeePage(props) {
     return (
@@ -14,7 +15,9 @@ export default function CreateEmployeePage(props) {
             <Head>
                 <title>Quản lý nhân viên</title>
             </Head>
+          <AddressInfoProvider>
             <CreateUser {...props} />
+          </AddressInfoProvider>
         </React.Fragment>
     );
 }

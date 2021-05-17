@@ -1,0 +1,352 @@
+[
+  {
+    "id": "ACB",
+    "code": "",
+    "name": "ACB",
+    "nameEN": "Asia Commercial Joint Stock Bank",
+    "nameVN": "Ngân hàng TMCP Á Châu"
+  },
+  {
+    "id": "TPBank",
+    "code": "",
+    "name": "TPBank",
+    "nameEN": "Tien Phong Commercial Joint Stock Bank",
+    "nameVN": "Ngân hàng TMCP Tiên Phong"
+  },
+  {
+    "id": "DAB",
+    "code": "",
+    "name": "DAB",
+    "nameEN": "DongA Bank",
+    "nameVN": "Ngân hàng TMCP Đông Á"
+  },
+  {
+    "id": "SeABank",
+    "code": "",
+    "name": "SeABank",
+    "nameEN": "Southeast Asia Commercial Joint Stock Bank",
+    "nameVN": "Ngân hàng TMCP Đông Nam Á"
+  },
+  {
+    "id": "ABBANK",
+    "code": "",
+    "name": "ABBANK",
+    "nameEN": "An Binh Commercial Joint Stock Bank",
+    "nameVN": "Ngân hàng TMCP An Bình"
+  },
+  {
+    "id": "BacABank",
+    "code": "",
+    "name": "BacABank",
+    "nameEN": "Bac A Bank",
+    "nameVN": "Ngân hàng TMCP Bắc Á"
+  },
+  {
+    "id": "VietCapitalBank",
+    "code": "",
+    "name": "VietCapitalBank",
+    "nameEN": "Viet Capital Bank",
+    "nameVN": "Ngân hàng TMCP Bản Việt"
+  },
+  {
+    "id": "MSB",
+    "code": "",
+    "name": "MSB",
+    "nameEN": "Vietnam Maritime Commercial Joint Stock Bank",
+    "nameVN": "Ngân hàng TMCP Hàng hải Việt Nam"
+  },
+  {
+    "id": "TCB",
+    "code": "",
+    "name": "TCB",
+    "nameEN": "VietNam Technological and Commercial Joint Stock Bank",
+    "nameVN": "Ngân hàng TMCP Kỹ Thương Việt Nam"
+  },
+  {
+    "id": "Kienlongbank",
+    "code": "",
+    "name": "Kienlongbank",
+    "nameEN": "Kien Long Commercial Joint Stock Bank",
+    "nameVN": "Ngân hàng TMCP Kiên Long"
+  },
+  {
+    "id": "NamABank",
+    "code": "",
+    "name": "NamABank",
+    "nameEN": "Nam A Bank",
+    "nameVN": "Ngân hàng TMCP Nam Á"
+  },
+  {
+    "id": "NCB",
+    "code": "",
+    "name": "NCB",
+    "nameEN": "National Citizen Commercial Joint Stock Bank",
+    "nameVN": "Ngân hàng TMCP Quốc Dân"
+  },
+  {
+    "id": "VPBank",
+    "code": "",
+    "name": "VPBank",
+    "nameEN": "Vietnam Prosperity Joint-Stock Commercial Bank",
+    "nameVN": "Ngân hàng TMCP Việt Nam Thịnh Vượng"
+  },
+  {
+    "id": "HDBank",
+    "code": "",
+    "name": "HDBank",
+    "nameEN": "Ho Chi Minh City Development Joint Stock Commercial Bank",
+    "nameVN": "Ngân hàng TMCP Phát triển Thành phố Hồ Chí Minh"
+  },
+  {
+    "id": "OCB",
+    "code": "",
+    "name": "OCB",
+    "nameEN": "Orient Commercial Joint Stock Bank",
+    "nameVN": "Ngân hàng TMCP Phương Đông"
+  },
+  {
+    "id": "MB",
+    "code": "",
+    "name": "MB",
+    "nameEN": "Military Commercial Joint Stock Bank",
+    "nameVN": "Ngân hàng TMCP Quân Đội"
+  },
+  {
+    "id": "PVcomBank",
+    "code": "",
+    "name": "PVcomBank",
+    "nameEN": "Vietnam Public Joint Stock Commercial Bank",
+    "nameVN": "Ngân hàng TMCP Đại Chúng Việt Nam"
+  },
+  {
+    "id": "VIB",
+    "code": "",
+    "name": "VIB",
+    "nameEN": "Vietnam International Commercial Joint Stock Bank",
+    "nameVN": "Ngân hàng TMCP Quốc Tế Việt Nam"
+  },
+  {
+    "id": "SCB",
+    "code": "",
+    "name": "SCB",
+    "nameEN": "Sai Gon Joint Stock Commercial Bank",
+    "nameVN": "Ngân hàng TMCP Sài Gòn"
+  },
+  {
+    "id": "SAIGONBANK",
+    "code": "",
+    "name": "SAIGONBANK",
+    "nameEN": "Sai Gon Bank For Industry and Trade",
+    "nameVN": "Ngân hàng TMCP Sài Gòn Công Thương"
+  },
+  {
+    "id": "SHB",
+    "code": "",
+    "name": "SHB",
+    "nameEN": "Saigon – Hanoi Commercial Joint Stock Bank",
+    "nameVN": "Ngân hàng TMCP Sài Gòn – Hà Nội"
+  },
+  {
+    "id": "Sacombank",
+    "code": "",
+    "name": "Sacombank",
+    "nameEN": "Sai Gon Thuong Tin Commercial Joint Stock Bank",
+    "nameVN": "Ngân hàng TMCP Sài Gòn Thương Tín"
+  },
+  {
+    "id": "VietABank",
+    "code": "",
+    "name": "VietABank",
+    "nameEN": "Vietnam Asia Commercial Joint Stock Bank",
+    "nameVN": "Ngân hàng TMCP Việt Á"
+  },
+  {
+    "id": "BAOVIETBank",
+    "code": "",
+    "name": "BAOVIETBank",
+    "nameEN": "Baoviet Joint Stock Commercial Bank",
+    "nameVN": "Ngân hàng TMCP Bảo Việt"
+  },
+  {
+    "id": "VietBank",
+    "code": "",
+    "name": "VietBank",
+    "nameEN": "Vietnam Thuong Tin Commercial Joint Stock Bank",
+    "nameVN": "Ngân hàng TMCP Việt Nam Thương Tín"
+  },
+  {
+    "id": "PGBank",
+    "code": "",
+    "name": "PGBank",
+    "nameEN": "Petrolimex Group Commercial Joint Stock Bank",
+    "nameVN": "Ngân hàng TMCP Xăng dầu Petrolimex"
+  },
+  {
+    "id": "Eximbank",
+    "code": "",
+    "name": "Eximbank",
+    "nameEN": "Vietnam Export Import Commercial Joint - Stock Bank",
+    "nameVN": "Ngân hàng TMCP Xuất Nhập Khẩu Việt Nam"
+  },
+  {
+    "id": "LienVietPostBank",
+    "code": "",
+    "name": "LienVietPostBank",
+    "nameEN": "Lien Viet Post Joint Stock Commercial Bank",
+    "nameVN": "Ngân hàng TMCP Bưu điện Liên Việt"
+  },
+  {
+    "id": "VCB",
+    "code": "",
+    "name": "VCB",
+    "nameEN": "JSC Bank for Foreign Trade of Vietnam",
+    "nameVN": "Ngân hàng TMCP Ngoại thương Việt Nam"
+  },
+  {
+    "id": "VietinBank",
+    "code": "",
+    "name": "VietinBank",
+    "nameEN": "Vietnam Joint Stock Commercial Bank for Industry and Trade",
+    "nameVN": "Ngân hàng TMCP Công Thương Việt Nam"
+  },
+  {
+    "id": "BIDV",
+    "code": "",
+    "name": "BIDV",
+    "nameEN": "JSC Bank for Investment and Development of Vietnam",
+    "nameVN": "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam"
+  },
+  {
+    "id": "NHCSXH",
+    "code": "",
+    "name": "NHCSXH",
+    "nameEN": "Vietnam Bank for Social Policies",
+    "nameVN": "Ngân hàng Chính sách xã hội"
+  },
+  {
+    "id": "VDB",
+    "code": "",
+    "name": "VDB",
+    "nameEN": "Vietnam Development Bank",
+    "nameVN": "Ngân hàng Phát triển Việt Nam"
+  },
+  {
+    "id": "CB",
+    "code": "",
+    "name": "CB",
+    "nameEN": "Construction Bank",
+    "nameVN": "Ngân hàng Thương mại TNHH MTV Xây dựng Việt Nam"
+  },
+  {
+    "id": "OceanBank",
+    "code": "",
+    "name": "OceanBank",
+    "nameEN": "Ocean Commercial One Member Limited Liability Bank",
+    "nameVN": "Ngân hàng Thương mại TNHH MTV Đại Dương"
+  },
+  {
+    "id": "GPBank",
+    "code": "",
+    "name": "GPBank",
+    "nameEN": "Global Petro Sole Member Limited Commercial Bank",
+    "nameVN": "Ngân hàng Thương mại TNHH MTV Dầu Khí Toàn Cầu"
+  },
+  {
+    "id": "Agribank",
+    "code": "",
+    "name": "Agribank",
+    "nameEN": "Vietnam Bank for Agriculture and Rural Development",
+    "nameVN": "Ngân hàng Nông nghiệp và Phát triển Nông thôn Việt Nam"
+  },
+  {
+    "id": "ANZ",
+    "code": "",
+    "name": "ANZ",
+    "nameEN": "Australia and New Zealand Banking Group Limited",
+    "nameVN": "Ngân hàng TNHH MTV ANZ - Việt Nam"
+  },
+  {
+    "id": "Citibank",
+    "code": "",
+    "name": "Citibank",
+    "nameEN": "Citibank Vietnam",
+    "nameVN": "Ngân hàng Citibank Việt Nam"
+  },
+  {
+    "id": "HSBC",
+    "code": "",
+    "name": "HSBC",
+    "nameEN": "HSBC Bank (Vietnam) Ltd.",
+    "nameVN": "Ngân hàng TNHH MTV HSBC (Việt Nam)"
+  },
+  {
+    "id": "StandardChartered",
+    "code": "",
+    "name": "StandardChartered",
+    "nameEN": "Standard Chartered Bank (Vietnam) Limited",
+    "nameVN": "Ngân hàng TNHH MTV Standard Chartered (Việt Nam)"
+  },
+  {
+    "id": "SHBVN",
+    "code": "",
+    "name": "SHBVN",
+    "nameEN": "Shinhan Bank Vietnam Limited",
+    "nameVN": "Ngân hàng TNHH MTV Shinhan Việt Nam"
+  },
+  {
+    "id": "HLBVN",
+    "code": "",
+    "name": "HLBVN",
+    "nameEN": "Hong Leong Bank Vietnam Limited",
+    "nameVN": "Ngân hàng TNHH MTV Hong Leong Việt Nam"
+  },
+  {
+    "id": "BIDC",
+    "code": "",
+    "name": "BIDC",
+    "nameEN": "Bank for Investment and Development of Cambodia",
+    "nameVN": "Ngân hàng Đầu tư và Phát triển Campuchia"
+  },
+  {
+    "id": "PBVN",
+    "code": "",
+    "name": "PBVN",
+    "nameEN": "Public Bank Vietnam",
+    "nameVN": "Ngân hàng TNHH MTV Public Việt Nam"
+  },
+  {
+    "id": "CommonwealthBank",
+    "code": "",
+    "name": "CommonwealthBank",
+    "nameEN": "Commonwealth Bank",
+    "nameVN": "Ngân hàng Commonwealth Bank Việt Nam"
+  },
+  {
+    "id": "UOB",
+    "code": "",
+    "name": "UOB",
+    "nameEN": "United Overseas Bank (Vietnam) Limited",
+    "nameVN": "Ngân hàng TNHH MTV United Overseas Bank (Việt Nam)"
+  },
+  {
+    "id": "WooriBank",
+    "code": "",
+    "name": "WooriBank",
+    "nameEN": "Woori Bank",
+    "nameVN": "Ngân hàng TNHH MTV Woori Việt Nam"
+  },
+  {
+    "id": "IVB",
+    "code": "",
+    "name": "IVB",
+    "nameEN": "Indovina Bank Ltd.",
+    "nameVN": "Ngân hàng TTNHH Indovina"
+  },
+  {
+    "id": "VRB",
+    "code": "",
+    "name": "VRB",
+    "nameEN": "Vietnam - Russia Joint Venture Bank",
+    "nameVN": "Ngân hàng Liên doanh Việt - Nga"
+  }
+]

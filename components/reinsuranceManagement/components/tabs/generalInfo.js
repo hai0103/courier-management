@@ -355,7 +355,6 @@ function GeneralInformation(props) {
                                                     handleSubmit={props.onSubmit}
                                                     name="taxNumber"
                                                     register={register()}
-                                                    disabled={true}
                                                 /> :
                                                 <input
                                                     className={watch('nationalityCode') === "VN" ? requiredTextControl('taxNumber').classNames : "form-control"}

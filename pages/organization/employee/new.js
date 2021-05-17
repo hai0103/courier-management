@@ -8,43 +8,56 @@ import CreateUser from "components/userManagement/components/userForm";
 import cookies from "next-cookies";
 import {PostOfficeApi} from "services/postOffice";
 import {UserTypeApi} from "services/userType";
+import {AddressApi} from "services/address";
+import {AddressInfoProvider} from "providers/addressInfoProvider";
 
 export default function CreateEmployeePage(props) {
-    return (
-        <React.Fragment>
-            <Head>
-                <title>Quản lý nhân viên</title>
-            </Head>
-            <CreateUser {...props} />
-        </React.Fragment>
-    );
+  return (
+    <React.Fragment>
+      <Head>
+        <title>Quản lý nhân viên</title>
+      </Head>
+      <AddressInfoProvider>
+        <CreateUser {...props} />
+      </AddressInfoProvider>
+    </React.Fragment>
+  );
 }
 
 export async function getServerSideProps(context) {
-    let postOffices = [], roles = []
+  let postOffices = [], roles = [], provinces = []
 
-    try {
-        const postOfficesResponse = await PostOfficeApi.getAll();
-        postOffices = Response.getAPIData(postOfficesResponse) || [];
+  try {
+    const postOfficesResponse = await PostOfficeApi.getAll();
+    postOffices = Response.getAPIData(postOfficesResponse) || [];
 
-    } catch (e) {
-        console.log(e);
+  } catch (e) {
+    console.log(e);
+  }
+
+  try {
+    const provincesResponse = await AddressApi.getProvinces();
+    provinces = Response.getAPIData(provincesResponse) || [];
+
+  } catch (e) {
+    console.log(e);
+  }
+
+  try {
+    const roleResponse = await UserTypeApi.getAll();
+    roles = Response.getAPIData(roleResponse) || [];
+
+  } catch (e) {
+    console.log(e);
+  }
+
+  return {
+    props: {
+      postOffices,
+      roles,
+      provinces
     }
-
-    try {
-        const roleResponse = await UserTypeApi.getAll();
-        roles = Response.getAPIData(roleResponse) || [];
-
-    } catch (e) {
-        console.log(e);
-    }
-
-    return {
-        props: {
-            postOffices,
-            roles
-        }
-    };
+  };
 }
 
 CreateEmployeePage.Layout = CommonLayout;

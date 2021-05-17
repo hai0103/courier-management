@@ -10,60 +10,62 @@ import cookies from "next-cookies";
 import {PostOfficeApi} from "services/postOffice";
 
 export default function EmployeeDetailPage(props) {
-    return (
-        <React.Fragment>
-            <Head>
-                <title>Quản lý nhân viên</title>
-            </Head>
-            <UserForm {...props}/>
-        </React.Fragment>
-    );
+  return (
+    <React.Fragment>
+      <Head>
+        <title>Quản lý nhân viên</title>
+      </Head>
+      <AddressInfoProvider>
+        <UserForm {...props}/>
+      </AddressInfoProvider>
+    </React.Fragment>
+  );
 }
 
 export async function getServerSideProps(router) {
-    try {
-        const {id} = router.query;
-        // eslint-disable-next-line no-prototype-builtins
-        const readOnly = router.query.hasOwnProperty('readOnly');
-        const postOfficesResponse = await PostOfficeApi.getAll({
-                pageSize: 500,
-                pageNumber: 0,
-                sort: [{
-                    key: "companyNameSort",
-                    asc: true
-                }],
-            }, true, {
-                Authorization: `Bearer ${cookies(router).access_token || ''}`
-            }
-        );
+  try {
+    const {id} = router.query;
+    // eslint-disable-next-line no-prototype-builtins
+    const readOnly = router.query.hasOwnProperty('readOnly');
+    const postOfficesResponse = await PostOfficeApi.getAll({
+        pageSize: 500,
+        pageNumber: 0,
+        sort: [{
+          key: "companyNameSort",
+          asc: true
+        }],
+      }, true, {
+        Authorization: `Bearer ${cookies(router).access_token || ''}`
+      }
+    );
 
-        const postOffices = Response.getAPIData(postOfficesResponse);
+    const postOffices = Response.getAPIData(postOfficesResponse);
 
-        const userDetailResponse = await UserApi.findById(id, true,
-            {Authorization: `Bearer ${cookies(router).access_token || ''}`});
-        const detail = Response.getAPIData(userDetailResponse);
+    const userDetailResponse = await UserApi.findById(id, true,
+      {Authorization: `Bearer ${cookies(router).access_token || ''}`});
+    const detail = Response.getAPIData(userDetailResponse);
 
-        // const roleResponse = await DecentralizationApi.getSystemRoles({}, true, {
-        //     Authorization: `Bearer ${cookies(router).access_token || ''}`
-        // });
-        // const roles = Response.getAPIData(roleResponse);
-
-        return {
-            props: {
-                id,
-                postOffices: postOffices,
-                detail,
-                readOnly,
-                // roles
-            }
-        };
-    } catch (e) {
-        console.log(e);
-    }
+    // const roleResponse = await DecentralizationApi.getSystemRoles({}, true, {
+    //     Authorization: `Bearer ${cookies(router).access_token || ''}`
+    // });
+    // const roles = Response.getAPIData(roleResponse);
 
     return {
-        props: {}
-    }
+      props: {
+        id,
+        postOffices: postOffices,
+        detail,
+        readOnly,
+        // roles
+      }
+    };
+  } catch (e) {
+    console.log(e);
+  }
+
+  return {
+    props: {}
+  }
 }
 
 EmployeeDetailPage.Layout = CommonLayout;
