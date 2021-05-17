@@ -148,10 +148,9 @@ function UserList(props) {
             {
                 Header: 'Số điện thoại',
                 accessor: 'phone',
-                sortable: false,
+                sortable: true,
                 className: 'td-6 text-truncate',
                 headerClassName: 'td-6 text-truncate',
-                sortKey: "userNameSort",
                 Cell: ({row = {}}) =>
                     <Link href={`/${ROUTES.EMPLOYEE}/${row.original.id}?readOnly`}><a
                         title={row.original.phone}>{row.original.phone}</a></Link>
@@ -164,36 +163,34 @@ function UserList(props) {
                 headerClassName: 'td-7 text-truncate',
             },
             {
+                Header: props.isDealer ? 'Địa chỉ thường chú (xuất hóa đơn)' : 'Địa chỉ',
+                accessor: 'address',
+                sortable: false,
+                className: 'td-10 text-truncate',
+                headerClassName: 'td-10 text-truncate',
+                Cell: ({row = {}}) => <span title={`${row.original.address || '_'} - ${row.original.ward || '_'} - ${row.original.district || '_'} - ${row.original.province || '_'}`}>
+                    {`${row.original.address || ''} - ${row.original.ward || ''} - ${row.original.district || ''} - ${row.original.province || ''}`}
+                </span>
+            },
+            {
                 Header: 'Bưu cục',
-                accessor: 'post_office_id',
+                accessor: 'post_office',
                 sortable: false,
                 className: 'td-8 text-truncate',
                 headerClassName: 'td-8 text-truncate',
-                // filter: 'includes',
-                // sortKey: 'companyNameSort',
-                Cell: ({row = {}}) => {
-                    const name = props.postOffices.filter(p => p.id === row.original.post_office_id)[0]?.name || '';
-                    return <span title={name}>{name}</span>
-                }
             },
             {
                 Header: "Vai trò",
-                accessor: 'user_type_id',
+                accessor: 'user_type',
                 className: 'td-6 text-truncate',
                 headerClassName: 'td-6 text-truncate',
                 filter: 'includes',
-                Cell: ({row = {}}) => {
-                    const name = props.roles.filter(p => p.id === row.original.user_type_id)[0]?.name || '';
-                    return <span title={name}>{name}</span>
-                }
             },
             {
                 Header: t('usersManagement.header.lastUpdate'),
                 accessor: 'updated_at',
                 className: 'td-6 text-truncate',
                 headerClassName: 'td-6 text-truncate',
-                // sortKey: 'updated_date',
-                // sortable: true,
                 Cell: ({value}) => filters.dateTime(value)
             },
             {
@@ -201,7 +198,7 @@ function UserList(props) {
                 accessor: 'status',
                 className: 'td-8 text-truncate',
                 headerClassName: 'td-8 text-truncate',
-                sortable: false,
+                sortable: true,
                 Cell: ({value = ''}) => <Badge {...statusMapping(value)} />
             },
             {
@@ -213,17 +210,26 @@ function UserList(props) {
         ];
 
         if(props.isDealer) {
-            columns = columns.filter(col => col.accessor !== 'post_office_id' && col.accessor !== 'user_type_id');
+            columns = columns.filter(col => col.accessor !== 'post_office' && col.accessor !== 'user_type');
         }
 
         const setRemoteData = async (params) => {
+            let payload = {
+                ...params,
+            }
+            if(params.sort){
+                payload.keySort = params.sort[0]?.key || '',
+                    payload.asc = params.sort[0]?.asc || null
+
+            }
+            props.isDealer ? payload['isStaff'] = false : null;
+
             try {
-                const response = await UserApi.getAll(params);
-                console.log(response)
+                const response = await UserApi.getList(payload);
                 if (Response.isSuccessCode(response?.data)) {
-                    const data = Response.getData(response).data || [];
+                    const {content, totalElements} = Response.getData(response).data || [];
                     return {
-                        data: data, totalItem: data.length
+                        data: content, totalItem: totalElements
                     }
                 } else {
                     console.log(response);
@@ -237,10 +243,10 @@ function UserList(props) {
 
         const defaultSort = {
             init: {
-                userNameSort: 'ASC'
+                full_name: 'ASC'
             },
             default: {
-                userNameSort: 'ASC'
+                full_name: 'ASC'
             }
         };
 
@@ -268,7 +274,7 @@ function UserList(props) {
                             type: "select",
                             filterBy: "userTypeId",
                             selectBox: {
-                                options: props.roles,
+                                options: props.roles.filter(i => i.id !== 2) || [],
                                 optionLabel: "name",
                                 optionValue: "id",
                                 hasDefaultOption: true
@@ -295,7 +301,7 @@ function UserList(props) {
 
                    rightControl={
                        () => (
-                           <Link href={ROUTES.NEW_EMPLOYEE}>
+                           <Link href={props.isDealer ? ROUTES.NEW_DEALER : ROUTES.NEW_EMPLOYEE}>
                                <button className="btn btn-primary btn-md"
                                        // disabled={!allows(SYSTEM_PERMISSIONS.CREATE_USER)}
                                >

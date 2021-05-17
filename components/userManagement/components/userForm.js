@@ -48,16 +48,16 @@ function UserForm(props) {
     const allowsToUpdate = allows(SYSTEM_PERMISSIONS.UPDATE_USER)
     const allowsToUpdateRole = allows(SYSTEM_PERMISSIONS.ASSIGN_SYSTEM_PERMISSION)
     const onClose = () => {
-        router.push(ROUTES.USER);
+        router.push(props.isDealer ? ROUTES.DEALER : ROUTES.EMPLOYEE);
     }
-
-    useEffect(() => {
-        props.companies.forEach(item => {
-            if (!item.status) {
-                item.isDisabled = true
-            }
-        })
-    }, [])
+    //
+    // useEffect(() => {
+    //     props.companies.forEach(item => {
+    //         if (!item.status) {
+    //             item.isDisabled = true
+    //         }
+    //     })
+    // }, [])
 
     useEffect(() => {
         if (detail && detail.id) {
@@ -67,16 +67,6 @@ function UserForm(props) {
             }
         }
     }, [detail])
-
-    if (!isEdit) {
-        useEffect(() => {
-            getListDepartment(companyId).catch(error => addToast(Response.getErrorMessage(error), {appearance: 'error'}));
-        }, [companyId]);
-    }
-
-    useEffect(() => {
-        getListFunction(departmentId).catch(error => addToast(Response.getErrorMessage(error), {appearance: 'error'}));
-    }, [companyId, departmentId]);
 
     const statusMapping = (status) => {
         const mapping = {
@@ -96,65 +86,6 @@ function UserForm(props) {
 
         return mapping[status] || [];
     };
-
-    const checkData = () => {
-        let isValid = true
-
-        if (!companyId) {
-            setErrCompany(true);
-            isValid = false
-        }
-        if (!departmentId) {
-            setErrDepartment(true);
-            isValid = false
-        }
-        if (!functionId) {
-            setErrFunction(true);
-            isValid = false
-        }
-        if (!roleId) {
-            setErrRole(true);
-            isValid = false
-        }
-        if (!positionId) {
-            setErrPosition(true);
-            isValid = false
-        }
-
-        return isValid
-    }
-
-    const getListDepartment = async () => {
-        if (companyId) {
-            const data = {
-                pageSize: 500,
-                pageNumber: 0,
-                companyId: companyId,
-                status: 1,
-                sort: [{
-                    key: "departmentNameSort",
-                    asc: true
-                }],
-            }
-
-            const response = await DepartmentApi.getList(data);
-            const list = Response.getAPIData(response).content;
-            setListDepartment(companyId ? list : []);
-        }
-    }
-
-    const getListFunction = async () => {
-        if (departmentId) {
-            const response = await DepartmentApi.getListFunctionById(departmentId)
-            const list = Response.getAPIData(response)
-            list.forEach(item => {
-                if (!item.status) {
-                    item.isDisabled = true
-                }
-            });
-            setListFunction(departmentId ? list : []);
-        }
-    }
 
     const save = async (data) => {
         const payload = {
@@ -186,8 +117,6 @@ function UserForm(props) {
                     message: error.response.data?.message[0]
                 })
             } else if (error.response.data?.errorCode === 'ADMIN.DEPARTMENT_NOT_BELONGED_TO_COMPANY') {
-                setErrDepartment(true);
-                setErrMessDepartment(error.response.data?.message[0])
             } else {
                 addToast(Response.getErrorMessage(error), {appearance: 'error'});
             }
@@ -195,7 +124,6 @@ function UserForm(props) {
     }
 
     const onSubmitCreate = async (data) => {
-        if (checkData()) {
             const payload = {
                 ...data,
                 userName: data.userName.toLowerCase(),
@@ -210,19 +138,18 @@ function UserForm(props) {
             } else {
                 addToast(Response.getAPIError(response), {appearance: 'error'});
             }
-        }
     }
 
     const onSubmitUpdate = async (data) => {
         if (data.email !== detail.email) {
-            const res = await UserApi.updateEmail(props.userId, {email: data.email})
+            const res = await UserApi.updateEmail(props.id, {email: data.email})
             if (Response.isSuccessAPI(res)) {
                 addToast(t('common.message.editSuccess'), {appearance: 'success'});
             } else {
                 addToast(Response.getAPIError(res), {appearance: 'error'});
             }
         } else {
-            const response = await UserApi.update(props.userId, data);
+            const response = await UserApi.update(props.id, data);
             if (Response.isSuccessAPI(response)) {
                 addToast(t('common.message.editSuccess'), {appearance: 'success'});
                 const responseData = Response.getAPIData(response);
@@ -239,7 +166,7 @@ function UserForm(props) {
             systemRoleId: systemRoleId,
         }
         try {
-            const response = await UserApi.updateSystemRole(props.userId, payload);
+            const response = await UserApi.updateSystemRole(props.id, payload);
             if (Response.isSuccessAPI(response)) {
                 addToast(t('common.message.editSuccess'), {appearance: 'success'});
                 const responseData = Response.getAPIData(response);
@@ -274,15 +201,14 @@ function UserForm(props) {
         });
     }
 
-    const loginNameControl = () => {
-        const validation = FormControl.getValidation('userName', errors);
+    const requiredTextControl = (field) => {
+        const validation = FormControl.getValidation(field, errors);
         const classNames = FormControl.getControlClassNames([
             'form-control',
             validation.className
         ]);
         const rules = {
-            pattern: FormRules.isName(),
-            required: FormRules.required()
+            required: FormRules.required(),
         };
 
         return {
@@ -290,25 +216,7 @@ function UserForm(props) {
             rules,
             ...validation
         }
-    }
-    const fullNameControl = () => {
-        const validation = FormControl.getValidation('fullName', errors);
-        const classNames = FormControl.getControlClassNames([
-            'form-control',
-            validation.className
-        ]);
-        const rules = {
-            // pattern: FormRules.isName(),
-            // minLength: FormRules.minLength(6),
-            required: FormRules.required()
-        };
-
-        return {
-            classNames,
-            rules,
-            ...validation
-        }
-    }
+    };
 
     const phoneControl = () => {
         const validation = FormControl.getValidation('phoneNumber', errors);
@@ -391,7 +299,7 @@ function UserForm(props) {
                 detail?.status !== "2" &&
                 (detail?.status ? <li className="border-separate">
                         <button title="Khoá" className="avatar btn-avatar"
-                                disabled={!allows(SYSTEM_PERMISSIONS.BLOCK_UNBLOCK_USER)}
+                                // disabled={!allows(SYSTEM_PERMISSIONS.BLOCK_UNBLOCK_USER)}
                                 onClick={() => {
                                     setSelectedItem(detail);
                                     setShowModalConfirm(true)
@@ -404,7 +312,7 @@ function UserForm(props) {
                     </li> :
                     <li className="border-separate">
                         <button title="Mở khoá" className="avatar btn-avatar"
-                                disabled={!allows(SYSTEM_PERMISSIONS.BLOCK_UNBLOCK_USER)}
+                                // disabled={!allows(SYSTEM_PERMISSIONS.BLOCK_UNBLOCK_USER)}
                                 onClick={() => {
                                     setSelectedItem(detail);
                                     setShowModalConfirm(true)
@@ -426,8 +334,8 @@ function UserForm(props) {
                         <div className={'card-header card-header-main bg-light-primary' + (!isEdit ? '' : ' card-header-main-o')}>
                             <h3 className="content-header-title mb-0">
                                 {
-                                    !isEdit ? t('createUser.title1') : <>
-                                        {detail?.fullName}
+                                    !isEdit ? (props.isDealer ? 'Tạo khách hàng - người gửi' : 'Tạo nhân viên') : <>
+                                        {detail?.full_name}
                                     </>
                                 }
                             </h3>
@@ -470,7 +378,7 @@ function UserForm(props) {
                                                     className="btn btn-outline-primary mr-50">
                                                 {t('common.button.cancel')}
                                             </button>
-                                            <button onClick={handleSubmit(save, checkData)}
+                                            <button onClick={handleSubmit(save)}
                                                     className="btn btn-primary"
                                             >
                                                 {!isEdit ? t('common.button.create') : t('common.button.save')}
@@ -493,72 +401,69 @@ function UserForm(props) {
                                             <div className="card-header">
                                                 <div
                                                     className="form-section d-flex align-items-center justify-content-between">
-                                                    <h5 className="mb-0">{t('createUser.overView')}</h5>
+                                                    <h5 className="mb-0">Thông tin chung</h5>
                                                 </div>
                                             </div>
                                             <div className="card-body px-0">
                                                 <div className="form-row">
-                                                    {/* Tên đăng nhập */}
-                                                    <div className="col-xl-3 col-lg-4 col-md-6 col-6">
-                                                        <fieldset className="form-group form-group-sm">
-                                                            <label>
-                                                                {t('createUser.loginName')} <sup
-                                                                className="text-danger">*</sup>
-                                                            </label>
-                                                            <article>
-                                                                <div className="position-relative has-icon-right">
-                                                                    {
-                                                                        isEdit ? <InlineInput
-                                                                                className={loginNameControl().classNames}
-                                                                                defaultValue={detail?.userName}
-                                                                                disabled={true}
-                                                                            /> :
-                                                                            <input id="inputLoginName"
-                                                                                   className={loginNameControl().classNames}
-                                                                                   placeholder={t('createUser.loginNamePlaceHolder')}
-                                                                                   name="userName"
-                                                                                   ref={register(loginNameControl().rules)}
-                                                                                   readOnly={readOnly || isEdit}
-                                                                                   defaultValue={detail?.userName}
-                                                                            />
-                                                                    }
-                                                                    <InvalidFeedBack
-                                                                        message={loginNameControl().errorMessage}/>
-                                                                </div>
-                                                            </article>
-                                                        </fieldset>
-                                                    </div>
+                                        {/*            /!* Tên đăng nhập *!/*/}
+                                        {/*            <div className="col-xl-3 col-lg-4 col-md-6 col-6">*/}
+                                        {/*                <fieldset className="form-group form-group-sm">*/}
+                                        {/*                    <label>*/}
+                                        {/*                        {t('createUser.loginName')} <sup*/}
+                                        {/*                        className="text-danger">*</sup>*/}
+                                        {/*                    </label>*/}
+                                        {/*                    <article>*/}
+                                        {/*                        <div className="position-relative has-icon-right">*/}
+                                        {/*                            {*/}
+                                        {/*                                isEdit ? <InlineInput*/}
+                                        {/*                                        className={loginNameControl().classNames}*/}
+                                        {/*                                        defaultValue={detail?.userName}*/}
+                                        {/*                                        disabled={true}*/}
+                                        {/*                                    /> :*/}
+                                        {/*                                    <input id="inputLoginName"*/}
+                                        {/*                                           className={loginNameControl().classNames}*/}
+                                        {/*                                           placeholder={t('createUser.loginNamePlaceHolder')}*/}
+                                        {/*                                           name="userName"*/}
+                                        {/*                                           ref={register(loginNameControl().rules)}*/}
+                                        {/*                                           readOnly={readOnly || isEdit}*/}
+                                        {/*                                           defaultValue={detail?.userName}*/}
+                                        {/*                                    />*/}
+                                        {/*                            }*/}
+                                        {/*                            <InvalidFeedBack*/}
+                                        {/*                                message={loginNameControl().errorMessage}/>*/}
+                                        {/*                        </div>*/}
+                                        {/*                    </article>*/}
+                                        {/*                </fieldset>*/}
+                                        {/*            </div>*/}
                                                     {/* Họ và tên */}
                                                     <div className="col-xl-3 col-lg-4 col-md-6 col-6">
-                                                        <fieldset className="form-group form-group-sm">
+                                                        <fieldset className="form-group form-group-sm required">
                                                             <label>
-                                                                {t('createUser.fullName')} <sup
-                                                                className="text-danger">*</sup>
+                                                                {t('createUser.fullName')}
                                                             </label>
                                                             <article>
                                                                 <div className="position-relative has-icon-right">
                                                                     {isEdit ?
                                                                         <InlineInput id="inputName"
-                                                                                     className={fullNameControl().classNames}
+                                                                                     className={requiredTextControl('full_name').classNames}
                                                                                      type="text"
-                                                                                     defaultValue={detail?.fullName}
+                                                                                     defaultValue={detail?.full_name}
                                                                                      placeholder={t('createUser.fullNamePlaceHolder')}
-                                                                                     name="fullName"
-                                                                                     register={register(fullNameControl().rules)}
+                                                                                     name="full_name"
+                                                                                     register={register(requiredTextControl('full_name').rules)}
                                                                                      handleSubmit={handleSubmit(save)}
                                                                                      disabled={!allowsToUpdate}
                                                                         />
                                                                         :
                                                                         <input id="inputName"
-                                                                               className={fullNameControl().classNames}
+                                                                               className={requiredTextControl('full_name').classNames}
                                                                                placeholder={t('createUser.fullNamePlaceHolder')}
-                                                                               name="fullName"
-                                                                               ref={register(fullNameControl().rules)}
-                                                                               defaultValue={detail?.fullName}
-                                                                               readOnly={readOnly}
+                                                                               name="full_name"
+                                                                               ref={register(requiredTextControl('full_name').rules)}
                                                                         />}
                                                                     <InvalidFeedBack
-                                                                        message={fullNameControl().errorMessage}/>
+                                                                        message={requiredTextControl('full_name').errorMessage}/>
                                                                 </div>
                                                             </article>
                                                         </fieldset>
@@ -589,8 +494,6 @@ function UserForm(props) {
                                                                                    placeholder={t('createUser.emailPlaceHolder')}
                                                                                    name="email"
                                                                                    ref={register(emailControl().rules)}
-                                                                                   defaultValue={detail?.email}
-                                                                                   readOnly={detail?.status != 2 && isEdit}
                                                                             />
                                                                     }
                                                                     <InvalidFeedBack
@@ -624,8 +527,6 @@ function UserForm(props) {
                                                                                placeholder={t('createUser.phonePlaceHolder')}
                                                                                name="phoneNumber"
                                                                                ref={register(phoneControl().rules)}
-                                                                               defaultValue={detail?.phoneNumber}
-                                                                               readOnly={readOnly}
                                                                         />}
                                                                     <InvalidFeedBack
                                                                         message={phoneControl().errorMessage}/>
@@ -634,7 +535,7 @@ function UserForm(props) {
                                                         </fieldset>
                                                     </div>
                                                     {/*Quyền hệ thống*/}
-                                                    {(readOnly && isEdit) ?
+                                                    {(isEdit) ?
                                                         <div className="col-xl-3 col-lg-4 col-md-6 col-6">
                                                             <fieldset className="form-group form-group-sm">
                                                                 <label>
@@ -654,7 +555,6 @@ function UserForm(props) {
                                                                             defaultValue={detail?.systemRoleId}
                                                                             defaultLabel={detail?.systemRoleName}
                                                                             placeholder={t('createUser.titlePermissionPlaceHolder')}
-                                                                            disabled={!allowsToUpdateRole}
                                                                         >
                                                                         </InlineInput>
                                                                     </div>
@@ -666,8 +566,6 @@ function UserForm(props) {
                                                 </div>
                                             </div>
                                         </div>
-
-
                                     </form>
                                 </FormProvider>
                             </div>
@@ -676,38 +574,36 @@ function UserForm(props) {
                 </div>
             </div>
 
-                    <StatusSwitcher
-                        show={showModalConfirm}
-                        onClose={() => {
-                            setShowModalConfirm(false);
-                        }}
-                        onConfirm={statusHandler}
-                        reasonLabel={t('usersManagement.actionBlock.reason')}
-                        targetLabel={t('usersManagement.title')}
-                        blockLabel={t('usersManagement.actionBlock.lock')}
-                        unBlockLabel={t('usersManagement.actionBlock.unlock')}
-                        entity={selectedItem}
-                    />
+                    {/*<StatusSwitcher*/}
+                    {/*    show={showModalConfirm}*/}
+                    {/*    onClose={() => {*/}
+                    {/*        setShowModalConfirm(false);*/}
+                    {/*    }}*/}
+                    {/*    onConfirm={statusHandler}*/}
+                    {/*    reasonLabel={t('usersManagement.actionBlock.reason')}*/}
+                    {/*    targetLabel={t('usersManagement.title')}*/}
+                    {/*    blockLabel={t('usersManagement.actionBlock.lock')}*/}
+                    {/*    unBlockLabel={t('usersManagement.actionBlock.unlock')}*/}
+                    {/*    entity={selectedItem}*/}
+                    {/*/>*/}
         </div>
     )
 }
 
 UserForm.propTypes = {
-    userId: PropTypes.string,
+    id: PropTypes.string,
     readOnly: PropTypes.bool,
-    companies: PropTypes.array,
+    postOffices: PropTypes.array,
     roles: PropTypes.array,
-    businessRoles: PropTypes.array,
-    positionRoles: PropTypes.array,
     detail: PropTypes.object,
+    isDealer: PropTypes.bool
 };
 
 UserForm.defaultProps = {
     readOnly: false,
-    companies: [],
+    postOffices: [],
     roles: [],
-    businessRoles: [],
-    positionRoles: [],
+    isDealer: false
 };
 
 export default UserForm;

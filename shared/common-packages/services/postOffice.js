@@ -4,8 +4,8 @@ import { request } from "utils/axios";
 export const PostOfficeApi = {
     async getList(data, useInternal = false, headers = {}) {
         return await request(
-            'POST',
-            `${Utility.getRemoteHost(useInternal)}admin-query/company/search`,
+            'GET',
+            `${Utility.getRemoteHost(useInternal)}api/post-office/search`,
             data,
             headers
         )

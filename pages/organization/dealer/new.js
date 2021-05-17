@@ -7,12 +7,13 @@ import CommonLayout from "layouts/commonLayout";
 import CreateUser from "components/userManagement/components/userForm";
 import cookies from "next-cookies";
 import {PostOfficeApi} from "services/postOffice";
+import {UserTypeApi} from "services/userType";
 
 export default function CreateEmployeePage(props) {
     return (
         <React.Fragment>
             <Head>
-                <title>Quản lý nhân viên</title>
+                <title>Quản lý khách hàng - người gửi</title>
             </Head>
             <CreateUser {...props} />
         </React.Fragment>
@@ -20,33 +21,33 @@ export default function CreateEmployeePage(props) {
 }
 
 export async function getServerSideProps(context) {
+    let postOffices = [], roles = []
+
     try {
-        const postOfficesResponse = await PostOfficeApi.getAll({
-                pageSize: 500,
-                pageNumber: 0,
-                sort: [{
-                    key: "companyNameSort",
-                    asc: true
-                }],
-            }, true, {
-                Authorization: `Bearer ${cookies(context).access_token || ''}`
-            }
-        );
-        const postOffices = Response.getAPIData(postOfficesResponse);
-        return {
-            props: {
-                postOffices: postOffices,
-            }
-        };
+        const postOfficesResponse = await PostOfficeApi.getAll();
+        postOffices = Response.getAPIData(postOfficesResponse) || [];
+
+    } catch (e) {
+        console.log(e);
+    }
+
+    try {
+        const roleResponse = await UserTypeApi.getAll();
+        roles = Response.getAPIData(roleResponse) || [];
+
     } catch (e) {
         console.log(e);
     }
 
     return {
-        props: {}
-    }
+        props: {
+            postOffices,
+            roles,
+            isDealer: true
+        }
+    };
 }
 
 CreateEmployeePage.Layout = CommonLayout;
-CreateEmployeePage.Href = ROUTES.EMPLOYEE;
-CreateEmployeePage.Title = 'Quản lý nhân viên';
+CreateEmployeePage.Href = ROUTES.DEALER;
+CreateEmployeePage.Title = 'Quản lý khách hàng - người gửi';

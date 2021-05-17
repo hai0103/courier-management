@@ -4,8 +4,8 @@ import {request} from "utils/axios";
 export const UserApi = {
     async getList(data, useInternal = false, headers = {}) {
         return await request(
-            'POST',
-            `${Utility.getRemoteHost(useInternal)}auth-query/user/search-list`,
+            'GET',
+            `${Utility.getRemoteHost(useInternal)}api/user/search`,
             data,
             headers
         )

@@ -146,8 +146,8 @@ function PostOfficeList(props) {
                 Header: 'Tên bưu cục',
                 accessor: 'name',
                 sortable: true,
-                className: 'td-7 text-truncate',
-                headerClassName: 'td-7 text-truncate',
+                className: 'td-6 text-truncate',
+                headerClassName: 'td-6 text-truncate',
                 Cell: ({row = {}}) =>
                     <Link href={`${ROUTES.POST_OFFICE}/${row.original.id}?readOnly`}><a
                         title={row.original.name}>{row.original.name}</a></Link>
@@ -156,8 +156,8 @@ function PostOfficeList(props) {
                 Header: 'Số điện thoại',
                 accessor: 'phone',
                 sortable: false,
-                className: 'td-6 text-truncate',
-                headerClassName: 'td-6 text-truncate',
+                className: 'td-4 text-truncate',
+                headerClassName: 'td-4 text-truncate',
             },
             {
                 Header: 'Vị trí',
@@ -167,11 +167,13 @@ function PostOfficeList(props) {
                 headerClassName: 'td-10 text-truncate',
                 Cell: ({row = {}}) => <span title={`${row.original.address || '_'} - ${row.original.ward || '_'} - ${row.original.district || '_'} - ${row.original.province || '_'}`}>
                     {`${row.original.address || '_'} - ${row.original.ward || '_'} - ${row.original.district || '_'} - ${row.original.province || '_'}`}
+                    {(row.original.latitude) && <a className="ml-1" title="Xem trong bản đồ" href={`https://www.google.com/maps/search/?api=1&query=${row.original.latitude}`} target="_blank">Xem</a>}
                 </span>
             },
             {
                 Header: t('usersManagement.header.lastUpdate'),
                 accessor: 'update_at',
+                sortable: true,
                 className: 'td-6 text-truncate',
                 headerClassName: 'td-6 text-truncate',
                 Cell: ({value}) => filters.dateTime(value)
@@ -179,8 +181,8 @@ function PostOfficeList(props) {
             {
                 Header: t('usersManagement.header.status'),
                 accessor: 'status',
-                className: 'td-8 text-truncate',
-                headerClassName: 'td-8 text-truncate',
+                className: 'td-6 text-truncate',
+                headerClassName: 'td-6 text-truncate',
                 sortable: false,
                 Cell: ({value = ''}) => <Badge {...statusMapping(value)} />
             },
@@ -193,13 +195,22 @@ function PostOfficeList(props) {
         ];
 
         const setRemoteData = async (params) => {
+            let payload = {
+                ...params,
+            }
+            if(params.sort){
+                payload.keySort = params.sort[0]?.key || '',
+                payload.asc = params.sort[0]?.asc || null
+
+            }
+
             try {
-                const response = await PostOfficeApi.getAll(params);
+                const response = await PostOfficeApi.getList(payload);
                 console.log(response)
                 if (Response.isSuccessCode(response?.data)) {
-                    const data = Response.getData(response).data || [];
+                    const {content, totalElements} = Response.getData(response).data || [];
                     return {
-                        data: data, totalItem: data.length
+                        data: content, totalItem: totalElements
                     }
                 } else {
                     console.log(response);
@@ -213,10 +224,10 @@ function PostOfficeList(props) {
 
         const defaultSort = {
             init: {
-                userNameSort: 'ASC'
+                code: 'ASC'
             },
             default: {
-                userNameSort: 'ASC'
+                code: 'ASC'
             }
         };
 
