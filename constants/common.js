@@ -25,7 +25,8 @@ export const ROUTES = {
     NEW_POST_OFFICE: '/organization/post-office/new',
     DEALER: '/organization/dealer',
     NEW_DEALER: '/organization/dealer/new',
-
+    ORDER: '/delivery/order',
+    NEW_ORDER: '/delivery/order/new',
 
     REINSURANCE: '/reinsurance',
     NEW_REINSURANCE: '/reinsurance/new',
@@ -87,12 +88,12 @@ export const MAIN_MENU = [
     {
         title: 'mainMenu.order',
         falIcon: 'fa-truck-loading',
-        href: ROUTES.COMPANY,
+        href: ROUTES.ORDER,
     },
     {
         title: 'mainMenu.processStatus',
         falIcon: 'fa-signal',
-        href: ROUTES.DEPARTMENT,
+        href: ROUTES.ORDER,
     },
     {
         title: 'mainMenu.configFormula',
