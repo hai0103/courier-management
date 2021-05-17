@@ -12,7 +12,7 @@ function ChangeAddressModal(props) {
     const [wards, setWards] = useState([])
     const [province_id, setProvinceId] = useState(props.detail?.province_id)
     const [district_id, setDistrictId] = useState(props.detail?.district_id)
-    const [ward_id, setWardId] = useState(props.detail?.ward_id)
+    const [wards_id, setWardId] = useState(props.detail?.wards_id)
 
     const getDistricts = async (e) => {
         const response = await AddressApi.getDistrictsById(e)
@@ -120,7 +120,7 @@ function ChangeAddressModal(props) {
                                             onChange={(e) => {
                                                 setWardId(e)
                                             }}
-                                            value={ward_id}
+                                            value={wards_id}
                                             isClearable={!props.isRequired}
                                         >
                                         </SelectBox>
@@ -137,7 +137,7 @@ function ChangeAddressModal(props) {
                                 props.onClose()
                                 setProvinceId(props.detail?.province_id)
                                 setDistrictId(props.detail?.district_id)
-                                setWardId(props.detail?.ward_id)
+                                setWardId(props.detail?.wards_id)
                                 setDistricts(await getDistricts(props.detail?.province_id))
                                 setWards(await getWards(props.detail?.district_id))
                             }}>
@@ -145,9 +145,9 @@ function ChangeAddressModal(props) {
                             className="d-none d-sm-block">{t('common.button.cancel')}</span>
                     </button>
                     <button
-                        disabled={props.isRequired && (district_id === null || ward_id === null)}
+                        disabled={props.isRequired && (district_id === null || wards_id === null)}
                         type="button" className="btn btn-primary btn-min-width"
-                        onClick={()=>props.onSave({province_id,district_id,ward_id})}
+                        onClick={()=>props.onSave({province_id,district_id,wards_id})}
                     >
                         <span
                             className="d-none d-sm-block">

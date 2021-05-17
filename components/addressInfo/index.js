@@ -83,6 +83,7 @@ function AddressInfo(props) {
               {
                 props.isEdit ? <InlineInput
                     defaultValue={props.detail?.district_id}
+                    defaultLabel={props.detail?.district}
                     type="select"
                     options={districts}
                     optionLabel="name"
@@ -126,10 +127,11 @@ function AddressInfo(props) {
           </label>
           <article>
             <div
-              className={`position-relative has-icon-right ${props.isRequired && FormControl.getValidation('ward_id', errors).className}`}>
+              className={`position-relative has-icon-right ${props.isRequired && FormControl.getValidation('wards_id', errors).className}`}>
               {
                 props.isEdit ? <InlineInput
-                    defaultValue={props.detail?.ward_id}
+                    defaultValue={props.detail?.wards_id}
+                    defaultLabel={props.detail?.ward}
                     type="select"
                     options={wards}
                     optionLabel="name"
@@ -145,11 +147,11 @@ function AddressInfo(props) {
                         options={wards}
                         optionValue="id"
                         optionLabel="name"
-                        errMess={FormControl.getValidation('ward_id', errors).errorMessage}
-                        error={FormControl.getValidation('ward_id', errors).isError}
+                        errMess={FormControl.getValidation('wards_id', errors).errorMessage}
+                        error={FormControl.getValidation('wards_id', errors).isError}
                       />
                     )}
-                    name="ward_id"
+                    name="wards_id"
                     control={control}
                     defaultValue={null}
                     key={watchDistrict}

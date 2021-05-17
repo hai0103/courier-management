@@ -8,6 +8,9 @@ import {UserApi} from "services/user";
 import {ROUTES} from "constants/common";
 import cookies from "next-cookies";
 import {PostOfficeApi} from "services/postOffice";
+import {AddressInfoProvider} from "providers/addressInfoProvider";
+import {UserTypeApi} from "services/userType";
+import {AddressApi} from "services/address";
 
 export default function EmployeeDetailPage(props) {
   return (
@@ -23,49 +26,55 @@ export default function EmployeeDetailPage(props) {
 }
 
 export async function getServerSideProps(router) {
+  const {id} = router.query;
+  // eslint-disable-next-line no-prototype-builtins
+  const readOnly = router.query.hasOwnProperty('readOnly');
+  let detail = {}
+  let postOffices = [], roles = [], provinces = []
+
   try {
-    const {id} = router.query;
-    // eslint-disable-next-line no-prototype-builtins
-    const readOnly = router.query.hasOwnProperty('readOnly');
-    const postOfficesResponse = await PostOfficeApi.getAll({
-        pageSize: 500,
-        pageNumber: 0,
-        sort: [{
-          key: "companyNameSort",
-          asc: true
-        }],
-      }, true, {
-        Authorization: `Bearer ${cookies(router).access_token || ''}`
-      }
-    );
+    const postOfficesResponse = await PostOfficeApi.getAll();
 
-    const postOffices = Response.getAPIData(postOfficesResponse);
+    postOffices = Response.getAPIData(postOfficesResponse) || [];
 
-    const userDetailResponse = await UserApi.findById(id, true,
-      {Authorization: `Bearer ${cookies(router).access_token || ''}`});
-    const detail = Response.getAPIData(userDetailResponse);
+  } catch (e) {
+    console.log(e);
+  }
 
-    // const roleResponse = await DecentralizationApi.getSystemRoles({}, true, {
-    //     Authorization: `Bearer ${cookies(router).access_token || ''}`
-    // });
-    // const roles = Response.getAPIData(roleResponse);
+  try {
+    const userDetailResponse = await UserApi.findById(id);
+    detail = Response.getAPIData(userDetailResponse);
 
-    return {
-      props: {
-        id,
-        postOffices: postOffices,
-        detail,
-        readOnly,
-        // roles
-      }
-    };
+  } catch (e) {
+    console.log(e);
+  }
+
+  try {
+    const provincesResponse = await AddressApi.getProvinces();
+    provinces = Response.getAPIData(provincesResponse) || [];
+
+  } catch (e) {
+    console.log(e);
+  }
+
+  try {
+    const roleResponse = await UserTypeApi.getAll();
+    roles = Response.getAPIData(roleResponse) || [];
+
   } catch (e) {
     console.log(e);
   }
 
   return {
-    props: {}
-  }
+    props: {
+      id,
+      postOffices,
+      detail,
+      provinces,
+      readOnly,
+      roles
+    }
+  };
 }
 
 EmployeeDetailPage.Layout = CommonLayout;

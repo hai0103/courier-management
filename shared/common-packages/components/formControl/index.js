@@ -22,7 +22,7 @@ const INPUT_TYPE = {
 export function InlineInput({register, defaultValue, handleSubmit, type, placeholder, filter, opt, ...rest}) {
     const isSelectBox = () => {
         return type === INPUT_TYPE.SELECT
-            || type === INPUT_TYPE.SELECT_V2
+          || type === INPUT_TYPE.SELECT_V2
     }
     if (isSelectBox()) {
         rest.optionLabel = rest.optionLabel || 'label'
@@ -100,9 +100,9 @@ export function InlineInput({register, defaultValue, handleSubmit, type, placeho
 
     const isInput = () => {
         return type === INPUT_TYPE.TEXT
-            || type === INPUT_TYPE.NUMBER
-            || type === INPUT_TYPE.DATE_TIME
-            || type === INPUT_TYPE.PERCENTAGE
+          || type === INPUT_TYPE.NUMBER
+          || type === INPUT_TYPE.DATE_TIME
+          || type === INPUT_TYPE.PERCENTAGE
     }
 
     const isChangedValue = () => {
@@ -155,132 +155,132 @@ export function InlineInput({register, defaultValue, handleSubmit, type, placeho
             case INPUT_TYPE.TEXT:
             case INPUT_TYPE.NUMBER:
                 return <input
-                    defaultValue={inputValue}
-                    ref={register}
-                    type={type}
-                    {...rest}
-                    onChange={(e) => {
-                        setInputValue(e.target.value.trim())
-                        setIsSubmitted(false)
-                    }}
-                    autoFocus
-                    placeholder={placeholder}
+                  defaultValue={inputValue}
+                  ref={register}
+                  type={type}
+                  {...rest}
+                  onChange={(e) => {
+                      setInputValue(e.target.value.trim())
+                      setIsSubmitted(false)
+                  }}
+                  autoFocus
+                  placeholder={placeholder}
                 />
             case INPUT_TYPE.PERCENTAGE:
                 return <input
-                    defaultValue={(inputValue * 100).toFixed(0)}
-                    ref={register}
-                    {...rest}
-                    type="number"
-                    onChange={(e) => {
-                        const value = parseFloat(e.target.value || 0)
+                  defaultValue={(inputValue * 100).toFixed(0)}
+                  ref={register}
+                  {...rest}
+                  type="number"
+                  onChange={(e) => {
+                      const value = parseFloat(e.target.value || 0)
 
-                        if (0 <= value && value <= 100) {
-                            setInputValue((value / 100))
-                        } else {
-                            setInputValue(1)
-                            e.target.value = 100
-                        }
-                        setIsSubmitted(false)
-                    }}
-                    autoFocus
-                    placeholder={placeholder}
+                      if (0 <= value && value <= 100) {
+                          setInputValue((value / 100))
+                      } else {
+                          setInputValue(1)
+                          e.target.value = 100
+                      }
+                      setIsSubmitted(false)
+                  }}
+                  autoFocus
+                  placeholder={placeholder}
                 />
             case INPUT_TYPE.TEXTAREA:
                 return <textarea
-                    defaultValue={inputValue}
-                    ref={register}
-                    {...rest}
-                    onChange={(e) => {
-                        setInputValue(e.target.value.trim())
-                        setIsSubmitted(false)
-                    }}
-                    onFocus={(e) => {
-                        e.target.selectionStart = e.target.textLength
-                        e.target.selectionEnd = e.target.textLength
-                    }}
-                    autoFocus
-                    placeholder={placeholder}
+                  defaultValue={inputValue}
+                  ref={register}
+                  {...rest}
+                  onChange={(e) => {
+                      setInputValue(e.target.value.trim())
+                      setIsSubmitted(false)
+                  }}
+                  onFocus={(e) => {
+                      e.target.selectionStart = e.target.textLength
+                      e.target.selectionEnd = e.target.textLength
+                  }}
+                  autoFocus
+                  placeholder={placeholder}
                 />
             case INPUT_TYPE.SELECT:
                 return <SelectBox
-                    value={inputValue}
-                    menuIsOpen
-                    {...rest}
-                    onChange={(e, label, action) => {
-                        rest.onChange && rest.onChange(e, label)
-                        setInputValue(e)
-                        setSelectBoxLabel(label);
-                        !rest.isMulti && setIsInputActive(false)
-                        setIsSubmitted(false)
-                    }}
-                    autoFocus
-                    placeholder={placeholder}
-                    useDocument={false}
+                  value={inputValue}
+                  menuIsOpen
+                  {...rest}
+                  onChange={(e, label, action) => {
+                      rest.onChange && rest.onChange(e, label)
+                      setInputValue(e)
+                      setSelectBoxLabel(label);
+                      !rest.isMulti && setIsInputActive(false)
+                      setIsSubmitted(false)
+                  }}
+                  autoFocus
+                  placeholder={placeholder}
+                  useDocument={false}
                 />
             case INPUT_TYPE.SELECT_V2: {
                 //dont use it,still in development mode
                 const {loadOptions} = {...opt}
                 return <Controller
-                    render={(ctrl) => {
-                        return <SelectBox
-                            value={ctrl.value}
-                            onChange={(e, label) => {
-                                ctrl.onChange((q) => {
-                                    console.log(q);
-                                })
-                                setInputValue(e)
-                                setSelectBoxLabel(label)
-                                setIsInputActive(false)
-                                setIsSubmitted(false)
-                            }}
-                            autoFocus
+                  render={(ctrl) => {
+                      return <SelectBox
+                        value={ctrl.value}
+                        onChange={(e, label) => {
+                            ctrl.onChange((q) => {
+                                console.log(q);
+                            })
+                            setInputValue(e)
+                            setSelectBoxLabel(label)
+                            setIsInputActive(false)
+                            setIsSubmitted(false)
+                        }}
+                        autoFocus
 
-                            useDocument={false}
-                            {...opt}
-                            menuIsOpen
-                            loadOptions={(e) => {
-                                return loadOptions(e)
-                            }}
-                        />
-                    }}
-                    defaultValue={defaultValue}
-                    control={control}
-                    {...rest}
+                        useDocument={false}
+                        {...opt}
+                        menuIsOpen
+                        loadOptions={(e) => {
+                            return loadOptions(e)
+                        }}
+                      />
+                  }}
+                  defaultValue={defaultValue}
+                  control={control}
+                  {...rest}
                 />
             }
 
             case INPUT_TYPE.DATE_TIME: {
                 return <Controller
-                    render={(ctrl) => (
-                        <DateTimeInput
-                            placeholder={rest.placeholder}
-                            onChange={(e) => {
-                                setInputValue(e)
-                                ctrl.onChange(e)
-                                setIsSubmitted(false)
-                            }}
-                            selected={ctrl.value}
-                            autoFocus
-                            {...opt}
-                        />
-                    )}
-                    defaultValue={defaultValue}
-                    control={control}
-                    {...rest}
+                  render={(ctrl) => (
+                    <DateTimeInput
+                      placeholder={rest.placeholder}
+                      onChange={(e) => {
+                          setInputValue(e)
+                          ctrl.onChange(e)
+                          setIsSubmitted(false)
+                      }}
+                      selected={ctrl.value}
+                      autoFocus
+                      {...opt}
+                    />
+                  )}
+                  defaultValue={defaultValue}
+                  control={control}
+                  {...rest}
                 />
             }
             default:
                 return <input
-                    defaultValue={inputValue}
-                    ref={register}
-                    {...rest}
-                    onChange={(e) => {
-                        setInputValue(e.target.value.trim())
-                        setIsSubmitted(false)
-                    }}
-                    autoFocus
-                    placeholder={placeholder}
+                  defaultValue={inputValue}
+                  ref={register}
+                  {...rest}
+                  onChange={(e) => {
+                      setInputValue(e.target.value.trim())
+                      setIsSubmitted(false)
+                  }}
+                  autoFocus
+                  placeholder={placeholder}
                 />
         }
     }
@@ -336,28 +336,28 @@ export function InlineInput({register, defaultValue, handleSubmit, type, placeho
 
 
     return (
-        <div ref={wrapperRef} className={`${!isValid ? 'is-invalid' : ''}`}>
-            {
-                isInputActive ?
-                    generateInput()
-                    : <div
-                        className={!isValueEmpty(finalValue) ?
-                            `form-control-plaintext p-50 ${rest.disabled ? 'disabled' : ''} ${rest.error ? 'border-red' : ''}  ${rest.inlineClassName || ''}`
-                            : `form-control-plaintext ${rest.disabled ? 'disabled' : ''} form-control-placeholder`}
-                        onClick={() => {
-                            if (rest.disabled) {
-                                return false
-                            }
+      <div ref={wrapperRef} className={`${!isValid ? 'is-invalid' : ''}`}>
+          {
+              isInputActive ?
+                generateInput()
+                : <div
+                  className={!isValueEmpty(finalValue) ?
+                    `form-control text-truncate ${rest.disabled ? 'disabled' : ''} ${rest.error ? 'border-red' : ''}  ${rest.inlineClassName || ''}`
+                    : `form-control text-truncate ${rest.disabled ? 'disabled' : ''} form-control-placeholder`}
+                  onClick={() => {
+                      if (rest.disabled) {
+                          return false
+                      }
 
-                            if (!isInputActive) {
-                                setIsInputActive(true)
-                            }
+                      if (!isInputActive) {
+                          setIsInputActive(true)
+                      }
 
-                        }}>
-                        {!isValueEmpty(finalValue) ? finalValue : (rest.disabled || placeholder)}
-                    </div>
-            }
-            <div className='text-danger font-small-2'>{rest.error && rest.errMess}</div>
-        </div>
+                  }}>
+                    {!isValueEmpty(finalValue) ? finalValue : (rest.disabled || placeholder)}
+                </div>
+          }
+          <div className='text-danger font-small-2'>{rest.error && rest.errMess}</div>
+      </div>
     )
 }

@@ -21,14 +21,14 @@ export const UserApi = {
     async create(data) {
         return await request(
             'POST',
-            `${process.env.API_HOST}auth-command/user/create-internal-user`,
+            `${process.env.API_HOST}api/user/create`,
             data
         )
     },
     async update(id, data) {
         return await request(
             'POST',
-            `${process.env.API_HOST}auth-command/user/update-internal-user/${id}`,
+            `${process.env.API_HOST}api/user/update/${id}`,
             data
         )
     },
@@ -82,10 +82,10 @@ export const UserApi = {
         )
     },
 
-    async updateStatus(id, data = {}) {
+    async updateStatus(id, data) {
         return await request(
             'POST',
-            `${process.env.API_HOST}auth-command/user/update-status/${id}`,
+            `${process.env.API_HOST}api/user/update-status/${id}`,
             data
         )
     },

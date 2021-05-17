@@ -100,111 +100,111 @@ export function SimpleInlineInput({defaultValue, handleSubmit, type, placeholder
             case INPUT_TYPE.TEXT:
                 return <div className={`position-relative has-icon-right ${errorMessage && 'is-invalid'}`}>
                     <input
-                        defaultValue={inputValue}
-                        {...rest}
-                        onChange={(e) => {
-                            setInputValue(e.target.value.trim())
-                            setIsSubmitted(false)
-                        }}
-                        autoFocus
-                        placeholder={placeholder}
+                      defaultValue={inputValue}
+                      {...rest}
+                      onChange={(e) => {
+                          setInputValue(e.target.value.trim())
+                          setIsSubmitted(false)
+                      }}
+                      autoFocus
+                      placeholder={placeholder}
                     />
                     <InvalidFeedBack message={errorMessage} />
                 </div>
             case INPUT_TYPE.CURRENCY:
                 return <NumberFormat
-                    thousandSeparator={true}
-                    defaultValue={inputValue}
-                    {...rest}
-                    autoFocus
-                    onValueChange={(data) => {
-                        setInputValue(data.floatValue)
-                        setIsSubmitted(false)
-                    }}
+                  thousandSeparator={true}
+                  defaultValue={inputValue}
+                  {...rest}
+                  autoFocus
+                  onValueChange={(data) => {
+                      setInputValue(data.floatValue)
+                      setIsSubmitted(false)
+                  }}
                 />
             case INPUT_TYPE.PERCENTAGE:
                 return <input
-                    defaultValue={(inputValue * 100).toFixed(0)}
-                    {...rest}
-                    type="number"
-                    onChange={(e) => {
-                        const value = parseFloat(e.target.value)
+                  defaultValue={(inputValue * 100).toFixed(0)}
+                  {...rest}
+                  type="number"
+                  onChange={(e) => {
+                      const value = parseFloat(e.target.value)
 
-                        if (0 <= value && value <= 100) {
-                            setInputValue((value / 100))
-                            setIsSubmitted(false)
-                        } else {
-                            setInputValue(1)
-                        }
-                    }}
-                    autoFocus
-                    placeholder={placeholder}
+                      if (0 <= value && value <= 100) {
+                          setInputValue((value / 100))
+                          setIsSubmitted(false)
+                      } else {
+                          setInputValue(1)
+                      }
+                  }}
+                  autoFocus
+                  placeholder={placeholder}
                 />
             case INPUT_TYPE.TEXTAREA:
                 return <textarea
-                    defaultValue={inputValue}
-                    {...rest}
-                    onChange={(e) => {
-                        setInputValue(e.target.value.trim())
-                        setIsSubmitted(false)
-                    }}
-                    onFocus={(e) => {
-                        e.target.selectionStart  = e.target.textLength
-                        e.target.selectionEnd = e.target.textLength
-                    }}
-                    autoFocus
-                    placeholder={placeholder}
+                  defaultValue={inputValue}
+                  {...rest}
+                  onChange={(e) => {
+                      setInputValue(e.target.value.trim())
+                      setIsSubmitted(false)
+                  }}
+                  onFocus={(e) => {
+                      e.target.selectionStart  = e.target.textLength
+                      e.target.selectionEnd = e.target.textLength
+                  }}
+                  autoFocus
+                  placeholder={placeholder}
                 />
             case INPUT_TYPE.SELECT:
                 return <SelectBox
-                    value={inputValue}
-                    {...rest}
-                    onChange={(e, label) => {
-                        if (rest.onChange) {
-                            rest.onChange(e)
-                        }
-                        setSelectBoxLabel(label);
-                        setInputValue(e)
-                        setIsInputActive(false)
-                        setIsSubmitted(false)
-                    }}
-                    autoFocus
-                    placeholder={placeholder}
-                    menuIsOpen
-                    useDocument={false}
+                  value={inputValue}
+                  {...rest}
+                  onChange={(e, label) => {
+                      if (rest.onChange) {
+                          rest.onChange(e)
+                      }
+                      setSelectBoxLabel(label);
+                      setInputValue(e)
+                      setIsInputActive(false)
+                      setIsSubmitted(false)
+                  }}
+                  autoFocus
+                  placeholder={placeholder}
+                  menuIsOpen
+                  useDocument={false}
                 />
 
             case INPUT_TYPE.DATE_TIME: {
                 return <DateTimeInput
-                    placeholder={rest.placeholder}
-                    onChange={(e) => {
-                        if (rest.onChange) {
-                            rest.onChange(e)
-                        }
-                        setInputValue(e)
-                        setIsSubmitted(false)
-                    }}
-                    autoFocus
-                    {...opt}
+                  placeholder={rest.placeholder}
+                  onChange={(e) => {
+                      if (rest.onChange) {
+                          rest.onChange(e)
+                      }
+                      setInputValue(e)
+                      setIsSubmitted(false)
+                  }}
+                  autoFocus
+                  {...opt}
                 />
             }
             default:
                 return <input
-                    defaultValue={inputValue}
-                    {...rest}
-                    onChange={(e) => {
-                        setInputValue(e.target.value.trim())
-                        setIsSubmitted(false)
-                    }}
-                    autoFocus
-                    placeholder={placeholder}
+                  defaultValue={inputValue}
+                  {...rest}
+                  onChange={(e) => {
+                      setInputValue(e.target.value.trim())
+                      setIsSubmitted(false)
+                  }}
+                  autoFocus
+                  placeholder={placeholder}
                 />
         }
     }
 
     if (type === INPUT_TYPE.TEXT
-        || type === INPUT_TYPE.CURRENCY
-        || type === INPUT_TYPE.PERCENTAGE
+      || type === INPUT_TYPE.CURRENCY
+      || type === INPUT_TYPE.PERCENTAGE
     ) {
         useEffect(() => {
             if (isInputActive) {
@@ -248,27 +248,27 @@ export function SimpleInlineInput({defaultValue, handleSubmit, type, placeholder
     const finalValue = detectValue();
 
     return (
-        <div ref={wrapperRef}>
-            {
-                isInputActive ?
-                    generateInput()
-                    : <div
-                        className={finalValue ?
-                            `form-control-plaintext ${rest.disabled ? 'disabled' : ''} ${rest.inlineClassName || ''}`
-                            : `form-control-plaintext ${rest.disabled ? 'disabled' : ''} form-control-placeholder ${rest.inlinePlaceholderClassName || ''}`}
-                        onClick={() => {
-                            if (rest.disabled) {
-                                return false
-                            }
+      <div ref={wrapperRef}>
+          {
+              isInputActive ?
+                generateInput()
+                : <div
+                  className={finalValue ?
+                    `form-control text-truncate ${rest.disabled ? 'disabled' : ''} ${rest.inlineClassName || ''}`
+                    : `form-control text-truncate ${rest.disabled ? 'disabled' : ''}  form-control-placeholder ${rest.inlinePlaceholderClassName || ''}`}
+                  onClick={() => {
+                      if (rest.disabled) {
+                          return false
+                      }
 
-                            if (!isInputActive) {
-                                setIsInputActive(true)
-                            }
+                      if (!isInputActive) {
+                          setIsInputActive(true)
+                      }
 
-                        }}>
-                        { finalValue || (rest.disabled || placeholder)}
-                    </div>
-            }
-        </div>
+                  }}>
+                    { finalValue || (rest.disabled || placeholder)}
+                </div>
+          }
+      </div>
     )
 }

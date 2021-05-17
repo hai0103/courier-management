@@ -28,6 +28,7 @@ import {getUserProfile, storeUserProfile} from "utils/localStorage";
 import {GlobalData} from "services/globalData";
 import * as Banks from 'fixtures/banks.json';
 import AddressInfo from "../../addressInfo";
+import ChangeAddressModal from "../../addressInfo/modalChangeAddress";
 
 function UserForm(props) {
   const {register, errors, handleSubmit, setError, formState, setValue, control, watch} = useForm();
@@ -35,23 +36,18 @@ function UserForm(props) {
   const {t} = useTranslation('common');
   const router = useRouter();
   const [isEdit] = useState(() => {
-    return !(_.isEmpty(props.userId));
+    return !(_.isEmpty(props.id));
   });
   const [readOnly, setReadOnly] = useState(props.readOnly);
-  const [detail, setDetail] = useState(props.detail);
+  const [detail, setDetail] = useState(props.detail || {});
   const [systemRoleId, setSystemRoleId] = useState(detail?.systemRoleId);
   const [showHistory, setShowHistory] = useState(false);
-  const [companyId, setCompanyId] = useState(detail?.companyId);
-  const [departmentId, setDepartmentId] = useState(detail?.departmentId);
-  const [functionId, setFunctionId] = useState(detail?.functionId);
-  const [roleId, setRoleId] = useState(detail?.roleId);
-  const [positionId, setPositionId] = useState(detail?.positionId);
+  const [showModalAdd, setShowModalAdd] = useState(false);
   const {socketClient} = useSocket();
   const [allows] = useGate()
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
   const allowsToUpdate = allows(SYSTEM_PERMISSIONS.UPDATE_USER)
-  const allowsToUpdateRole = allows(SYSTEM_PERMISSIONS.ASSIGN_SYSTEM_PERMISSION)
   const listBank = Banks.default;
 
   const onClose = () => {
@@ -97,75 +93,46 @@ function UserForm(props) {
   const save = async (data) => {
     const payload = {
       ...data,
+      name: data.full_name,
+      user_type_id: props.isDealer ? 2 : 3
     }
     const payloadEdit = {
-      email: detail?.email,
-      full_name: detail?.full_name,
-      phone: detail?.phone,
+      ...detail,
       ...data
     }
+
     console.log(payload)
-    // try {
-    //   isEdit ? await onSubmitUpdate(Utility.trimObjValues(payloadEdit)) : await onSubmitCreate(Utility.trimObjValues(payload));
-    // } catch (error) {
-    //   addToast(Response.getErrorMessage(error), {appearance: 'error'});
-    // }
+    try {
+      isEdit ? await onSubmitUpdate(Utility.trimObjValues(payloadEdit)) : await onSubmitCreate(Utility.trimObjValues(payload));
+    } catch (error) {
+      addToast(Response.getErrorMessage(error), {appearance: 'error'});
+    }
   }
 
   const onSubmitCreate = async (data) => {
     const payload = {
       ...data,
-      userName: data.userName.toLowerCase(),
     };
     const response = await UserApi.create(payload);
     if (Response.isSuccessAPI(response)) {
-      const entityId = Response.getAPIData(response);
-      SocketHelpers.fastSubscribe(`/topic/user-added/${entityId}`, () => {
-        addToast(t('common.message.createSuccess'), {appearance: 'success'})
-        onClose();
-      }, socketClient);
+      onClose();
     } else {
       addToast(Response.getAPIError(response), {appearance: 'error'});
     }
   }
 
   const onSubmitUpdate = async (data) => {
-    if (data.email !== detail.email) {
-      const res = await UserApi.updateEmail(props.id, {email: data.email})
-      if (Response.isSuccessAPI(res)) {
-        addToast(t('common.message.editSuccess'), {appearance: 'success'});
-      } else {
-        addToast(Response.getAPIError(res), {appearance: 'error'});
-      }
+    const response = await UserApi.update(props.id, data);
+    if (Response.isSuccessAPI(response)) {
+      addToast(t('common.message.editSuccess'), {appearance: 'success'});
+      setTimeout(() => {
+        reGetDetail();
+      }, 500)
+      setReadOnly(true)
     } else {
-      const response = await UserApi.update(props.id, data);
-      if (Response.isSuccessAPI(response)) {
-        addToast(t('common.message.editSuccess'), {appearance: 'success'});
-        const responseData = Response.getAPIData(response);
-        updateDetail(responseData);
-        setReadOnly(true)
-      } else {
-        addToast(Response.getAPIError(response), {appearance: 'error'});
-      }
+      addToast(Response.getAPIError(response), {appearance: 'error'});
     }
   };
-
-  const updateSystemRole = async () => {
-    const payload = {
-      systemRoleId: systemRoleId,
-    }
-    try {
-      const response = await UserApi.updateSystemRole(props.id, payload);
-      if (Response.isSuccessAPI(response)) {
-        addToast(t('common.message.editSuccess'), {appearance: 'success'});
-        const responseData = Response.getAPIData(response);
-        updateDetail(responseData)
-      }
-    } catch (error) {
-      addToast(Response.getAPIError(error.response), {appearance: 'error'});
-    }
-
-  }
 
   const updateDetail = (responseData) => {
     if (responseData) {
@@ -175,6 +142,17 @@ function UserForm(props) {
       }
 
       setDetail(mergedData);
+    }
+  }
+
+
+  const reGetDetail = async () => {
+    const response = await UserApi.findById(props.id);
+    if (Response.isSuccessAPI(response)) {
+      const responseData = Response.getAPIData(response);
+      updateDetail(responseData);
+    } else {
+      addToast(Response.getAPIError(response), {appearance: 'error'});
     }
   }
 
@@ -291,7 +269,6 @@ function UserForm(props) {
         detail?.status !== "2" &&
         (detail?.status ? <li className="border-separate">
             <button title="Khoá" className="avatar btn-avatar"
-              // disabled={!allows(SYSTEM_PERMISSIONS.BLOCK_UNBLOCK_USER)}
                     onClick={() => {
                       setSelectedItem(detail);
                       setShowModalConfirm(true)
@@ -304,7 +281,6 @@ function UserForm(props) {
           </li> :
           <li className="border-separate">
             <button title="Mở khoá" className="avatar btn-avatar"
-              // disabled={!allows(SYSTEM_PERMISSIONS.BLOCK_UNBLOCK_USER)}
                     onClick={() => {
                       setSelectedItem(detail);
                       setShowModalConfirm(true)
@@ -322,7 +298,7 @@ function UserForm(props) {
     <div className="animated slideInRight">
       <div className="row">
         <div className="col-md-12">
-          <div className="card card-form card-no-border mb-0 shadow-none max-height">
+          <div className="card card-no-border mb-0 shadow-none max-height">
             <div className={'card-header card-header-main bg-light-primary' + (!isEdit ? '' : ' card-header-main-o')}>
               <h3 className="content-header-title mb-0">
                 {
@@ -333,7 +309,7 @@ function UserForm(props) {
               </h3>
               {
                 !isEdit ? '' : <>
-                  <Badge isInForm {...statusMapping(detail?.status)} />
+                  <Badge {...statusMapping(detail?.status)} />
                 </>
               }
               <div className="heading-elements">
@@ -445,7 +421,6 @@ function UserForm(props) {
                                                  name="full_name"
                                                  register={register(requiredTextControl('full_name').rules)}
                                                  handleSubmit={handleSubmit(save)}
-                                                 disabled={!allowsToUpdate}
                                     />
                                     :
                                     <input id="inputName"
@@ -476,7 +451,6 @@ function UserForm(props) {
                                                  name="full_name"
                                                  register={register(requiredTextControl('identity_code').rules)}
                                                  handleSubmit={handleSubmit(save)}
-                                                 disabled={!allowsToUpdate}
                                     />
                                     :
                                     <input type="number"
@@ -500,13 +474,12 @@ function UserForm(props) {
                               <article>
                                 <div className="position-relative has-icon-right">
                                   {(readOnly && isEdit) ?
-                                    <InlineInput defaultValue={detail?.phoneNumber}
+                                    <InlineInput defaultValue={detail?.phone}
                                                  className={phoneControl().classNames}
                                                  placeholder={t('createUser.phonePlaceHolder')}
                                                  name="phone"
                                                  register={register(phoneControl().rules)}
                                                  handleSubmit={handleSubmit(save)}
-                                                 disabled={!allowsToUpdate}
                                     />
                                     :
                                     <input type="number"
@@ -536,10 +509,8 @@ function UserForm(props) {
                                                    placeholder={t('createUser.emailPlaceHolder')}
                                                    name="email"
                                                    register={register(emailControl().rules)}
-                                                   readOnly={detail?.status != 2 && isEdit}
                                                    handleSubmit={handleSubmit(save)}
                                                    inlineClassName="text-lowercase"
-                                                   disabled={!allowsToUpdate || detail?.status != 2}
                                       /> :
                                       <input type="email" id="email"
                                              className={emailControl().classNames}
@@ -554,43 +525,43 @@ function UserForm(props) {
                               </article>
                             </fieldset>
                           </div>
-                          <div className="col-xl-3 col-lg-4 col-md-6 col-6">
-                            <fieldset className="form-group form-group-sm">
-                              <label>
-                                {t('agencyManagement.actionEdit.gender')}
-                              </label>
-                              <article>
-                                <div
-                                  className={`position-relative has-icon-right`}>
-                                  {
-                                    isEdit ? <InlineInput
-                                        defaultValue={props.detail?.gender}
-                                        type="select"
-                                        options={GlobalData.gender()}
-                                        optionValue="value"
-                                        optionLabel="label"
-                                        handleSubmit={handleSubmit(save)}
-                                        register={register({name: 'gender', value: props.detail?.gender})}
-                                        onChange={(e) => setValue('gender', e)}
-                                      /> :
-                                      <Controller
-                                        render={(ctrl) => (
-                                          <SelectBox
-                                            placeholder={t('agencyManagement.actionEdit.placeholderGender')}
-                                            options={GlobalData.gender()}
-                                            onChange={ctrl.onChange}
-                                            value={ctrl.value}
-                                          />
-                                        )}
-                                        name="gender"
-                                        control={control}
-                                        defaultValue={null}
-                                      />
-                                  }
-                                </div>
-                              </article>
-                            </fieldset>
-                          </div>
+                          {/*<div className="col-xl-3 col-lg-4 col-md-6 col-6">*/}
+                          {/*  <fieldset className="form-group form-group-sm">*/}
+                          {/*    <label>*/}
+                          {/*      {t('agencyManagement.actionEdit.gender')}*/}
+                          {/*    </label>*/}
+                          {/*    <article>*/}
+                          {/*      <div*/}
+                          {/*        className={`position-relative has-icon-right`}>*/}
+                          {/*        {*/}
+                          {/*          isEdit ? <InlineInput*/}
+                          {/*              defaultValue={props.detail?.gender}*/}
+                          {/*              type="select"*/}
+                          {/*              options={GlobalData.gender()}*/}
+                          {/*              optionValue="value"*/}
+                          {/*              optionLabel="label"*/}
+                          {/*              handleSubmit={handleSubmit(save)}*/}
+                          {/*              register={register({name: 'gender', value: props.detail?.gender})}*/}
+                          {/*              onChange={(e) => setValue('gender', e)}*/}
+                          {/*            /> :*/}
+                          {/*            <Controller*/}
+                          {/*              render={(ctrl) => (*/}
+                          {/*                <SelectBox*/}
+                          {/*                  placeholder={t('agencyManagement.actionEdit.placeholderGender')}*/}
+                          {/*                  options={GlobalData.gender()}*/}
+                          {/*                  onChange={ctrl.onChange}*/}
+                          {/*                  value={ctrl.value}*/}
+                          {/*                />*/}
+                          {/*              )}*/}
+                          {/*              name="gender"*/}
+                          {/*              control={control}*/}
+                          {/*              defaultValue={null}*/}
+                          {/*            />*/}
+                          {/*        }*/}
+                          {/*      </div>*/}
+                          {/*    </article>*/}
+                          {/*  </fieldset>*/}
+                          {/*</div>*/}
                           <div className="col-xl-3 col-lg-4 col-md-6 col-6">
                             <fieldset className="form-group form-group-sm">
                               <label>
@@ -601,9 +572,10 @@ function UserForm(props) {
                                   {
                                     isEdit ? <InlineInput
                                         className="form-control"
-                                        defaultValue={props.detail.dateOfBirth ? moment(props.detail.dateOfBirth).toDate() : null}
+                                        defaultValue={detail?.birth_date ? moment(detail?.birth_date).toDate() : null}
                                         type="dateTime"
                                         name="birth_date"
+                                        register={register()}
                                         handleSubmit={handleSubmit(save)}
                                         filter={filters.date}
                                         placeholder={t('agencyManagement.actionEdit.placeholderDateOfBirth')}
@@ -647,13 +619,13 @@ function UserForm(props) {
                                     isEdit ? <InlineInput
                                         defaultValue={props.detail?.post_office_id}
                                         type="select"
-                                        options={GlobalData.gender()}
-                                        optionValue="value"
-                                        optionLabel="label"
+                                        options={props.postOffices}
+                                        optionValue="id"
+                                        optionLabel="name"
                                         placeholder="Chọn bưu cục"
                                         handleSubmit={handleSubmit(save)}
-                                        register={register({name: 'gender', value: props.detail?.gender})}
-                                        onChange={(e) => setValue('gender', e)}
+                                        register={register({name: 'post_office_id', value: detail?.post_office_id})}
+                                        onChange={(e) => setValue('post_office_id', e)}
                                       /> :
                                       <Controller
                                         render={(ctrl) => (
@@ -695,7 +667,6 @@ function UserForm(props) {
                                         minLength: FormRules.minLength(10)
                                       })}
                                       handleSubmit={handleSubmit(save)}
-                                      disabled={!allowsToUpdate}
                                     />
                                     :
                                     <input
@@ -715,11 +686,11 @@ function UserForm(props) {
                           </div>}
 
                           {/*Quyền hệ thống*/}
-                          {(isEdit) ?
+                          {(isEdit && !props.isDealer) ?
                             <div className="col-xl-3 col-lg-4 col-md-6 col-6">
                               <fieldset className="form-group form-group-sm">
                                 <label>
-                                  {t('createUser.titlePermission')}
+                                  Vai trò
                                 </label>
                                 <article>
                                   <div className="position-relative has-icon-right">
@@ -728,12 +699,11 @@ function UserForm(props) {
                                       options={props.roles}
                                       optionLabel="name"
                                       optionValue="id"
-                                      handleSubmit={() => updateSystemRole()}
-                                      onChange={(e) => {
-                                        setSystemRoleId(e);
-                                      }}
-                                      defaultValue={detail?.systemRoleId}
-                                      defaultLabel={detail?.systemRoleName}
+                                      name="user_type_id"
+                                      register={register()}
+                                      handleSubmit={handleSubmit(save)}
+                                      defaultValue={detail?.user_type_id}
+                                      defaultLabel={detail?.user_type}
                                       placeholder={t('createUser.titlePermissionPlaceHolder')}
                                     >
                                     </InlineInput>
@@ -770,9 +740,10 @@ function UserForm(props) {
                                       placeholder={t('companyManagement.actionCreate.bankPlaceholder')}
                                       type="select"
                                       options={listBank}
-                                      optionLabel="name"
+                                      optionLabel="nameVN"
                                       optionValue="id"
                                       name="bank_id"
+                                      register={register()}
                                       getOptionLabel={(option) => `${option.nameVN} (${option.name})`}
                                       handleSubmit={handleSubmit(save)}
                                     >
@@ -782,7 +753,7 @@ function UserForm(props) {
                                       render={(ctrl) => (
                                         <SelectBox
                                           options={listBank}
-                                          optionLabel="name"
+                                          optionLabel="nameVN"
                                           optionValue="id"
                                           placeholder={t('companyManagement.actionCreate.bankPlaceholder')}
                                           onChange={ctrl.onChange}
@@ -813,13 +784,13 @@ function UserForm(props) {
                                       defaultValue={detail.bank_account_number}
                                       type="text"
                                       name="bank_account_number"
+                                      register={register()}
                                       handleSubmit={handleSubmit(save)}
                                       placeholder={t('companyManagement.actionCreate.accountNumberPlaceholder')}
                                     >
                                     </SimpleInlineInput>
                                     :
                                     <input type="text"
-                                           id="accountNumber"
                                            className="form-control"
                                            placeholder={t('companyManagement.actionCreate.accountNumberPlaceholder')}
                                            name="bank_account_number"
@@ -844,13 +815,13 @@ function UserForm(props) {
                                         defaultValue={detail?.bank_account_name}
                                         type="text"
                                         name="bank_account_name"
+                                        register={register()}
                                         handleSubmit={handleSubmit(save)}
                                         placeholder={t('companyManagement.actionCreate.accountNamePlaceholder')}
                                       >
                                       </SimpleInlineInput>
                                       :
                                       <input type="text"
-                                             id="accountName"
                                              className="form-control"
                                              placeholder={t('companyManagement.actionCreate.accountNamePlaceholder')}
                                              name="bank_account_name"
@@ -864,18 +835,19 @@ function UserForm(props) {
                       </div>
                     </div>}
 
-                    {props.isDealer && <div className="card card-section">
+                    {<div className="card card-section">
                       <div className="card-header">
                         <div
                           className="form-section d-flex align-items-center">
-                          <h5 className={`mb-0 ${isEdit && ''}`}>Thông tin địa chỉ thường chú - xuất hóa đơn</h5>
+                          <h5
+                            className={`mb-0 ${isEdit && ''}`}>{props.isDealer ? "Thông tin địa chỉ thường chú - xuất hóa đơn" : "Thông tin địa chỉ"}</h5>
 
                         </div>
                       </div>
                       <div className="card-body px-0">
                         <div className="form-row">
                           <AddressInfo
-                            detail={props.detail}
+                            detail={detail}
                             provinces={props.provinces}
                             isEdit={isEdit}
                             isRequired={false}
@@ -891,7 +863,7 @@ function UserForm(props) {
                                     isEdit ? <InlineInput
                                         type="textarea"
                                         className="form-control"
-                                        defaultValue={props.detail?.address}
+                                        defaultValue={detail?.address}
                                         placeholder={t('agencyManagement.actionEdit.placeholderAddress')}
                                         name="address"
                                         register={register()}
@@ -913,7 +885,7 @@ function UserForm(props) {
                             isEdit && <a onClick={() => {
                               setShowModalAdd(true)
                             }}
-                                         type="button" className={`has-addon ${props.isDisabled && 'disabled'}`}
+                                         type="button" className={`has-addon`}
                                          title={t('agencyManagement.actionEdit.editAddress')}>
                               <i className="fal fa-pen"/><span>{t('agencyManagement.actionEdit.editAddress')}</span>
                             </a>
@@ -921,6 +893,27 @@ function UserForm(props) {
                         </div>
                       </div>
                     </div>}
+
+
+                    <ChangeAddressModal
+                      isRequired={false}
+                      title={t('agencyManagement.actionEdit.editAddress')}
+                      show={showModalAdd}
+                      onClose={() => {
+                        setShowModalAdd(false);
+                      }}
+                      detail={props.detail}
+                      provinces={props.provinces}
+                      onSave={(obj = {}) => {
+                        save({
+                          ...detail,
+                          province_id: obj.province_id,
+                          district_id: obj.district_id,
+                          wards_id: obj.wards_id,
+                        });
+                        setShowModalAdd(false);
+                      }}
+                    />
                   </form>
                 </FormProvider>
               </div>
@@ -941,6 +934,7 @@ function UserForm(props) {
       {/*    unBlockLabel={t('usersManagement.actionBlock.unlock')}*/}
       {/*    entity={selectedItem}*/}
       {/*/>*/}
+
     </div>
   )
 }

@@ -9,66 +9,75 @@ import {ROUTES} from "constants/common";
 import cookies from "next-cookies";
 import {PostOfficeApi} from "services/postOffice";
 import {AddressInfoProvider} from "providers/addressInfoProvider";
+import {AddressApi} from "services/address";
+import {UserTypeApi} from "services/userType";
 
 export default function EmployeeDetailPage(props) {
-    return (
-        <React.Fragment>
-            <Head>
-                <title>Quản lý nhân viên</title>
-            </Head>
-            <AddressInfoProvider>
-                <UserForm {...props} />
-            </AddressInfoProvider>
-        </React.Fragment>
-    );
+  return (
+    <React.Fragment>
+      <Head>
+        <title>Quản lý khách hàng - nguời gửi</title>
+      </Head>
+      <AddressInfoProvider>
+        <UserForm {...props} />
+      </AddressInfoProvider>
+    </React.Fragment>
+  );
 }
 
 export async function getServerSideProps(router) {
-    try {
-        const {id} = router.query;
-        // eslint-disable-next-line no-prototype-builtins
-        const readOnly = router.query.hasOwnProperty('readOnly');
-        const postOfficesResponse = await PostOfficeApi.getAll({
-                pageSize: 500,
-                pageNumber: 0,
-                sort: [{
-                    key: "companyNameSort",
-                    asc: true
-                }],
-            }, true, {
-                Authorization: `Bearer ${cookies(router).access_token || ''}`
-            }
-        );
+  const {id} = router.query;
+  // eslint-disable-next-line no-prototype-builtins
+  const readOnly = router.query.hasOwnProperty('readOnly');
+  let detail = {}
+  let postOffices = [], roles = [], provinces = []
 
-        const postOffices = Response.getAPIData(postOfficesResponse);
+  try {
+    const postOfficesResponse = await PostOfficeApi.getAll();
 
-        const userDetailResponse = await UserApi.findById(id, true,
-            {Authorization: `Bearer ${cookies(router).access_token || ''}`});
-        const detail = Response.getAPIData(userDetailResponse);
+    postOffices = Response.getAPIData(postOfficesResponse) || [];
 
-        // const roleResponse = await DecentralizationApi.getSystemRoles({}, true, {
-        //     Authorization: `Bearer ${cookies(router).access_token || ''}`
-        // });
-        // const roles = Response.getAPIData(roleResponse);
+  } catch (e) {
+    console.log(e);
+  }
 
-        return {
-            props: {
-                id,
-                postOffices: postOffices,
-                detail,
-                readOnly,
-                // roles
-            }
-        };
-    } catch (e) {
-        console.log(e);
+  try {
+    const userDetailResponse = await UserApi.findById(id);
+    detail = Response.getAPIData(userDetailResponse);
+
+  } catch (e) {
+    console.log(e);
+  }
+
+  try {
+    const provincesResponse = await AddressApi.getProvinces();
+    provinces = Response.getAPIData(provincesResponse) || [];
+
+  } catch (e) {
+    console.log(e);
+  }
+
+  try {
+    const roleResponse = await UserTypeApi.getAll();
+    roles = Response.getAPIData(roleResponse) || [];
+
+  } catch (e) {
+    console.log(e);
+  }
+
+  return {
+    props: {
+      id,
+      postOffices,
+      detail,
+      provinces,
+      readOnly,
+      roles,
+      isDealer: true
     }
-
-    return {
-        props: {}
-    }
+  };
 }
 
 EmployeeDetailPage.Layout = CommonLayout;
-EmployeeDetailPage.Href = ROUTES.EMPLOYEE;
-EmployeeDetailPage.Title = 'Quản lý nhân viên';
+EmployeeDetailPage.Href = ROUTES.DEALER;
+EmployeeDetailPage.Title = 'Quản lý khách hàng - nguời gửi';
