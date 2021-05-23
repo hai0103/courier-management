@@ -367,24 +367,23 @@ function OrderList(props) {
               }
             },
           ]}
+           leftControl={
+             () => (
+               <h3 className="content-header-title mb-0">Danh sách đơn hàng - vận đơn</h3>
+             )
+           }
 
-                     leftControl={
-                       () => (
-                         <h3 className="content-header-title mb-0">Danh sách đơn hàng - vận đơn</h3>
-                       )
-                     }
-
-                     rightControl={
-                       () => (
-                         <Link href={ROUTES.NEW_ORDER}>
-                           <button className="btn btn-primary btn-md"
-                             // disabled={!allows(SYSTEM_PERMISSIONS.CREATE_USER)}
-                           >
-                             {t('usersManagement.userDetail.addNew')}
-                           </button>
-                         </Link>
-                       )
-                     }
+           rightControl={
+             () => (
+               <Link href={ROUTES.NEW_ORDER}>
+                 <button className="btn btn-primary btn-md"
+                   // disabled={!allows(SYSTEM_PERMISSIONS.CREATE_USER)}
+                 >
+                   {t('usersManagement.userDetail.addNew')}
+                 </button>
+               </Link>
+             )
+           }
           />
         }
         {/*<StatusSwitcher*/}

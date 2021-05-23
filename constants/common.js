@@ -27,6 +27,14 @@ export const ROUTES = {
     NEW_DEALER: '/organization/dealer/new',
     ORDER: '/delivery/order',
     NEW_ORDER: '/delivery/order/new',
+    CRM_DASHBOARD: '/crm/dashboard',
+    CRM_NEW_ORDER: '/crm/create-order',
+    CRM_ORDER:'/crm/order',
+    CRM_MONEY:'/crm/money',
+    CRM_SEARCH_POST_OFFICE:'/crm/search-post-office',
+    CRM_SEARCH_POSTAGE:'/crm/estimate-postage',
+
+
 
     REINSURANCE: '/reinsurance',
     NEW_REINSURANCE: '/reinsurance/new',
