@@ -37,6 +37,7 @@
     "unBlock": "Khôi phục",
     "reason": "Lý do vô hiệu hóa",
     "message": {
+      "loading": "Đang tải dữ liệu...",
       "createSuccess": "Tạo thành công.",
       "editSuccess": "Đã lưu.",
       "blockSuccess": "Khóa thành công.",

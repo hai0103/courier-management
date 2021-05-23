@@ -206,8 +206,32 @@ function OrderList(props) {
       //         {`${row.original.address || '_'} - ${row.original.ward || '_'} - ${row.original.district || '_'} - ${row.original.province || '_'}`}
       //     </span>
       // },
+      // {
+      //   Header: "Lấy đơn lúc",
+      //   accessor: 'create_at',
+      //   sortable: false,
+      //   className: 'td-6 text-truncate',
+      //   headerClassName: 'td-6 text-truncate',
+      //   Cell: ({value}) => filters.dateTime(value)
+      // },
+      // {
+      //   Header: "Dự kiến giao",
+      //   accessor: 'create_at',
+      //   sortable: false,
+      //   className: 'td-6 text-truncate',
+      //   headerClassName: 'td-6 text-truncate',
+      //   Cell: ({value}) => filters.dateTime(value)
+      // },
       {
-        Header: t('usersManagement.header.lastUpdate'),
+        Header: "Thời gian tạo",
+        accessor: 'create_at',
+        sortable: false,
+        className: 'td-6 text-truncate',
+        headerClassName: 'td-6 text-truncate',
+        Cell: ({value}) => filters.dateTime(value)
+      },
+      {
+        Header: "Cập nhật gần đây",
         accessor: 'updated_at',
         sortable: true,
         className: 'td-6 text-truncate',

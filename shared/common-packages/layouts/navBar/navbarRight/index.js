@@ -26,7 +26,7 @@ function NavBarRight(props) {
     return (
         <>
             <ul className="nav navbar-nav float-right">
-                <li className="d-none dropdown dropdown-language nav-item">
+                <li className="dropdown dropdown-language nav-item">
                     <a
                         className="dropdown-toggle nav-link"
                         id="dropdown-flag" href="#"
@@ -36,15 +36,15 @@ function NavBarRight(props) {
                         <span className="selected-language"/>
                     </a>
                     <div className="dropdown-menu" aria-labelledby="dropdown-flag">
-                        <a
-                            className="dropdown-item" href="#">
-                            <i className="flag-icon flag-icon-us"/>
-                            English
-                        </a>
                         <a className="dropdown-item"
                            href="#">
                             <i className="flag-icon flag-icon-vn"/>
                             Vietnamese
+                        </a>
+                        <a
+                            className="dropdown-item" href="#">
+                            <i className="flag-icon flag-icon-us"/>
+                            English
                         </a>
                     </div>
                 </li>

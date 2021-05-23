@@ -198,8 +198,8 @@ function UserList(props) {
         Header: t('usersManagement.header.name'),
         accessor: 'full_name',
         sortable: true,
-        className: 'td-9 text-truncate',
-        headerClassName: 'td-9 text-truncate',
+        className: 'td-7 text-truncate',
+        headerClassName: 'td-7 text-truncate',
         Cell: ({row = {}}) =>
           <Link href={`${props.isDealer ? ROUTES.DEALER : ROUTES.EMPLOYEE}/${row.original.id}?readOnly`}><a
             title={row.original.full_name}>{row.original.full_name}</a></Link>
@@ -220,6 +220,13 @@ function UserList(props) {
         sortable: false,
         className: 'td-7 text-truncate',
         headerClassName: 'td-7 text-truncate',
+      },
+      {
+        Header: "Mã số thuế",
+        accessor: 'tax_code',
+        sortable: false,
+        className: 'td-6 text-truncate',
+        headerClassName: 'td-6 text-truncate',
       },
       {
         Header: props.isDealer ? 'Địa chỉ thường chú (xuất hóa đơn)' : 'Địa chỉ',
@@ -272,6 +279,8 @@ function UserList(props) {
 
     if (props.isDealer) {
       columns = columns.filter(col => col.accessor !== 'post_office' && col.accessor !== 'user_type');
+    } else {
+      columns = columns.filter(col => col.accessor !== 'tax_code');
     }
 
     const setRemoteData = async (params) => {
