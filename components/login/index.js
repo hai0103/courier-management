@@ -4,16 +4,18 @@ import {useAuth} from "providers/auth";
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import {useTranslation} from "react-i18next";
-import {FormControl, Response} from "utils/common";
+import {FormControl, Response, Utility} from "utils/common";
 import {API_HOST, IMAGES, ROUTES} from "constants/common";
 import Authentication from "services/authentication";
 import Alert from "sharedComponents/alert";
 import {request} from "utils/axios";
 import {useToasts} from "react-toast-notifications";
+import {getUserTypeProfile} from "utils/localStorage";
 
 const Login = () => {
     const {register, errors, handleSubmit} = useForm();
     const [isLoading, setIsLoading] = useState(false);
+    const [userType, setUserType] = useState({});
     const [loginError, setLoginError] = useState('');
     const {t} = useTranslation('common');
     const {setAuthenticated} = useAuth();
@@ -23,9 +25,13 @@ const Login = () => {
 
         try {
             const response = await Authentication.login(data);
-            console.log("re", response)
             if (Response.isSuccessCode(response)) {
                 setAuthenticated(true);
+                setUserType(getUserTypeProfile())
+
+                if(userType?.user_type_code === "DEALER") {
+                    Utility.redirect(ROUTES.CRM_DASHBOARD)
+                }
             } else {
                 setLoginError(Response.getAPIError(response));
             }

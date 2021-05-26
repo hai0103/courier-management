@@ -1,4 +1,5 @@
 const userProfileKey = 'user-profile';
+const userTypeProfileKey = 'user-type';
 const userPermissionKey = 'user-permissions';
 
 export function storeData(name, data) {
@@ -28,6 +29,21 @@ export function getUserProfile() {
 export function removeUserProfile() {
     if (typeof localStorage !== 'undefined') {
         return localStorage.removeItem(userProfileKey);
+    }
+}
+
+export function storeUserTypeProfile(userType) {
+    localStorage.setItem(userTypeProfileKey, JSON.stringify(userType));
+}
+
+export function getUserTypeProfile() {
+    const data = localStorage.getItem(userTypeProfileKey);
+    return JSON.parse(data);
+}
+
+export function removeUserTypeProfile() {
+    if (typeof localStorage !== 'undefined') {
+        return localStorage.removeItem(userTypeProfileKey);
     }
 }
 

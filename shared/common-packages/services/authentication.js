@@ -2,7 +2,13 @@ import {AUTH_TOKEN_SERVICE_URI, LOGIN_SERVICE_URI, LOGOUT_SERVICE_URI} from "glo
 import Cookies from 'js-cookie';
 import qs from "querystring"
 import Axios from "axios";
-import {removeUserPermissions, removeUserProfile, storeUserProfile} from "utils/localStorage";
+import {
+    removeUserPermissions,
+    removeUserProfile,
+    removeUserTypeProfile,
+    storeUserProfile,
+    storeUserTypeProfile
+} from "utils/localStorage";
 import {UserApi} from "services/user";
 import {Response, Utility} from "utils/common";
 
@@ -36,7 +42,8 @@ class Authentication {
                 console.log(res)
                 const userProfile = res.data.data;
                 if (userProfile) {
-                    storeUserProfile(userProfile)
+                    storeUserProfile(userProfile);
+                    storeUserTypeProfile({user_type_code: userProfile.user_type_code});
                 } else {
                     console.error('Can not get user profile when logged in')
                 }
@@ -89,12 +96,13 @@ class Authentication {
 
     static logout() {
         Authentication.removeAuthentication()
-        Utility.redirect('/login');
+        Utility.redirect('/logout');
     }
 
     static removeAuthentication() {
         Cookies.remove(this.tokenKey);
         removeUserProfile();
+        removeUserTypeProfile();
         removeUserPermissions();
     }
 

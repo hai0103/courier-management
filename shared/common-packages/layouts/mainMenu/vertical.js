@@ -1,19 +1,27 @@
 import React, {useEffect, useState} from 'react';
 import Link from 'next/link';
 import {useTranslation} from "react-i18next";
-import {IMAGES, MAIN_MENU, ROUTES} from 'constants/common';
-import {getUserProfile} from "utils/localStorage";
+import {IMAGES, MAIN_MENU, ROUTES, MAIN_MENU_CRM} from 'constants/common';
+import {getUserProfile, getUserTypeProfile} from "utils/localStorage";
 
 function MainMenu() {
     const {t} = useTranslation('common');
-    const [mainMenu] = useState(() => {
+    const [userType, setUserType] = useState({});
+
+    const [mainMenu, setMainMenu] = useState(() => {
         return MAIN_MENU;
     })
     const [loggedUser, setLoggedUser] = useState({});
 
     useEffect(() => {
         setLoggedUser(getUserProfile())
+        setUserType(getUserTypeProfile())
     }, [])
+
+    useEffect(() => {
+        setMainMenu(userType.user_type_code === "DEALER" ? MAIN_MENU_CRM : MAIN_MENU)
+    }, [userType.user_type_code])
+
 
     const hasChildrenMenu = (menu) => {
         return menu.children && menu.children.length > 0;

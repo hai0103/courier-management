@@ -1,5 +1,5 @@
 import React from "react";
-import {IMAGES} from "../constants/common";
+import {IMAGES, ROUTES} from "../constants/common";
 import {AUTH_LOGIN_SERVICE_URI} from "globalConstants/serviceUri";
 
 export default function LogoutPage(props) {
@@ -10,7 +10,8 @@ export default function LogoutPage(props) {
                     <div className="card border-grey border-lighten-3 m-0">
                         <div className="card-header pb-0 border-0">
                             <div className="card-title text-center">
-                                <img src={IMAGES.LOGO}  width='60%' alt="branding logo"/>
+                                <img src={IMAGES.LOGO} width={200}
+                                     alt="branding logo"/>
                             </div>
                         </div>
                         <div className="card-content">
@@ -18,7 +19,7 @@ export default function LogoutPage(props) {
                                 <h3>Bạn vừa đăng xuất. Tạm biệt.</h3>
                             </div>
                             <div className="card-footer pt-0 border-0 text-center">
-                                <a type="submit" href={AUTH_LOGIN_SERVICE_URI} className="text-underline text-capitalize">Đăng nhập lại</a>
+                                <a type="submit" href={'/login'} className="text-underline text-capitalize">Đăng nhập lại</a>
                             </div>
                         </div>
                     </div>

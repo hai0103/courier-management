@@ -158,6 +158,48 @@ export const MAIN_MENU = [
     }
 ]
 
+
+export const MAIN_MENU_CRM = [
+    {
+        title: 'mainMenu.dashboard',
+        falIcon: 'fa-tachometer-alt',
+        href: ROUTES.CRM_DASHBOARD,
+    },
+    {
+        title: 'mainMenu.order',
+        falIcon: 'fa-truck-loading',
+        href: ROUTES.CRM_NEW_ORDER,
+    },
+    {
+        title: 'mainMenu.manage',
+        isLabel: true,
+    },
+    {
+        title: 'mainMenu.order',
+        falIcon: 'fa-truck-loading',
+        href: ROUTES.CRM_ORDER,
+    },
+    {
+        title: 'mainMenu.orderMoney',
+        falIcon: 'fa-truck-loading',
+        href: ROUTES.CRM_MONEY,
+    },
+    {
+        title: 'mainMenu.search',
+        isLabel: true,
+    },
+    {
+        title: 'mainMenu.postOffice',
+        falIcon: 'fa-user-tag',
+        href: ROUTES.CRM_SEARCH_POST_OFFICE
+    },
+    {
+        title: 'mainMenu.postage',
+        falIcon: 'fa-user-tag',
+        href: ROUTES.CRM_SEARCH_POSTAGE
+    }
+]
+
 export const API_HOST = process.env.API_HOST;
 export const INTERNAL_API_HOST = process.env.INTERNAL_API_HOST;
 
