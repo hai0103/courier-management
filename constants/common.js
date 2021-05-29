@@ -28,7 +28,7 @@ export const ROUTES = {
     ORDER: '/delivery/order',
     NEW_ORDER: '/delivery/order/new',
     CRM_DASHBOARD: '/crm/dashboard',
-    CRM_NEW_ORDER: '/crm/create-order',
+    CRM_NEW_ORDER: '/crm/order/new',
     CRM_ORDER:'/crm/order',
     CRM_MONEY:'/crm/money',
     CRM_SEARCH_POST_OFFICE:'/crm/search-post-office',
@@ -166,7 +166,7 @@ export const MAIN_MENU_CRM = [
         href: ROUTES.CRM_DASHBOARD,
     },
     {
-        title: 'mainMenu.order',
+        title: 'mainMenu.newOrder',
         falIcon: 'fa-truck-loading',
         href: ROUTES.CRM_NEW_ORDER,
     },

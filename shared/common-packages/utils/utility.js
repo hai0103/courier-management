@@ -21,4 +21,13 @@ export default class Utility {
             return acc;
         }, {});
     }
+
+    /* Be careful when use this function. It may cause infinity loop*/
+    static waitForLocalStorage(key, cb, timer, times = 0) {
+        if (!Utility.isBrowser() || times > 10) return
+        if (!localStorage.getItem(key)) return (timer = setTimeout(Utility.waitForLocalStorage.bind(null, key, cb, null, ++times), 200))
+        clearTimeout(timer)
+        if (typeof cb !== 'function') return localStorage.getItem(key)
+        return cb(localStorage.getItem(key))
+    }
 }

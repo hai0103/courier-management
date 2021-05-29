@@ -1,0 +1,79 @@
+[
+  {
+    "id": 0,
+    "code": 0,
+    "name": "Tất cả"
+  },
+  {
+    "id": 1,
+    "code": "1",
+    "name": "Chờ lấy",
+    "order": null
+  },
+  {
+    "id": 2,
+    "code": "2",
+    "name": "Đang vận chuyển",
+    "order": null
+  },
+  {
+    "id": 3,
+    "code": "3",
+    "name": "Đang giao",
+    "order": null
+  },
+  {
+    "id": 4,
+    "code": "4",
+    "name": "Giao thành công",
+    "order": null
+  },
+  {
+    "id": 5,
+    "code": "5",
+    "name": "Chờ xử lý",
+    "order": null
+  },
+  {
+    "id": 6,
+    "code": "6",
+    "name": "Đang chuyển hoàn",
+    "order": null
+  },
+  {
+    "id": 7,
+    "code": "7",
+    "name": "Đã duyệt hoàn",
+    "order": null
+  },
+  {
+    "id": 8,
+    "code": "8",
+    "name": "Phát tiếp - phát lại",
+    "order": null
+  },
+  {
+    "id": 9,
+    "code": "9",
+    "name": "Đã trả",
+    "order": null
+  },
+  {
+    "id": 10,
+    "code": "10",
+    "name": "Tạo mới",
+    "order": null
+  },
+  {
+    "id": 11,
+    "code": "11",
+    "name": "Đã lấy",
+    "order": null
+  },
+  {
+    "id": 12,
+    "code": "12",
+    "name": "Đã hủy",
+    "order": null
+  }
+]

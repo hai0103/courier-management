@@ -1,4 +1,6 @@
 import React, {useEffect, useState} from 'react';
+import Utility from "utils/utility";
+import {getUserProfile} from "utils/localStorage";
 
 const GlobalContext = React.createContext({});
 
@@ -6,6 +8,8 @@ export const GlobalProvider = ({children, data}) => {
     const [global, setGlobal] = useState({
         headerTitle: ''
     });
+
+    const [loggedUser, setLoggedUser] = useState({});
 
     useEffect(() => {
         setGlobalData(data);
@@ -15,11 +19,19 @@ export const GlobalProvider = ({children, data}) => {
         setGlobal({...global, ...data});
     }
 
+    useEffect(() => {
+        Utility.waitForLocalStorage('user-profile', function (value) {
+            setLoggedUser(getUserProfile())
+            console.log(loggedUser)
+        })
+    }, [])
+
     return (
         <GlobalContext.Provider
             value={{
                 global,
-                setGlobalData
+                setGlobalData,
+                loggedUser
             }}
         >
             {children}

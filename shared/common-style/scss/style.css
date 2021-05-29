@@ -393,13 +393,13 @@ html body {
     color: white;
     font-weight: 400; }
 .nav.nav-pills-sm.nav-pills-sm-light .nav-item {
-  min-width: 174px;
-  height: 48px; }
+  min-width: 124px;
+  height: 46px; }
   .nav.nav-pills-sm.nav-pills-sm-light .nav-item .nav-link {
     margin: 0 .25rem;
     background-color: #EFF1F3;
     color: #434547;
-    padding: 0.829rem 1rem;
+    padding: 0.629rem 0rem;
     border-radius: 0.25rem;
     font-weight: 500; }
     .nav.nav-pills-sm.nav-pills-sm-light .nav-item .nav-link.active {

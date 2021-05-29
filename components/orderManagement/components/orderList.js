@@ -258,6 +258,9 @@ function OrderList(props) {
     const setRemoteData = async (params) => {
       let payload = {
         ...params,
+        status: props.processStatus || null,
+        userId: props.userId,
+        isStaff: props.isStaff
       }
       if (params.sort) {
         payload.keySort = params.sort[0]?.key || '',
@@ -265,14 +268,14 @@ function OrderList(props) {
       }
 
       try {
-        // const response = await OrderApi.getList(payload);
-        const response = await OrderApi.getAll();
+        const response = await OrderApi.getList(payload);
+        // const response = await OrderApi.getAll();
         console.log(response)
         if (Response.isSuccessCode(response?.data)) {
-          // const {content, totalElements} = Response.getData(response).data || [];
-          const data = Response.getData(response).data || [];
+          const {content, totalElements} = Response.getData(response).data || [];
+          // const data = Response.getData(response).data || [];
           return {
-            data: data, totalItem: data.length
+            data: content, totalItem: totalElements
           }
         } else {
           console.log(response);
@@ -369,19 +372,7 @@ function OrderList(props) {
           ]}
            leftControl={
              () => (
-               <h3 className="content-header-title mb-0">Danh sách đơn hàng - vận đơn</h3>
-             )
-           }
-
-           rightControl={
-             () => (
-               <Link href={ROUTES.NEW_ORDER}>
-                 <button className="btn btn-primary btn-md"
-                   // disabled={!allows(SYSTEM_PERMISSIONS.CREATE_USER)}
-                 >
-                   {t('usersManagement.userDetail.addNew')}
-                 </button>
-               </Link>
+             <h3 className="content-header-title mb-0">Danh sách đơn hàng - vận đơn</h3>
              )
            }
           />
@@ -405,10 +396,14 @@ function OrderList(props) {
 
 OrderList.propTypes = {
   provinces: PropTypes.array,
+  processStatus: PropTypes.number,
+  userId: PropTypes.number,
+  isStaff: PropTypes.bool
 };
 
 OrderList.defaultProps = {
   provinces: [],
+  isStaff: true
 };
 
 export default OrderList;

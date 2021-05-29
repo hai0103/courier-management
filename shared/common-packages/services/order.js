@@ -1,5 +1,5 @@
-import { Utility } from "utils/common";
-import { request } from "utils/axios";
+import {Utility} from "utils/common";
+import {request} from "utils/axios";
 
 export const OrderApi = {
   async getList(data, useInternal = false, headers = {}) {
@@ -14,6 +14,14 @@ export const OrderApi = {
     return await request(
       'GET',
       `${Utility.getRemoteHost(useInternal)}api/order/all`,
+      {},
+      headers
+    )
+  },
+  async getCountOrder(data, useInternal = false, headers = {}) {
+    return await request(
+      'GET',
+      `${Utility.getRemoteHost(useInternal)}api/order/count-order`,
       {},
       headers
     )
