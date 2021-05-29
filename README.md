@@ -13,9 +13,3 @@ yarn install
 ```bash
 yarn dev
 ```
-
-In the first time you clone the Project. You need to run below command to initial shared modules
-
-```bash
-./init-share.sh
-```
