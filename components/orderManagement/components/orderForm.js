@@ -26,13 +26,11 @@ import filters from "utils/filters";
 import InvalidFeedBack from "sharedComponents/formControl/invalidFeedback";
 import More from "sharedComponents/more";
 import {getUserProfile, storeUserProfile} from "utils/localStorage";
-import {GlobalData} from "services/globalData";
-import * as Banks from 'fixtures/banks.json';
-import AddressInfo from "../../addressInfo";
 import ChangeAddressModal from "../../addressInfo/modalChangeAddress";
 import ICheckbox from "sharedComponents/iCheckbox";
 import {useAddressInfoContext} from "providers/addressInfoProvider";
 import AddressHelpers from "../../../helpers/addressHelpers";
+import {OrderApi} from "services/order";
 
 function OrderForm(props) {
   const {register, errors, handleSubmit, setError, formState, setValue, control, watch, reset, clearErrors} = useForm();
@@ -56,6 +54,10 @@ function OrderForm(props) {
   const [userPackage, setUserPackage] = useState([]);
   const [selectedItem, setSelectedItem] = useState({});
   const [receiver, setReceiver] = useState({});
+  const [isDraft, setIsDraft] = useState(false);
+  const [ship, setShip] = useState(0);
+  const [estimateTime, setEstimateTime] = useState(0);
+  const [returnSender, setReturnSender] = useState(0);
 
   const onClose = () => {
     router.push(props.isDealer ? ROUTES.DEALER : ROUTES.EMPLOYEE);
@@ -63,6 +65,7 @@ function OrderForm(props) {
 
   useEffect(() => {
     setLoggedUser(getUserProfile() || {})
+    reset();
 
     async function getAddress() {
       const userAddressResponse = await UserApi.getListUserAddress(loggedUser?.id);
@@ -109,6 +112,32 @@ function OrderForm(props) {
     fillAddress()
   }, [receiver])
 
+  const calculatePrice = async () => {
+    let payload = {
+      senderProvince: userAddress?.find(i => i.id === watch('sender'))?.province_id || 0,
+      receiverProvince: watch('receiver_province') || 0,
+      weight: watch('package_weight') || 0,
+      type: watch('type') * 1 || 0,
+      service: watch('service') || '',
+      isSuperCheap: (watch('is_send_post_office') && watch('is_receive_post_office')) ? 1 : 0,
+    }
+    const response = await OrderApi.calculatePrice(payload);
+    if (Response.isSuccessCode(response?.data)) {
+      const data = Response.getData(response)?.data || 0;
+      setShip(data || 0);
+      setReturnSender((watch('is_sender_pay_charge') === '0' ? watch('collection_money') - data : watch('collection_money')) || 0)
+
+      if (userAddress?.find(i => i.id === watch('sender'))?.province_id === watch('receiver_province')) {
+        setEstimateTime(watch('service') === 'STANDARD' ? 2 : 1);
+      } else {
+        setEstimateTime(watch('type') === '1' ? 3 : 2);
+      }
+    } else {
+      addToast(Response.getAPIError(response), {appearance: 'error'});
+    }
+
+  }
+
   const statusMapping = (status) => {
     const mapping = {
       1: {
@@ -131,14 +160,14 @@ function OrderForm(props) {
   const save = async (data) => {
     const payload = {
       ...data,
-      name: data.full_name,
-      user_type_id: props.isDealer ? 2 : 3
+      user_id: loggedUser?.id,
+      isDraft
     }
     const payloadEdit = {
       ...detail,
       ...data
     }
-
+debugger
     console.log(payload)
     try {
       isEdit ? await onSubmitUpdate(Utility.trimObjValues(payloadEdit)) : await onSubmitCreate(Utility.trimObjValues(payload));
@@ -151,25 +180,25 @@ function OrderForm(props) {
     const payload = {
       ...data,
     };
-    const response = await UserApi.create(payload);
-    if (Response.isSuccessAPI(response)) {
-      onClose();
-    } else {
-      addToast(Response.getAPIError(response), {appearance: 'error'});
-    }
+    // const response = await UserApi.create(payload);
+    // if (Response.isSuccessAPI(response)) {
+    //   onClose();
+    // } else {
+    //   addToast(Response.getAPIError(response), {appearance: 'error'});
+    // }
   }
 
   const onSubmitUpdate = async (data) => {
-    const response = await UserApi.update(props.id, data);
-    if (Response.isSuccessAPI(response)) {
-      addToast(t('common.message.editSuccess'), {appearance: 'success'});
-      setTimeout(() => {
-        reGetDetail();
-      }, 500)
-      setReadOnly(true)
-    } else {
-      addToast(Response.getAPIError(response), {appearance: 'error'});
-    }
+    // const response = await UserApi.update(props.id, data);
+    // if (Response.isSuccessAPI(response)) {
+    //   addToast(t('common.message.editSuccess'), {appearance: 'success'});
+    //   setTimeout(() => {
+    //     reGetDetail();
+    //   }, 500)
+    //   setReadOnly(true)
+    // } else {
+    //   addToast(Response.getAPIError(response), {appearance: 'error'});
+    // }
   };
 
   const updateDetail = (responseData) => {
@@ -303,21 +332,34 @@ function OrderForm(props) {
                     :
                     <>
                       <button onClick={() => {
+                        calculatePrice()
+                      }}
+                              className="btn btn-outline-danger mr-50">
+                        Tính
+                      </button>
+                      <button onClick={() => {
+                        reset();
                         setReceiver({});
-                        reset()
+                        setEstimateTime(0);
+                        setReturnSender(0);
+                        setShip(0);
                       }}
                               className="btn btn-outline-warning mr-50">
                         Xóa dữ liệu
                       </button>
-                      <button onClick={handleSubmit(save)}
+                      <button onClick={() => {
+                        setIsDraft(true);
+                        return handleSubmit(save)
+                      }}
                               className="btn btn-outline-primary mr-50"
                       >
                         {!isEdit ? 'Lưu nháp' : t('common.button.save')}
                       </button>
-                      <button onClick={handleSubmit(save)}
+                      <button onClick={
+                         handleSubmit(save) }
                               className="btn btn-primary"
                       >
-                        {!isEdit ? t('common.button.createNew') : t('common.button.save')}
+                        {!isEdit ? 'Gửi đơn' : t('common.button.save')}
                       </button>
                     </>
                 }
@@ -344,7 +386,7 @@ function OrderForm(props) {
                                     Tổng cước phí giao:
                                   </label>{" "}
                                   <span style={{color: "green"}}>
-                                    0
+                                    {ship ? filters.currency(ship) + 'đ' : '0'}
                                   </span>
                                 </li>
                                 <li className="px-2">
@@ -352,7 +394,7 @@ function OrderForm(props) {
                                     Tồng phí thu hộ:
                                   </label>{" "}
                                   <span style={{color: "blue"}}>
-                                    0
+                                    {watch('collection_money') ? filters.currency(watch('collection_money')) + 'đ' : '0'}
                                   </span>
                                 </li>
                                 <li className="px-2">
@@ -360,7 +402,7 @@ function OrderForm(props) {
                                     Tiền trả người gửi:
                                   </label>{" "}
                                   <span style={{color: "darkorange"}}>
-                                    0
+                                    {returnSender ? filters.currency(returnSender) + 'đ' : '0'}
                                   </span>
                                 </li>
                                 <li className="px-2">
@@ -368,7 +410,7 @@ function OrderForm(props) {
                                     Thời gian dự kiến:
                                   </label>{" "}
                                   <span style={{color: "brown"}}>
-                                    0
+                                    {estimateTime ? estimateTime + ' ngày' : '0'}
                                   </span>
                                 </li>
                               </ul>
@@ -830,7 +872,7 @@ function OrderForm(props) {
                                             getOptionLabel={option => `${option.name} - ${option.price}, ${option.weight}`}
                                           />
                                         )}
-                                        name="receiver"
+                                        name="package"
                                         control={control}
                                         defaultValue={null}
                                       />
@@ -929,7 +971,7 @@ function OrderForm(props) {
                           </div>
                           <div className="card-body px-0">
                             <div className="form-row">
-                              <div className="col-4">
+                              <div className="col-6">
                                 <fieldset className="form-group form-group-sm required">
                                   <label>
                                     Thu hộ (Vnd)
@@ -949,47 +991,7 @@ function OrderForm(props) {
                                 </fieldset>
                               </div>
 
-                              <div className="col-4">
-                                <fieldset className="form-group form-group-sm">
-                                  <label>
-                                    Hình thức vận chuyển
-                                  </label>
-                                  <article>
-                                    <div className="position-relative d-block py-1 has-icon-right">
-                                      <Controller
-                                        render={(ctrl) => (
-                                          <RadioGroup
-                                            onChange={ctrl.onChange}
-                                            value={ctrl.value}
-                                            className="d-flex"
-                                            name="type"
-                                          >
-                                            <Radio
-                                              cursor="pointer"
-                                              labelClassName="d-flex"
-                                              value={1}
-                                              radioClass="iradio_square-blue"
-                                              label='Đường bộ'
-                                            />
-                                            <Radio
-                                              cursor="pointer"
-                                              labelClassName="d-flex"
-                                              value={2}
-                                              radioClass="iradio_square-blue"
-                                              label="Đường bay"
-                                            />
-                                          </RadioGroup>
-                                        )}
-                                        name="type"
-                                        control={control}
-                                        defaultValue={1}
-                                      />
-                                    </div>
-                                  </article>
-                                </fieldset>
-                              </div>
-
-                              <div className="col-4">
+                              <div className="col-6">
                                 <fieldset className="form-group form-group-sm">
                                   <label>
                                     Trả cước phí
@@ -1007,27 +1009,117 @@ function OrderForm(props) {
                                             <Radio
                                               cursor="pointer"
                                               labelClassName="d-flex"
-                                              value={true}
-                                              radioClass="iradio_square-blue"
+                                              value={"1"}
+                                              radioClass="iradio_square-blue mr-1"
                                               label='Người gửi'
                                             />
                                             <Radio
                                               cursor="pointer"
                                               labelClassName="d-flex"
-                                              value={false}
-                                              radioClass="iradio_square-blue"
+                                              value={"0"}
+                                              radioClass="iradio_square-blue mx-1"
                                               label="Người nhận"
                                             />
                                           </RadioGroup>
                                         )}
                                         name="is_sender_pay_charge"
                                         control={control}
-                                        defaultValue={true}
+                                        defaultValue={"1"}
                                       />
                                     </div>
                                   </article>
                                 </fieldset>
                               </div>
+
+                              <div className="col-5">
+                                <fieldset className="form-group form-group-sm">
+                                  <label>
+                                    Hình thức vận chuyển
+                                  </label>
+                                  <article>
+                                    <div className="position-relative d-block py-1 has-icon-right">
+                                      <Controller
+                                        render={(ctrl) => (
+                                          <RadioGroup
+                                            onChange={ctrl.onChange}
+                                            value={ctrl.value}
+                                            className="d-flex"
+                                            name="type"
+                                          >
+                                            <Radio
+                                              cursor="pointer"
+                                              labelClassName="d-flex"
+                                              value={'1'}
+                                              radioClass="iradio_square-blue mr-1"
+                                              increaseArea="20%"
+                                              label='Đường bộ'
+                                            />
+                                            <Radio
+                                              cursor="pointer"
+                                              labelClassName="d-flex"
+                                              value={'2'}
+                                              name="type"
+                                              radioClass="iradio_square-blue mx-1"
+                                              increaseArea="20%"
+                                              label="Đường bay"
+                                            />
+                                          </RadioGroup>
+                                        )}
+                                        name="type"
+                                        control={control}
+                                        defaultValue={'1'}
+                                      />
+                                    </div>
+
+
+                                  </article>
+                                </fieldset>
+                              </div>
+
+                              <div className="col-7">
+                                <fieldset className="form-group form-group-sm">
+                                  <label>
+                                    Giao hàng
+                                  </label>
+                                  <article>
+                                    <div className="position-relative d-block py-1 has-icon-right">
+                                      <Controller
+                                        render={(ctrl) => (
+                                          <RadioGroup
+                                            onChange={ctrl.onChange}
+                                            value={ctrl.value}
+                                            className="d-flex"
+                                            name="service"
+                                          >
+                                            <Radio
+                                              cursor="pointer"
+                                              labelClassName="d-flex"
+                                              value={'STANDARD'}
+                                              radioClass="iradio_square-blue mr-1"
+                                              increaseArea="20%"
+                                              label='Tiêu chuẩn'
+                                            />
+                                            <Radio
+                                              cursor="pointer"
+                                              labelClassName="d-flex"
+                                              value={'FAST'}
+                                              radioClass="iradio_square-blue mx-1"
+                                              increaseArea="20%"
+                                              label="Nhanh (trong ngày)"
+                                            />
+                                          </RadioGroup>
+                                        )}
+                                        name="service"
+                                        control={control}
+                                        defaultValue={'STANDARD'}
+                                      />
+                                    </div>
+
+
+                                  </article>
+                                </fieldset>
+                              </div>
+
                             </div>
                           </div>
                         </div>

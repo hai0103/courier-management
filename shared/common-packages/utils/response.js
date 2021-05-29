@@ -32,6 +32,10 @@ export default class Response {
             return response.data.data;
         }
 
+        if (this.isSuccessAPI(response) && response.data.data === 0) {
+            return 0;
+        }
+
         throw new Error('Can not get data from response');
     }
 

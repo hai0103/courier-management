@@ -26,6 +26,14 @@ export const OrderApi = {
       headers
     )
   },
+  async calculatePrice(data, useInternal = false, headers = {}) {
+    return await request(
+      'GET',
+      `${Utility.getRemoteHost(useInternal)}api/config-formula/calculate-postage`,
+      data,
+      headers
+    )
+  },
   async create(data) {
     return await request(
       'POST',
