@@ -848,7 +848,7 @@ function OrderForm(props) {
                                       defaultValue={false}
                                     />
                                     <span className="ml-1">
-                                      Nhận tại bưu cục (tiết kiệm)
+                                      Nhận tại bưu cục (tiết kiệm) <i className='fa fa-info-circle primary' title='Tiết kiệm tối đa khi gửi và nhận tại bưu cục.'/>
                                     </span>
                                   </article>
                                 </fieldset>

@@ -1,7 +1,7 @@
 import {ROUTES, SYSTEM_PERMISSIONS} from "constants/common";
 import Link from "next/link";
 import PropTypes from "prop-types";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useToasts} from "react-toast-notifications";
 import {UserApi} from "services/user";
@@ -12,23 +12,20 @@ import DataTable from "sharedComponents/dataTable";
 import More from "sharedComponents/more";
 import filters from "utils/filters";
 import {useDataTable} from "providers/dataTable";
-import SocketHelpers from "utils/socketHelpers";
-import {useSocket} from "providers/socket";
-import {useGate} from "providers/accessControl";
-import {PostOfficeApi} from "services/postOffice";
-import {AddressApi} from "services/address";
 import {OrderApi} from "services/order";
+import {GlobalData} from "services/globalData";
+import {getUserProfile} from "utils/localStorage";
+import moment from "moment";
+import {confirmation} from "utils/helpers";
 
 function OrderList(props) {
   const {t} = useTranslation('common');
-  const [showModalConfirm, setShowModalConfirm] = useState(false);
-  const [selectedItemId, setSelectedItemId] = useState({});
-  const [dataDistricts, setDataDistricts] = useState([]);
-  const [dataWards, setDataWards] = useState([]);
+  const [statusFilter, setStatusFilter] = useState(0);
+  const [dataCount, setDataCount] = useState({});
+  // const [count, setCount] = useState(0);
   const {addToast} = useToasts();
   const {refresh: refreshTable} = useDataTable();
-  const {socketClient} = useSocket();
-  const [allows] = useGate()
+  const [loggedUser, setLoggedUser] = useState({});
 
   const statusMapping = (status) => {
     const mapping = {
@@ -85,10 +82,10 @@ function OrderList(props) {
     return mapping[status] || [];
   };
 
-  const status = [
-    {code: 'DISABLE', id: 0, status: t('status.inactive')},
-    {code: 'ACTIVE', id: 1, status: t('status.active')},
-  ]
+  useEffect(() => {
+    setLoggedUser(getUserProfile() || {});
+    countOrder().catch(e => console.log(e));
+  }, [])
 
   const actionButton = (row) => {
     return (
@@ -99,30 +96,173 @@ function OrderList(props) {
           </button>
         </Link>
         {
-          row.original.status === "2" || row.original.status === "0" ? null :
-            <button className="dropdown-item"
-                    disabled={!allows(SYSTEM_PERMISSIONS.BLOCK_UNBLOCK_USER)}
-                    onClick={() => {
-                      setSelectedItemId(row.original);
-                      setShowModalConfirm(true)
-                    }}
-            >
-              <i className="fal fa-lock"/>
-              {t('usersManagement.actionBlock.lock')}
-            </button>
+          (loggedUser?.user_type_code === "DEALER" && row.original.status_id === 10) &&
+          <button className="dropdown-item"
+                  onClick={() => {
+                    confirmation({
+                      content: "Xác nhận duyệt đơn này tới bưu cục",
+                      title: "Duyệt đơn",
+                      onConfirm: async ({onClose}) => {
+                        await updateStatus(row.original.id, 5)
+                          .then(() => {
+                            onClose()
+                            setTimeout(() => {
+                              reloadTable()
+                            }, 300)
+                          })
+                          .catch(error => addToast(Response.getErrorMessage(error), {appearance: 'error'}))
+                      }
+                    })
+                  }}
+          >
+            <i className="fal fa-lock"/>
+            Duyệt đơn
+          </button>
         }
         {
-          row.original.status === "2" || row.original.status === "1" ? null :
-            <button className="dropdown-item"
-                    disabled={!allows(SYSTEM_PERMISSIONS.BLOCK_UNBLOCK_USER)}
-                    onClick={() => {
-                      setSelectedItemId(row.original);
-                      setShowModalConfirm(true)
-                    }}
-            >
-              <i className="fal fa-unlock"/>
-              {t('usersManagement.actionBlock.unlock')}
-            </button>
+          (row.original.status_id === 10 || row.original.status_id === 5) &&
+          <button className="dropdown-item"
+                  onClick={() => {
+                    confirmation({
+                      content: "Xác nhận hủy đơn hàng này",
+                      title: "Hủy đơn",
+                      onConfirm: async ({onClose}) => {
+                        await updateStatus(row.original.id, 12)
+                          .then(() => {
+                            onClose()
+                            setTimeout(() => {
+                              reloadTable()
+                            }, 300)
+                          })
+                          .catch(error => addToast(Response.getErrorMessage(error), {appearance: 'error'}))
+                      }
+                    })
+                  }}
+          >
+            <i className="fal fa-unlock"/>
+            Hủy đơn
+          </button>
+        }
+        {
+          ((loggedUser?.user_type_code === "SUPER_ADMIN" || loggedUser?.user_type_code === "EMPLOYEE") && (row.original.status_id === 5)) &&
+          <button className="dropdown-item"
+                  onClick={() => {
+                    confirmation({
+                      content: "Xác nhận bưu cục nhận đơn hàng này",
+                      title: "Bưu cục nhận đơn",
+                      onConfirm: async ({onClose}) => {
+                        await updateStatus(row.original.id, 1)
+                          .then(() => {
+                            onClose()
+                            setTimeout(() => {
+                              reloadTable()
+                            }, 300)
+                          })
+                          .catch(error => addToast(Response.getErrorMessage(error), {appearance: 'error'}))
+                      }
+                    })
+                  }}
+          >
+            <i className="fal fa-unlock"/>
+            Bưu cục nhận đơn
+          </button>
+        }
+
+        {
+          ((loggedUser?.user_type_code === "SUPER_ADMIN" || loggedUser?.user_type_code === "EMPLOYEE") && (row.original.status_id === 1)) &&
+          <button className="dropdown-item"
+                  onClick={() => {
+                    confirmation({
+                      content: "Xác nhận đã lấy đơn hàng này",
+                      title: "Đã lấy đơn",
+                      onConfirm: async ({onClose}) => {
+                        await updateStatus(row.original.id, 11)
+                          .then(() => {
+                            onClose()
+                            setTimeout(() => {
+                              reloadTable()
+                            }, 300)
+                          })
+                          .catch(error => addToast(Response.getErrorMessage(error), {appearance: 'error'}))
+                      }
+                    })
+                  }}
+          >
+            <i className="fal fa-unlock"/>
+            Lấy đơn
+          </button>
+        }
+        {
+          ((loggedUser?.user_type_code === "SUPER_ADMIN" || loggedUser?.user_type_code === "EMPLOYEE") && (row.original.status_id === 11)) &&
+          <button className="dropdown-item"
+                  onClick={() => {
+                    confirmation({
+                      content: "Xác nhận chuyển đơn hàng đi",
+                      title: "Xác nhận chuyển đơn",
+                      onConfirm: async ({onClose}) => {
+                        await updateStatus(row.original.id, 2)
+                          .then(() => {
+                            onClose()
+                            setTimeout(() => {
+                              reloadTable()
+                            }, 300)
+                          })
+                          .catch(error => addToast(Response.getErrorMessage(error), {appearance: 'error'}))
+                      }
+                    })
+                  }}
+          >
+            <i className="fal fa-unlock"/>
+            Chuyển đơn
+          </button>
+        }
+        {
+          ((loggedUser?.user_type_code === "SHIPPER" || loggedUser?.user_type_code === "EMPLOYEE") && (row.original.status_id === 2)) &&
+          <button className="dropdown-item"
+                  onClick={() => {
+                    confirmation({
+                      content: "Shipper xác nhận nhận và giao đơn hàng này",
+                      title: "Nhận giao đơn",
+                      onConfirm: async ({onClose}) => {
+                        await updateStatus(row.original.id, 3)
+                          .then(() => {
+                            onClose()
+                            setTimeout(() => {
+                              reloadTable()
+                            }, 300)
+                          })
+                          .catch(error => addToast(Response.getErrorMessage(error), {appearance: 'error'}))
+                      }
+                    })
+                  }}
+          >
+            <i className="fal fa-unlock"/>
+            Nhận giao đơn
+          </button>
+        }
+        {
+          ((loggedUser?.user_type_code === "SHIPPER" || loggedUser?.user_type_code === "EMPLOYEE") && (row.original.status_id === 3)) &&
+          <button className="dropdown-item"
+                  onClick={() => {
+                    confirmation({
+                      content: "Shipper xác nhận đã giao thành công đơn hàng này",
+                      title: "Xác nhận giao hàng thành công",
+                      onConfirm: async ({onClose}) => {
+                        await updateStatus(row.original.id, 4)
+                          .then(() => {
+                            onClose()
+                            setTimeout(() => {
+                              reloadTable()
+                            }, 300)
+                          })
+                          .catch(error => addToast(Response.getErrorMessage(error), {appearance: 'error'}))
+                      }
+                    })
+                  }}
+          >
+            <i className="fal fa-unlock"/>
+            Đã giao đơn
+          </button>
         }
         {
           row.original.status === "2" && <button className="dropdown-item"
@@ -148,23 +288,26 @@ function OrderList(props) {
     });
   }
 
-  const statusHandler = async (payload, entity) => {
-    try {
-      const response = await UserApi.updateStatus(entity?.id, payload);
-      if (Response.isSuccessAPI(response)) {
-        const message = entity?.status === "1" ? t('common.message.requestBlockSuccess') : t('common.message.unblockSuccess')
-        addToast(message, {appearance: 'success'})
-        setShowModalConfirm(false)
-        SocketHelpers.fastSubscribe(`/topic/user-updated-status/${entity?.id}`, () => {
-          refreshTable();
-        }, socketClient);
+  const updateStatus = async (orderId, status) => {
+    const payload = {
+      orderId: orderId,
+      statusId: status,
+      userId: loggedUser?.id
+    }
+    OrderApi.updateStatus(payload).then((response) => {
+      if (Response.isSuccess(response)) {
+        addToast('Cập nhật trạng thái thành công', {appearance: 'success'})
       } else {
         addToast(Response.getAPIError(response), {appearance: 'error'});
       }
-    } catch (error) {
-      addToast(Response.getErrorMessage(error), {appearance: 'error'});
-    }
+    }).catch(error => {
+      addToast(Response.getErrorMessage(error), {appearance: 'error'})
+    });
   };
+
+  useEffect(() => {
+    refreshTable();
+  }, [statusFilter])
 
   const dataTable = () => {
     const titleSearch = 'vận đơn';
@@ -191,22 +334,23 @@ function OrderList(props) {
         sortable: false,
         className: 'td-6 text-truncate',
         headerClassName: 'td-6 text-truncate',
-        Cell: ({row = {}}) => <span title={`${row.original.sender_name || '_'} - ${row.original.sender_phone || '_'}`}>
-                    <div>{row.original.sender_name || ''}</div>
+        Cell: ({row = {}}) => <span
+          title={`${row.original.sender_address || '_'} - ${row.original.sender_wards_name || '_'} - ${row.original.sender_district_name || '_'} - ${row.original.sender_province_name || '_'}`}>
+                    <div className="font-weight-bold">{row.original.sender_name || ''}</div>
                     <div>{row.original.sender_phone || ''}</div>
                 </span>
       },
-      {
-        Header: 'Gửi từ',
-        accessor: 'sender_province_name',
-        sortable: false,
-        className: 'td-10 text-truncate',
-        headerClassName: 'td-10 text-truncate',
-        Cell: ({row = {}}) => <span
-          title={`${row.original.sender_address || '_'} - ${row.original.sender_wards_name || '_'} - ${row.original.sender_district_name || '_'} - ${row.original.sender_province_name || '_'}`}>
-              {`${row.original.sender_address || '_'} - ${row.original.sender_wards_name || '_'} - ${row.original.sender_district_name || '_'} - ${row.original.sender_province_name || '_'}`}
-          </span>
-      },
+      // {
+      //   Header: 'Gửi từ',
+      //   accessor: 'sender_province_name',
+      //   sortable: false,
+      //   className: 'td-10 text-truncate',
+      //   headerClassName: 'td-10 text-truncate',
+      //   Cell: ({row = {}}) => <span
+      //     title={`${row.original.sender_address || '_'} - ${row.original.sender_wards_name || '_'} - ${row.original.sender_district_name || '_'} - ${row.original.sender_province_name || '_'}`}>
+      //         {`${row.original.sender_address || '_'} - ${row.original.sender_wards_name || '_'} - ${row.original.sender_district_name || '_'} - ${row.original.sender_province_name || '_'}`}
+      //     </span>
+      // },
       {
         Header: 'Người nhận',
         accessor: 'receiver_name',
@@ -214,22 +358,22 @@ function OrderList(props) {
         className: 'td-6 text-truncate',
         headerClassName: 'td-6 text-truncate',
         Cell: ({row = {}}) => <span
-          title={`${row.original.receiver_name || '_'} - ${row.original.receiver_phone || '_'}`}>
-                    <div>{row.original.receiver_name || ''}</div>
+          title={`${row.original.receiver_address || '_'} - ${row.original.receiver_wards_name || '_'} - ${row.original.receiver_district_name || '_'} - ${row.original.receiver_province_name || '_'}`}>
+                    <div className="font-weight-bold">{row.original.receiver_name || ''}</div>
                     <div>{row.original.receiver_phone || ''}</div>
                 </span>
       },
-      {
-        Header: 'Gửi đến',
-        accessor: 'receiver_province_name',
-        sortable: false,
-        className: 'td-10 text-truncate',
-        headerClassName: 'td-10 text-truncate',
-        Cell: ({row = {}}) => <span
-          title={`${row.original.receiver_address || '_'} - ${row.original.receiver_wards_name || '_'} - ${row.original.receiver_district_name || '_'} - ${row.original.receiver_province_name || '_'}`}>
-              {`${row.original.receiver_address || '_'} - ${row.original.receiver_wards_name || '_'} - ${row.original.receiver_district_name || '_'} - ${row.original.receiver_province_name || '_'}`}
-          </span>
-      },
+      // {
+      //   Header: 'Gửi đến',
+      //   accessor: 'receiver_province_name',
+      //   sortable: false,
+      //   className: 'td-10 text-truncate',
+      //   headerClassName: 'td-10 text-truncate',
+      //   Cell: ({row = {}}) => <span
+      //     title={`${row.original.receiver_address || '_'} - ${row.original.receiver_wards_name || '_'} - ${row.original.receiver_district_name || '_'} - ${row.original.receiver_province_name || '_'}`}>
+      //         {`${row.original.receiver_address || '_'} - ${row.original.receiver_wards_name || '_'} - ${row.original.receiver_district_name || '_'} - ${row.original.receiver_province_name || '_'}`}
+      //     </span>
+      // },
       // {
       //     Header: 'Vị trí',
       //     accessor: 'province',
@@ -248,18 +392,26 @@ function OrderList(props) {
       //   headerClassName: 'td-6 text-truncate',
       //   Cell: ({value}) => filters.dateTime(value)
       // },
-      // {
-      //   Header: "Dự kiến giao",
-      //   accessor: 'create_at',
-      //   sortable: false,
-      //   className: 'td-6 text-truncate',
-      //   headerClassName: 'td-6 text-truncate',
-      //   Cell: ({value}) => filters.dateTime(value)
-      // },
+      {
+        Header: "Thu hộ",
+        accessor: 'collection_money',
+        sortable: false,
+        className: 'td-6 text-truncate',
+        headerClassName: 'td-6 text-truncate',
+        Cell: ({value = null}) => <span className="teal">{`${filters.currency(value)}đ`}</span>
+      },
+      {
+        Header: "Cước phí",
+        accessor: 'ship_money',
+        sortable: false,
+        className: 'td-6 text-truncate',
+        headerClassName: 'td-6 text-truncate',
+        Cell: ({value}) => <span className="teal">{`${filters.currency(value)}đ`}</span>
+      },
       {
         Header: "Thời gian tạo",
         accessor: 'create_at',
-        sortable: false,
+        sortable: true,
         className: 'td-6 text-truncate',
         headerClassName: 'td-6 text-truncate',
         Cell: ({value}) => filters.dateTime(value)
@@ -283,10 +435,12 @@ function OrderList(props) {
     ];
 
     const setRemoteData = async (params) => {
+      const _loggedUser = getUserProfile();
+
       let payload = {
         ...params,
-        status: props.processStatus || null,
-        userId: props.userId,
+        status: statusFilter || null,
+        userId: _loggedUser?.id || 0,
         isStaff: props.isStaff
       }
       if (params.sort) {
@@ -313,15 +467,49 @@ function OrderList(props) {
 
     const defaultSort = {
       init: {
-        code: 'ASC'
+        create_at: 'DESC'
       },
       default: {
-        code: 'ASC'
+        create_at: 'DESC'
       }
     };
 
     return {columns, setRemoteData, defaultSort, titleSearch};
   };
+
+  const reloadTable = () => {
+    countOrder().catch(e => console.log(e));
+    refreshTable();
+  }
+
+  const countOrder = async () => {
+    const _loggedUser = getUserProfile();
+    const payload = {
+      userId: _loggedUser?.id || 0,
+      isStaff: props.isStaff
+    }
+
+    try {
+      const response = await OrderApi.getCountOrder(payload);
+      if (Response.isSuccessCode(response?.data)) {
+        const data = Response.getData(response).data || {};
+        if (data) {
+          let _dataCount = [];
+          Object.keys(data).map((key, index) => {
+            _dataCount[index] = data[key];
+          })
+          setDataCount(_dataCount);
+        }
+
+      } else {
+        console.log(response);
+      }
+
+    } catch (error) {
+      addToast(Response.getErrorMessage(error), {appearance: 'error'})
+      console.log(error);
+    }
+  }
 
   return (
     <>
@@ -329,76 +517,57 @@ function OrderList(props) {
         {
           <DataTable {...dataTable()} hasFilter filters={[
             {
-              label: 'Tỉnh/thành phố',
-              type: "select",
-              filterBy: "provinceId",
-              children: ['districtId'],
-              selectBox: {
-                hasDefaultOption: true,
-                options: props.provinces,
-                optionLabel: "name",
-                optionValue: "id",
-                onChange: async (value) => {
-                  if (value) {
-                    const districtsResponse = await AddressApi.getDistrictsById(value);
-                    const districts = Response.getAPIData(districtsResponse) || [];
-                    setDataDistricts(districts);
-                  } else {
-                    setDataDistricts([]);
-                    setDataWards([])
-                  }
-                }
-              }
+              label: "Từ ngày",
+              type: "datetime",
+              className: "td-7 text-truncate",
+              headerClassName: "td-7 text-truncate",
+              filterBy: "startDate",
+              useDateFormat: true,
             },
             {
-              label: 'Quận/huyện',
-              type: "select",
-              filterBy: "districtId",
-              children: ['wardId'],
-              selectBox: {
-                hasDefaultOption: true,
-                options: dataDistricts,
-                optionLabel: "name",
-                optionValue: "id",
-                onChange: async (value) => {
-                  if (value) {
-                    const wardsResponse = await AddressApi.getWardsById(value);
-                    const wards = Response.getAPIData(wardsResponse) || [];
-                    setDataWards(wards);
-                  } else {
-                    setDataWards([])
-                  }
-                }
-              }
-            },
-            {
-              label: 'Phường/xã',
-              type: "select",
-              filterBy: "wardId",
-              selectBox: {
-                hasDefaultOption: true,
-                options: dataWards,
-                optionLabel: "name",
-                optionValue: "id",
-              }
-            },
-            {
-              label: t('usersManagement.header.status'),
-              type: "select",
-              filterBy: "status",
-              selectBox: {
-                options: status,
-                optionLabel: "status",
-                optionValue: "id",
-                hasDefaultOption: true
-              }
+              label: "Đến ngày",
+              type: "datetime",
+              className: "td-7 text-truncate",
+              headerClassName: "td-7 text-truncate",
+              filterBy: "endDate",
+              useDateFormat: true,
             },
           ]}
-           leftControl={
-             () => (
-             <h3 className="content-header-title mb-0">Danh sách đơn hàng - vận đơn</h3>
-             )
-           }
+                     leftControl={
+                       () => (
+                         <ul className="list-inline d-flex align-items-center">
+                           <li className="">
+                             <div className="list-group flex-row" id="list-tab"
+                                  role="tablist">
+                               {
+                                 GlobalData.processStatus().map((item, index) => (
+                                   <button
+                                     key={index}
+                                     type="button"
+                                     style={{
+                                       minWidth: 90,
+                                       minHeight: 40,
+                                       marginRight: 2,
+                                     }}
+                                     className={`btn btn-sm text-center border p-0 list-group-item list-group-item-action
+                        ${item.value === statusFilter && 'btn-teal'}`}
+                                     id={`list-dateFilter-${index}`} data-toggle="list"
+                                     role="tab"
+                                     onClick={() => {
+                                       if (statusFilter !== item.value) setStatusFilter(item.value);
+                                       else setStatusFilter(null);
+                                     }}
+                                   >
+                                     {item.label} <span
+                                     style={{color: item.value === statusFilter ? '' : 'red'}}>{`(${dataCount[index] || 0})`}</span>
+                                   </button>
+                                 ))
+                               }
+                             </div>
+                           </li>
+                         </ul>
+                       )
+                     }
           />
         }
         {/*<StatusSwitcher*/}

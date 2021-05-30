@@ -64,5 +64,61 @@ export const GlobalData = {
                 value: 1,
             },
         ]
-    }
+    },
+    processStatus() {
+        return [
+            {
+                label: "Tất cả",
+                value: 0,
+            },
+            {
+                label: "Chờ lấy",
+                value: 1,
+            },
+            {
+                label: 'Đang vận chuyển',
+                value: 2,
+            },
+            {
+                label: "Đang giao",
+                value: 3,
+            },
+            {
+                label: "Giao thành công",
+                value: 4,
+            },
+            {
+                label: "Chờ xử lý",
+                value: 5,
+            },
+            {
+                label: "Đang chuyển hoàn",
+                value: 6,
+            },
+            {
+                label: "Đã duyệt hoàn",
+                value: 7,
+            },
+            {
+                label: "Phát lại",
+                value: 8,
+            },
+            {
+                label: "Đã trả",
+                value: 9,
+            },
+            {
+                label: "Tạo mới",
+                value: 10,
+            },
+            {
+                label: "Đã lấy",
+                value: 11,
+            },
+            {
+                label: "Đã hủy",
+                value: 12,
+            },
+        ];
+    },
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Head from "next/head";
 import CommonLayout from "layouts/commonLayout";
 import {title, trans} from "utils/helpers";
@@ -6,22 +6,28 @@ import {Response} from "utils/common";
 import {ROUTES} from "constants/common";
 import {AddressApi} from "services/address";
 import OrderManagement from "../../../components/orderManagement";
-import OrderListContainer from "../../../components/orderManagement/components/orderListContainer";
-import {ProcessStatusApi} from "services/processStatus";
+import {getUserProfile} from "utils/localStorage";
 
 export default function OrdersManagementPage(props) {
+    const [loggedUser, setLoggedUser] = useState({});
+    useEffect(() => {
+        const _loggedUser = getUserProfile();
+        setLoggedUser(_loggedUser)
+
+    }, []);
+
     return (
         <React.Fragment>
             <Head>
                 <title>Quản lý đơn hàng - vận đơn</title>
             </Head>
-            <OrderListContainer {...props}/>
+            <OrderManagement {...props} userId={loggedUser?.id} isStaff={false}/>
         </React.Fragment>
     );
 }
 
-export async function getServerSideProps(context) {
-    let provinces = [], processStatus = []
+export async function getServerSideProps() {
+    let provinces = []
 
     try {
         const provincesResponse = await AddressApi.getProvinces();
@@ -31,25 +37,9 @@ export async function getServerSideProps(context) {
         console.log(e)
     }
 
-    try {
-        const processStatusResponse = await ProcessStatusApi.getList();
-        processStatus = Response.getAPIData(processStatusResponse) || [];
-
-    } catch (e) {
-        console.log(e)
-    }
-
     return {
         props: {
             provinces: provinces || [],
-            processStatus: [
-                {
-                    id: 0,
-                    code: 0,
-                    name: 'Tất cả'
-                },
-                ...processStatus
-            ] || [],
         }
     };
 }

@@ -22,7 +22,7 @@ export const OrderApi = {
     return await request(
       'GET',
       `${Utility.getRemoteHost(useInternal)}api/order/count-order`,
-      {},
+      data,
       headers
     )
   },
@@ -44,7 +44,7 @@ export const OrderApi = {
   async findById(id, useInternal = false, headers = {}) {
     return await request(
       'GET',
-      `${Utility.getRemoteHost(useInternal)}admin-query/company/find-by-id/${id}`,
+      `${Utility.getRemoteHost(useInternal)}api/order/get-by-id/${id}`,
       {},
       headers
     )
@@ -62,11 +62,12 @@ export const OrderApi = {
       `${process.env.API_HOST}admin-command/company/delete/${id}`
     )
   },
-  async updateStatus(id, data = {}) {
+  async updateStatus(data = {}) {
+    const {orderId, statusId, userId} = data;
     return await request(
       'POST',
-      `${process.env.API_HOST}admin-command/company/update-status/${id}`,
-      data
+      `${process.env.API_HOST}api/order/update-status?orderId=${orderId}&statusId=${statusId}&userId=${userId}`,
+      {}
     )
   },
 }

@@ -15,7 +15,7 @@ export const IMAGES = {
 
 export const ROUTES = {
     HOME: '/',
-    LOGIN: LOGIN_SERVICE_URI,
+    LOGIN: '/login',
     REGISTER: '/register',
     FORGOT_PASSWORD: '/forgot-password',
     PROFILE: '/profile',
