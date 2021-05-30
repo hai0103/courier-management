@@ -37,7 +37,7 @@ export const OrderApi = {
   async create(data) {
     return await request(
       'POST',
-      `${process.env.API_HOST}admin-command/company/create`,
+      `${process.env.API_HOST}api/order/create`,
       data
     )
   },

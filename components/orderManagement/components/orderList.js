@@ -33,25 +33,53 @@ function OrderList(props) {
   const statusMapping = (status) => {
     const mapping = {
       1: {
-        label: t('status.active'),
+        label: 'Chờ lấy',
         bg: 'success',
       },
       2: {
-        label: t('status.waitActive'),
+        label: 'Đang vận chuyển',
         bg: 'warning',
       },
       3: {
         label: "Đang giao",
         bg: 'primary',
       },
-      8: {
-        label: "Phát lại",
+      4: {
+        label: "Giao thành công",
+        bg: 'success',
+      },
+      5: {
+        label: "Chờ xử lý",
         bg: 'warning',
       },
-      0: {
-        label: t('status.inactive'),
+      6: {
+        label: "Đang chuyển hoàn",
+        bg: 'warning',
+      },
+      7: {
+        label: "Đã duyệt hoàn",
+        bg: 'warning',
+      },
+      8: {
+        label: "Phát lại",
+        bg: 'primary',
+      },
+      9: {
+        label: "Đã trả",
+        bg: 'success',
+      },
+      10: {
+        label: "Tạo mới",
+        bg: 'primary',
+      },
+      11: {
+        label: "Đã lấy",
+        bg: 'primary',
+      },
+      12: {
+        label: "Đã hủy",
         bg: 'danger',
-      }
+      },
     }
 
     return mapping[status] || [];
@@ -141,6 +169,12 @@ function OrderList(props) {
   const dataTable = () => {
     const titleSearch = 'vận đơn';
     const columns = [
+      {
+        Header: "  ",
+        className: 'action-col',
+        headerClassName: 'action-col',
+        Cell: ({row}) => actionButton(row)
+      },
       {
         Header: 'Mã đơn hàng',
         accessor: 'code',
@@ -244,14 +278,7 @@ function OrderList(props) {
         className: 'td-6 text-truncate',
         headerClassName: 'td-6 text-truncate',
         sortable: false,
-        // Cell: ({value = ''}) => <Badge {...statusMapping(value)} />
         Cell: ({value = ''}) => <Badge {...statusMapping(value)} />
-      },
-      {
-        Header: "  ",
-        className: 'action-col',
-        headerClassName: 'action-col',
-        Cell: ({row}) => actionButton(row)
       },
     ];
 
@@ -269,11 +296,8 @@ function OrderList(props) {
 
       try {
         const response = await OrderApi.getList(payload);
-        // const response = await OrderApi.getAll();
-        console.log(response)
         if (Response.isSuccessCode(response?.data)) {
           const {content, totalElements} = Response.getData(response).data || [];
-          // const data = Response.getData(response).data || [];
           return {
             data: content, totalItem: totalElements
           }

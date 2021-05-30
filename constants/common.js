@@ -167,7 +167,7 @@ export const MAIN_MENU_CRM = [
     },
     {
         title: 'mainMenu.newOrder',
-        falIcon: 'fa-truck-loading',
+        falIcon: 'fa-newspaper',
         href: ROUTES.CRM_NEW_ORDER,
     },
     {
@@ -181,7 +181,7 @@ export const MAIN_MENU_CRM = [
     },
     {
         title: 'mainMenu.orderMoney',
-        falIcon: 'fa-truck-loading',
+        falIcon: 'fa-money-check-alt',
         href: ROUTES.CRM_MONEY,
     },
     {
@@ -190,12 +190,12 @@ export const MAIN_MENU_CRM = [
     },
     {
         title: 'mainMenu.postOffice',
-        falIcon: 'fa-user-tag',
+        falIcon: 'fa-mailbox',
         href: ROUTES.CRM_SEARCH_POST_OFFICE
     },
     {
         title: 'mainMenu.postage',
-        falIcon: 'fa-user-tag',
+        falIcon: 'fa-search-dollar',
         href: ROUTES.CRM_SEARCH_POSTAGE
     }
 ]

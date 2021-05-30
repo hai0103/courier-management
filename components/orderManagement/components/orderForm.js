@@ -33,7 +33,20 @@ import AddressHelpers from "../../../helpers/addressHelpers";
 import {OrderApi} from "services/order";
 
 function OrderForm(props) {
-  const {register, errors, handleSubmit, setError, formState, setValue, control, watch, reset, clearErrors} = useForm();
+  const {
+    register,
+    errors,
+    handleSubmit,
+    setError,
+    formState,
+    setValue,
+    control,
+    watch,
+    reset,
+    clearErrors,
+    trigger,
+    getValues
+  } = useForm();
   const {districts, setDistricts, wards, setWards} = useAddressInfoContext()
   const {addToast} = useToasts();
   const [loggedUser, setLoggedUser] = useState({});
@@ -53,14 +66,16 @@ function OrderForm(props) {
   const [userReceiver, setUserReceiver] = useState([]);
   const [userPackage, setUserPackage] = useState([]);
   const [selectedItem, setSelectedItem] = useState({});
+  const [sender, setSender] = useState({});
   const [receiver, setReceiver] = useState({});
+  const [listPackage, setListPackage] = useState([]);
   const [isDraft, setIsDraft] = useState(false);
   const [ship, setShip] = useState(0);
   const [estimateTime, setEstimateTime] = useState(0);
   const [returnSender, setReturnSender] = useState(0);
 
   const onClose = () => {
-    router.push(props.isDealer ? ROUTES.DEALER : ROUTES.EMPLOYEE);
+    router.push(props.isStaff ? ROUTES.ORDER : ROUTES.CRM_ORDER);
   }
 
   useEffect(() => {
@@ -158,34 +173,96 @@ function OrderForm(props) {
   };
 
   const save = async (data) => {
-    const payload = {
-      ...data,
-      user_id: loggedUser?.id,
-      isDraft
+    let isValid = true
+    if (Object.keys(errors).length > 0) {
+      isValid = false
+
+      addToast(
+        <div
+          className='justify-content-center align-content-center text-center'>
+          Vui lòng đảm bảo nhập đúng các trường thông tin.
+        </div>, {appearance: 'error'});
     }
-    const payloadEdit = {
-      ...detail,
-      ...data
-    }
-debugger
-    console.log(payload)
-    try {
-      isEdit ? await onSubmitUpdate(Utility.trimObjValues(payloadEdit)) : await onSubmitCreate(Utility.trimObjValues(payload));
-    } catch (error) {
-      addToast(Response.getErrorMessage(error), {appearance: 'error'});
+
+    if(isValid) {
+      const dateFormat = 'YYYY/MM/DD HH:mm:ss';
+
+      const payload = {
+        order: {
+          user_id: loggedUser?.id,
+          create_at: moment().format(dateFormat),
+          updated_at: moment().format(dateFormat),
+          sender_wards: sender?.wards_id,
+          sender_district: sender?.district_id,
+          sender_province: sender?.province_id,
+          sender_address: sender?.address,
+          receiver_wards: data?.receiver_wards,
+          receiver_district: data?.receiver_district,
+          receiver_province: data?.receiver_province,
+          receiver_address: data?.receiver_address,
+          is_send_post_office: data.is_send_post_office,
+          is_receive_post_office: data.is_receive_post_office,
+          sender_name: sender?.name,
+          sender_phone: sender?.phone,
+          receiver_name: data.receiver_name,
+          receiver_phone: data.receiver_phone,
+          service: data.service,
+          service_add: "",
+          collection_money: data?.collection_money*1 || 0,
+          ship_money: ship,
+          is_sender_pay_charge: data.is_sender_pay_charge !== "0",
+          voucher_id: 0,
+          expected_take: "",
+          expected_delivery: "",
+          status_id: isDraft ? 10 : 5,
+          delivery_time_id: 1,
+          description: "",
+          note: "",
+          is_allow_check: true,
+          type: data.title === "2" ? 2 : 1,
+          shipper_id: 0,
+          post_office_send_id: data.post_office_send_id || 0,
+          post_office_receiver_id: data.post_office_receiver_id || 0
+        },
+        listPackage: listPackage?.map(function (item){
+          return {
+              package_id: item.id,
+              description: "",
+              quantity: data?.package_quantity*1 || 1
+            }
+      })
+      }
+      const payloadEdit = {
+        ...detail,
+        ...data
+      }
+      console.log(payload)
+      try {
+        isEdit ? await onSubmitUpdate(Utility.trimObjValues(payloadEdit)) : await onSubmitCreate(Utility.trimObjValues(payload));
+      } catch (error) {
+        addToast(Response.getErrorMessage(error), {appearance: 'error'});
+      }
     }
   }
+
+  useEffect(() => {
+    if(isDraft) {
+      save(getValues()).catch(e => console.log(e));
+      setIsDraft(false);
+    }
+  }, [isDraft])
 
   const onSubmitCreate = async (data) => {
     const payload = {
       ...data,
     };
-    // const response = await UserApi.create(payload);
-    // if (Response.isSuccessAPI(response)) {
-    //   onClose();
-    // } else {
-    //   addToast(Response.getAPIError(response), {appearance: 'error'});
-    // }
+    const response = await OrderApi.create(payload);
+    if (Response.isSuccessAPI(response)) {
+        addToast('Tạo đơn thành công', {appearance: 'success'});
+      onClose();
+    } else {
+      addToast(Response.getAPIError(response), {appearance: 'error'});
+    }
   }
 
   const onSubmitUpdate = async (data) => {
@@ -349,14 +426,13 @@ debugger
                       </button>
                       <button onClick={() => {
                         setIsDraft(true);
-                        return handleSubmit(save)
                       }}
-                              className="btn btn-outline-primary mr-50"
+                        className="btn btn-outline-primary mr-50"
                       >
                         {!isEdit ? 'Lưu nháp' : t('common.button.save')}
                       </button>
                       <button onClick={
-                         handleSubmit(save) }
+                        handleSubmit(save)}
                               className="btn btn-primary"
                       >
                         {!isEdit ? 'Gửi đơn' : t('common.button.save')}
@@ -442,8 +518,10 @@ debugger
                                         render={(ctrl) => (
                                           <SelectBox
                                             placeholder="Chọn địa chỉ người gửi"
-                                            onChange={(e) => {
-                                              ctrl.onChange(e)
+                                            onChange={(val) => {
+                                              ctrl.onChange(val)
+                                              const sender = userAddress.find(i => i.id === val);
+                                              setSender(sender);
                                             }}
                                             value={ctrl.value}
                                             options={userAddress}
@@ -853,7 +931,8 @@ debugger
                                             onChange={(val) => {
                                               ctrl.onChange(val)
                                               const _package = userPackage.find(i => i.id === val);
-                                              if (receiver) {
+                                              setListPackage([_package]);
+                                              if (_package) {
                                                 setValue('package_name', _package.name)
                                                 clearErrors('package_name')
                                                 setValue('package_weight', _package.weight)
@@ -869,7 +948,7 @@ debugger
                                             value={ctrl.value}
                                             options={userPackage}
                                             optionValue="id"
-                                            getOptionLabel={option => `${option.name} - ${option.price}, ${option.weight}`}
+                                            getOptionLabel={option => `${option.name} - ${option.price ? filters.currency(option.price) + 'đ' : ''} - ${option.weight} gram`}
                                           />
                                         )}
                                         name="package"
@@ -1059,6 +1138,7 @@ debugger
                                               labelClassName="d-flex"
                                               value={'2'}
                                               name="type"
+                                              disabled={sender?.province_id === watch('receiver_province') || false}
                                               radioClass="iradio_square-blue mx-1"
                                               increaseArea="20%"
                                               label="Đường bay"
@@ -1106,6 +1186,7 @@ debugger
                                               radioClass="iradio_square-blue mx-1"
                                               increaseArea="20%"
                                               label="Nhanh (trong ngày)"
+                                              title="Trong ngày đối với đơn nội tỉnh"
                                             />
                                           </RadioGroup>
                                         )}
@@ -1178,7 +1259,7 @@ OrderForm.propTypes = {
   roles: PropTypes.array,
   provinces: PropTypes.array,
   detail: PropTypes.object,
-  isDealer: PropTypes.bool
+  isStaff: PropTypes.bool
 };
 
 OrderForm.defaultProps = {
@@ -1186,7 +1267,7 @@ OrderForm.defaultProps = {
   postOffices: [],
   roles: [],
   provinces: [],
-  isDealer: false
+  isStaff: false
 };
 
 export default OrderForm;
