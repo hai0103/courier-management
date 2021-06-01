@@ -32,12 +32,11 @@ function NavBarRight(props) {
                         id="dropdown-flag" href="#"
                         data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
-                        <i className="flag-icon flag-icon-us"/>
+                        <i className="flag-icon flag-icon-vn"/>
                         <span className="selected-language"/>
                     </a>
                     <div className="dropdown-menu" aria-labelledby="dropdown-flag">
-                        <a className="dropdown-item"
-                           href="#">
+                        <a className="dropdown-item" href="#">
                             <i className="flag-icon flag-icon-vn"/>
                             Vietnamese
                         </a>
@@ -49,7 +48,7 @@ function NavBarRight(props) {
                     </div>
                 </li>
 
-                <li className="d-none dropdown dropdown-notification nav-item">
+                <li className="dropdown dropdown-notification nav-item">
                     <a
                         className="nav-link nav-link-label" href="#"
                         data-toggle="dropdown">
@@ -71,7 +70,7 @@ function NavBarRight(props) {
                                     <div className="media-left">
                                         <div className="avatar avatar-online avatar-sm rounded-circle">
                                             <img
-                                                src="/app-assets/images/portrait/small/avatar-s-27.jpg"
+                                                src="/app-assets/images/portrait/small/no-avt.jpg"
                                                 alt="avatar"/>
                                             <i></i>
                                         </div>
@@ -102,7 +101,12 @@ function NavBarRight(props) {
                     <a
                         className="dropdown-toggle nav-link dropdown-user-link"
                         href="#" data-toggle="dropdown">
-                        <h5 className="user-name mb-0 mx-2 font-weight-bold">{loggedUser?.full_name}</h5>
+                        <h5 className="user-name mb-0 mx-2 font-weight-bold"
+                            style={{
+                                height: 36,
+                                lineHeight: '36px'
+                            }}
+                        >{loggedUser?.full_name}</h5>
                         <div className="avatar avatar-online">
                             <img
                                 src="/app-assets/images/portrait/small/no-avt.jpg"

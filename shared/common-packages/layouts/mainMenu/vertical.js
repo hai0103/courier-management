@@ -20,7 +20,7 @@ function MainMenu() {
 
     useEffect(() => {
         setMainMenu(userType.user_type_code === "DEALER" ? MAIN_MENU_CRM : MAIN_MENU)
-    }, [userType.user_type_code])
+    }, [userType?.user_type_code])
 
 
     const hasChildrenMenu = (menu) => {

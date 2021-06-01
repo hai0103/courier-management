@@ -1,15 +1,15 @@
 import React from "react";
 import Head from "next/head";
-import Login from "components/login";
+import Register from "components/register";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   return (
     <React.Fragment>
       <Head>
-        <title>Đăng nhập</title>
+        <title>Đăng ký</title>
       </Head>
 
-      <Login/>
+      <Register/>
     </React.Fragment>
   );
 }

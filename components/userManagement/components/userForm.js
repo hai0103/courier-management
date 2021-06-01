@@ -114,6 +114,7 @@ function UserForm(props) {
       ...data,
     };
     const response = await UserApi.create(payload);
+    addToast(t('common.message.createSuccess'), {appearance: 'success'});
     if (Response.isSuccessAPI(response)) {
       onClose();
     } else {

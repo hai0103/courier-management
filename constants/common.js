@@ -33,6 +33,9 @@ export const ROUTES = {
     CRM_MONEY:'/crm/money',
     CRM_SEARCH_POST_OFFICE:'/crm/search-post-office',
     CRM_SEARCH_POSTAGE:'/crm/estimate-postage',
+    CRM_ADDRESS:'/crm/address',
+    CRM_RECEIVER:'/crm/receiver',
+    CRM_PACKAGE:'/crm/package',
 
 
 
@@ -183,6 +186,21 @@ export const MAIN_MENU_CRM = [
         title: 'mainMenu.orderMoney',
         falIcon: 'fa-money-check-alt',
         href: ROUTES.CRM_MONEY,
+    },
+    {
+        title: 'mainMenu.address',
+        falIcon: 'fa-mailbox',
+        href: ROUTES.CRM_ADDRESS,
+    },
+    {
+        title: 'mainMenu.receiver',
+        falIcon: 'fa-users',
+        href: ROUTES.CRM_RECEIVER,
+    },
+    {
+        title: 'mainMenu.package',
+        falIcon: 'fa-box-open',
+        href: ROUTES.CRM_PACKAGE,
     },
     {
         title: 'mainMenu.search',
