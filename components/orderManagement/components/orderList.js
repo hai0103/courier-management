@@ -393,20 +393,31 @@ function OrderList(props) {
       //   Cell: ({value}) => filters.dateTime(value)
       // },
       {
-        Header: "Thu hộ",
-        accessor: 'collection_money',
+        Header: 'Hàng hóa',
+        accessor: 'packages',
         sortable: false,
         className: 'td-6 text-truncate',
         headerClassName: 'td-6 text-truncate',
-        Cell: ({value = null}) => <span className="teal">{`${filters.currency(value)}đ`}</span>
+        Cell: ({row = {}}) => <span>
+                    <div className="font-weight-bold">{row.original.order_packages[0]?.package?.name || ''}</div>
+                    <div>SL: {row.original.order_packages[0]?.quantity || ''}</div>
+                </span>
+      },
+      {
+        Header: "Thu hộ",
+        accessor: 'collection_money',
+        sortable: false,
+        className: 'td-4 text-truncate',
+        headerClassName: 'td-4 text-truncate',
+        Cell: ({value = 0}) => <span className="teal">{`${filters.currency(value)}đ`}</span>
       },
       {
         Header: "Cước phí",
         accessor: 'ship_money',
         sortable: false,
-        className: 'td-6 text-truncate',
-        headerClassName: 'td-6 text-truncate',
-        Cell: ({value}) => <span className="teal">{`${filters.currency(value)}đ`}</span>
+        className: 'td-4 text-truncate',
+        headerClassName: 'td-4 text-truncate',
+        Cell: ({value = 0}) => <span className="teal">{`${filters.currency(value)}đ`}</span>
       },
       {
         Header: "Thời gian tạo",

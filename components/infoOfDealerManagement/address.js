@@ -13,6 +13,8 @@ import {PostOfficeApi} from "services/postOffice";
 import {useTranslation} from "react-i18next";
 import {useToasts} from "react-toast-notifications";
 import More from "sharedComponents/more";
+import {getUserProfile} from "utils/localStorage";
+import {UserApi} from "services/user";
 
 function DealerAddressManagement(props) {
   const {t} = useTranslation('common');
@@ -24,13 +26,13 @@ function DealerAddressManagement(props) {
     return (
       <More>
         {
-            <button className="dropdown-item"
-                    onClick={() => {
-                    }}
-            >
-              <i className="fal fa-lock"/>
-              {t('usersManagement.actionBlock.lock')}
-            </button>
+          <button className="dropdown-item"
+                  onClick={() => {
+                  }}
+          >
+            <i className="fal fa-lock"/>
+            {t('usersManagement.actionBlock.lock')}
+          </button>
         }
       </More>
     )
@@ -41,24 +43,18 @@ function DealerAddressManagement(props) {
     const titleSearch = 'địa chỉ';
     const columns = [
       {
-        Header: 'Mã bưu cục',
-        accessor: 'code',
-        sortable: true,
-        className: 'td-6 text-truncate',
-        headerClassName: 'td-6 text-truncate',
-        Cell: ({row = {}}) =>
-          <Link href={`${ROUTES.POST_OFFICE}/${row.original.id}?readOnly`}><a
-            title={row.original.code}>{row.original.code}</a></Link>
+        Header: "  ",
+        className: 'action-col',
+        headerClassName: 'action-col',
+        Cell: ({row}) => actionButton(row)
       },
       {
-        Header: 'Tên bưu cục',
+        Header: 'Họ và tên',
         accessor: 'name',
-        sortable: true,
+        sortable: false,
         className: 'td-6 text-truncate',
         headerClassName: 'td-6 text-truncate',
-        Cell: ({row = {}}) =>
-          <Link href={`${ROUTES.POST_OFFICE}/${row.original.id}?readOnly`}><a
-            title={row.original.name}>{row.original.name}</a></Link>
+        Cell: ({value = ""}) => <span className="font-weight-bold">{value}</span>
       },
       {
         Header: 'Số điện thoại',
@@ -68,22 +64,28 @@ function DealerAddressManagement(props) {
         headerClassName: 'td-4 text-truncate',
       },
       {
-        Header: t('usersManagement.header.lastUpdate'),
-        accessor: 'update_at',
-        sortable: true,
-        className: 'td-6 text-truncate',
-        headerClassName: 'td-6 text-truncate',
-        Cell: ({value}) => filters.dateTime(value)
+        Header: 'Địa chỉ',
+        accessor: 'address',
+        sortable: false,
+        className: 'td-10 text-truncate',
+        headerClassName: 'td-10 text-truncate',
+        Cell: ({row = {}}) => <span
+          title={`${row.original.address || '_'} - ${row.original.ward || '_'} - ${row.original.district || '_'} - ${row.original.province || '_'}`}>
+                    {`${row.original.address || ''} - ${row.original.ward || ''} - ${row.original.district || ''} - ${row.original.province || ''}`}
+                </span>
       },
       {
-        Header: "  ",
-        className: 'action-col',
-        headerClassName: 'action-col',
-        Cell: ({row}) => actionButton(row)
+        Header: 'Mặc định',
+        accessor: 'is_default',
+        className: 'td-6 text-truncate',
+        headerClassName: 'td-6 text-truncate',
+        Cell: ({value = false}) => value ? <i className='fa fa-check primary'/> : ''
       },
     ];
 
     const setRemoteData = async (params) => {
+      const _loggedUser = getUserProfile();
+
       let payload = {
         ...params,
       }
@@ -94,12 +96,12 @@ function DealerAddressManagement(props) {
       }
 
       try {
-        const response = await PostOfficeApi.getList(payload);
+        const response = await UserApi.getListUserAddress(_loggedUser?.id);
         console.log(response)
         if (Response.isSuccessCode(response?.data)) {
-          const {content, totalElements} = Response.getData(response).data || [];
+          const data = Response.getData(response).data || [];
           return {
-            data: content, totalItem: totalElements
+            data: data, totalItem: data.length
           }
         } else {
           console.log(response);
@@ -128,26 +130,23 @@ function DealerAddressManagement(props) {
       <ContentWrapper>
         {
           <DataTable {...dataTable()}
-                     leftControl={
-                       () => (
-                         <h3 className="content-header-title mb-0">Danh sách địa chỉ</h3>
-                       )
-                     }
+             leftControl={
+               () => (
+                 <h3 className="content-header-title mb-0">Danh sách địa chỉ</h3>
+               )
+             }
 
-                     rightControl={
-                       () => (
-                         <Link href={ROUTES.NEW_POSITION}>
-                           <button className="btn btn-primary btn-md"
-                             // disabled={!allows(SYSTEM_PERMISSIONS.CREATE_USER)}
-                           >
-                             {t('usersManagement.userDetail.addNew')}
-                           </button>
-                         </Link>
-                       )
-                     }
+             rightControl={
+               () => (
+                 <button className="btn btn-primary btn-md"
+                 >
+                   {t('usersManagement.userDetail.addNew')}
+                 </button>
+               )
+             }
           />
         }
-    </ContentWrapper>
+      </ContentWrapper>
     </DataTableProvider>
 
   );
@@ -155,6 +154,7 @@ function DealerAddressManagement(props) {
 
 DealerAddressManagement.propTypes = {
   provinces: PropTypes.array,
+  userId: PropTypes.number
 }
 DealerAddressManagement.defaultProps = {
   provinces: [],

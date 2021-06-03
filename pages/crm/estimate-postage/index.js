@@ -5,15 +5,18 @@ import {title, trans} from "utils/helpers";
 import {Response} from "utils/common";
 import {ROUTES} from "constants/common";
 import {AddressApi} from "services/address";
-import DealerAddressManagement from "../../../components/infoOfDealerManagement/address";
+import {AddressInfoProvider} from "providers/addressInfoProvider";
+import EstimatePostage from "../../../components/estimatePostage";
 
-export default function DealerAddressManagementPage(props) {
+export default function EstimatePostagePage(props) {
   return (
     <React.Fragment>
       <Head>
-        <title>Sổ địa chỉ</title>
+        <title>Ước tính cước phí</title>
       </Head>
-      <DealerAddressManagement {...props} isStaff={false}/>
+      <AddressInfoProvider>
+        <EstimatePostage {...props}/>
+      </AddressInfoProvider>
     </React.Fragment>
   );
 }
@@ -36,6 +39,6 @@ export async function getServerSideProps() {
   };
 }
 
-DealerAddressManagementPage.Layout = CommonLayout;
-DealerAddressManagementPage.Title = 'Sổ địa chỉ';
-DealerAddressManagementPage.Href = ROUTES.CRM_ADDRESS;
+EstimatePostagePage.Layout = CommonLayout;
+EstimatePostagePage.Title = 'Ước tính cước phí';
+EstimatePostagePage.Href = ROUTES.CRM_PACKAGE;
