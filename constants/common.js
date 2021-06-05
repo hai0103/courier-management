@@ -27,6 +27,7 @@ export const ROUTES = {
     NEW_DEALER: '/organization/dealer/new',
     ORDER: '/delivery/order',
     NEW_ORDER: '/delivery/order/new',
+    CONFIG_FORMULA: '/delivery/config-formula',
     CRM_DASHBOARD: '/crm/dashboard',
     CRM_NEW_ORDER: '/crm/order/new',
     CRM_ORDER:'/crm/order',
@@ -101,15 +102,15 @@ export const MAIN_MENU = [
         falIcon: 'fa-truck-loading',
         href: ROUTES.ORDER,
     },
-    {
-        title: 'mainMenu.processStatus',
-        falIcon: 'fa-signal',
-        href: ROUTES.ORDER,
-    },
+    // {
+    //     title: 'mainMenu.processStatus',
+    //     falIcon: 'fa-signal',
+    //     href: ROUTES.ORDER,
+    // },
     {
         title: 'mainMenu.configFormula',
         falIcon: 'fa-calculator-alt',
-        href: ROUTES.POSITION,
+        href: ROUTES.CONFIG_FORMULA,
     },
     {
         title: 'mainMenu.permissionManagement',

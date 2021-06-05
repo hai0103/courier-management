@@ -52,14 +52,14 @@ export const OrderApi = {
   async update(data) {
     return await request(
       'POST',
-      `${process.env.API_HOST}admin-command/company/update/${data.id}`,
-      data
+      `${process.env.API_HOST}api/order/update/${data.id}`,
+      data.body
     )
   },
   async delete(id) {
     return await request(
       'POST',
-      `${process.env.API_HOST}admin-command/company/delete/${id}`
+      `${process.env.API_HOST}api/order/delete/${id}`
     )
   },
   async updateStatus(data = {}) {
@@ -68,6 +68,22 @@ export const OrderApi = {
       'POST',
       `${process.env.API_HOST}api/order/update-status?orderId=${orderId}&statusId=${statusId}&userId=${userId}`,
       {}
+    )
+  },
+  async getConfigFormula(data, useInternal = false, headers = {}) {
+    return await request(
+      'GET',
+      `${Utility.getRemoteHost(useInternal)}api/config-formula/all`,
+      {},
+      headers
+    )
+  },
+  async updateConfigFormula(data = {}) {
+    const {id, body} = data;
+    return await request(
+      'POST',
+      `${process.env.API_HOST}api/config-formula/update/${id}`,
+      body
     )
   },
 }

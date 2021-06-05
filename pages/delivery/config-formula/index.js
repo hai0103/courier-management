@@ -5,18 +5,17 @@ import {title, trans} from "utils/helpers";
 import {Response} from "utils/common";
 import {ROUTES} from "constants/common";
 import {AddressApi} from "services/address";
-import DealerReceiverManagement from "../../../components/infoOfDealerManagement/receiver";
+import ConfigFormula from "../../../components/orderManagement/components/configFormula";
 import {DataTableProvider} from "providers/dataTable";
 
-export default function DealerReceiverManagementPage(props) {
-
+export default function ConfigFormulaPage(props) {
   return (
     <React.Fragment>
       <Head>
-        <title>Người nhận quen</title>
+        <title>Cấu hình cước phí</title>
       </Head>
       <DataTableProvider>
-      <DealerReceiverManagement {...props} isStaff={false}/>
+        <ConfigFormula {...props}/>
       </DataTableProvider>
     </React.Fragment>
   );
@@ -40,6 +39,6 @@ export async function getServerSideProps() {
   };
 }
 
-DealerReceiverManagementPage.Layout = CommonLayout;
-DealerReceiverManagementPage.Title = 'Người nhận quen';
-DealerReceiverManagementPage.Href = ROUTES.CRM_RECEIVER;
+ConfigFormulaPage.Layout = CommonLayout;
+ConfigFormulaPage.Title = 'Thiết lập cước phí';
+ConfigFormulaPage.Href = ROUTES.CONFIG_FORMULA;

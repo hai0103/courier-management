@@ -6,6 +6,7 @@ import {Response} from "utils/common";
 import {ROUTES} from "constants/common";
 import {AddressApi} from "services/address";
 import DealerAddressManagement from "../../../components/infoOfDealerManagement/address";
+import {DataTableProvider} from "providers/dataTable";
 
 export default function DealerAddressManagementPage(props) {
   return (
@@ -13,7 +14,9 @@ export default function DealerAddressManagementPage(props) {
       <Head>
         <title>Sổ địa chỉ</title>
       </Head>
-      <DealerAddressManagement {...props} isStaff={false}/>
+      <DataTableProvider>
+        <DealerAddressManagement {...props} isStaff={false}/>
+      </DataTableProvider>
     </React.Fragment>
   );
 }

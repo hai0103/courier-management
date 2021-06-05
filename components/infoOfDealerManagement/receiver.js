@@ -116,29 +116,26 @@ function DealerReceiverManagement(props) {
   };
 
   return (
-    <DataTableProvider>
-      <ContentWrapper>
-        {
-          <DataTable {...dataTable()}
-             leftControl={
-               () => (
-                 <h3 className="content-header-title mb-0">Danh sách người nhận quen</h3>
-               )
-             }
+    <ContentWrapper>
+      {
+        <DataTable {...dataTable()}
+           leftControl={
+             () => (
+               <h3 className="content-header-title mb-0">Danh sách người nhận quen</h3>
+             )
+           }
 
-             rightControl={
-               () => (
-                 <button className="btn btn-primary btn-md"
-                 >
-                   {t('usersManagement.userDetail.addNew')}
-                 </button>
-               )
-             }
-          />
-        }
-      </ContentWrapper>
-    </DataTableProvider>
-
+           rightControl={
+             () => (
+               <button className="btn btn-primary btn-md"
+               >
+                 {t('usersManagement.userDetail.addNew')}
+               </button>
+             )
+           }
+        />
+      }
+    </ContentWrapper>
   );
 }
 

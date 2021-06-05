@@ -6,6 +6,7 @@ import {Response} from "utils/common";
 import {ROUTES} from "constants/common";
 import {AddressApi} from "services/address";
 import DealerPackageManagement from "../../../components/infoOfDealerManagement/package";
+import {DataTableProvider} from "providers/dataTable";
 
 export default function DealerPackageManagementPage(props) {
   return (
@@ -13,7 +14,9 @@ export default function DealerPackageManagementPage(props) {
       <Head>
         <title>Gói hàng đã lưu</title>
       </Head>
-      <DealerPackageManagement {...props} isStaff={false}/>
+      <DataTableProvider>
+        <DealerPackageManagement {...props} isStaff={false}/>
+      </DataTableProvider>
     </React.Fragment>
   );
 }
