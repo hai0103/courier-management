@@ -21,22 +21,22 @@ export const PostOfficeApi = {
     async create(data) {
         return await request(
             'POST',
-            `${process.env.API_HOST}admin-command/company/create`,
+            `${process.env.API_HOST}api/post-office/create`,
             data
         )
     },
     async findById(id, useInternal = false, headers = {}) {
         return await request(
             'GET',
-            `${Utility.getRemoteHost(useInternal)}admin-query/company/find-by-id/${id}`,
+            `${Utility.getRemoteHost(useInternal)}api/post-office/get-by-id/${id}`,
             {},
             headers
         )
     },
-    async update(data) {
+    async update(id, data) {
         return await request(
             'POST',
-            `${process.env.API_HOST}admin-command/company/update/${data.id}`,
+            `${process.env.API_HOST}api/post-office/update/${id}`,
             data
         )
     },

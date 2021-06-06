@@ -10,6 +10,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@react-google-maps/api": "^2.2.0",
     "@stomp/stompjs": "^6.0.0",
     "axios": "^0.20.0",
     "date-fns": "^2.16.1",
@@ -30,6 +31,7 @@
     "react-datepicker": "^3.3.0",
     "react-dom": "16.13.1",
     "react-dropzone": "^11.0.3",
+    "react-google-maps": "^9.4.5",
     "react-hook-form": "^6.8.1",
     "react-i18next": "^11.7.2",
     "react-icheck": "^0.3.8",
@@ -40,6 +42,7 @@
     "react-switch": "^5.0.1",
     "react-table": "^7.5.0",
     "react-toast-notifications": "^2.4.0",
+    "recompose": "^0.30.0",
     "sass": "^1.27.0",
     "sockjs-client": "^1.5.0",
     "styled-components": "^5.1.1"

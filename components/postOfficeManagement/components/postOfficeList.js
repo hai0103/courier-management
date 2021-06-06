@@ -136,8 +136,8 @@ function PostOfficeList(props) {
         Header: 'Mã bưu cục',
         accessor: 'code',
         sortable: true,
-        className: 'td-6 text-truncate',
-        headerClassName: 'td-6 text-truncate',
+        className: 'td-5 text-truncate',
+        headerClassName: 'td-5 text-truncate',
         Cell: ({row = {}}) =>
           <Link href={`${ROUTES.POST_OFFICE}/${row.original.id}?readOnly`}><a
             title={row.original.code}>{row.original.code}</a></Link>
@@ -163,8 +163,8 @@ function PostOfficeList(props) {
         Header: 'Vị trí',
         accessor: 'province',
         sortable: false,
-        className: 'td-10 text-truncate',
-        headerClassName: 'td-10 text-truncate',
+        className: 'td-11 text-truncate',
+        headerClassName: 'td-11 text-truncate',
         Cell: ({row = {}}) => <span
           title={`${row.original.address || '_'} - ${row.original.ward || '_'} - ${row.original.district || '_'} - ${row.original.province || '_'}`}>
                     {`${row.original.address || '_'} - ${row.original.ward || '_'} - ${row.original.district || '_'} - ${row.original.province || '_'}`}
@@ -177,15 +177,15 @@ function PostOfficeList(props) {
         Header: t('usersManagement.header.lastUpdate'),
         accessor: 'update_at',
         sortable: true,
-        className: 'td-6 text-truncate',
-        headerClassName: 'td-6 text-truncate',
+        className: 'td-4 text-truncate',
+        headerClassName: 'td-4 text-truncate',
         Cell: ({value}) => filters.dateTime(value)
       },
       {
         Header: t('usersManagement.header.status'),
         accessor: 'status',
-        className: 'td-6 text-truncate',
-        headerClassName: 'td-6 text-truncate',
+        className: 'td-4 text-truncate',
+        headerClassName: 'td-4 text-truncate',
         sortable: false,
         Cell: ({value = ''}) => <Badge {...statusMapping(value)} />
       },
@@ -317,7 +317,7 @@ function PostOfficeList(props) {
 
                      rightControl={
                        () => (
-                         <Link href={ROUTES.NEW_POSITION}>
+                         <Link href={ROUTES.NEW_POST_OFFICE}>
                            <button className="btn btn-primary btn-md"
                              // disabled={!allows(SYSTEM_PERMISSIONS.CREATE_USER)}
                            >

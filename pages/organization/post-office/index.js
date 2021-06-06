@@ -23,12 +23,6 @@ export async function getServerSideProps(context) {
         const provincesResponse = await AddressApi.getProvinces();
         const provinces = Response.getAPIData(provincesResponse);
 
-        // const districtsResponse = await AddressApi.getDistricts();
-        // const districts = Response.getAPIData(districtsResponse);
-        //
-        // const wardsResponse = await AddressApi.getWards();
-        // const wards = Response.getAPIData(wardsResponse);
-
         return {
             props: {
                 provinces: provinces || [],
