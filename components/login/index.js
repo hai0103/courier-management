@@ -87,7 +87,7 @@ const Login = () => {
                   <fieldset className="form-group position-relative has-icon-left">
                     <input type="text" id="user-name" name="username"
                            className={usernameControl().classNames}
-                           placeholder={t('login.usernamePlaceholder')} ref={register({
+                           placeholder='Số điện thoại' ref={register({
                       required: true
                     })}/>
                     <div className="form-control-position">

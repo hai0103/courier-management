@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Link from 'next/link';
 import {useTranslation} from "react-i18next";
-import {IMAGES, MAIN_MENU, ROUTES, MAIN_MENU_CRM} from 'constants/common';
+import {IMAGES, MAIN_MENU, ROUTES, MAIN_MENU_CRM, MAIN_MENU_EMPLOYEE, MAIN_MENU_SHIPPER} from 'constants/common';
 import {getUserProfile, getUserTypeProfile} from "utils/localStorage";
 
 function MainMenu() {
@@ -19,7 +19,15 @@ function MainMenu() {
     }, [])
 
     useEffect(() => {
-        setMainMenu(userType.user_type_code === "DEALER" ? MAIN_MENU_CRM : MAIN_MENU)
+        if(userType.user_type_code === "DEALER") {
+            setMainMenu(MAIN_MENU_CRM)
+        } else if(userType.user_type_code === "EMPLOYEE") {
+            setMainMenu(MAIN_MENU_EMPLOYEE)
+        } else if(userType.user_type_code === "SHIPPER") {
+            setMainMenu(MAIN_MENU_SHIPPER)
+        } else {
+            setMainMenu(MAIN_MENU)
+        }
     }, [userType?.user_type_code])
 
 

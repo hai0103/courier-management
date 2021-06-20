@@ -219,6 +219,42 @@ export const MAIN_MENU_CRM = [
     }
 ]
 
+export const MAIN_MENU_EMPLOYEE = [
+    {
+        title: 'mainMenu.dashboard',
+        falIcon: 'fa-tachometer-alt',
+        href: ROUTES.HOME,
+    },
+    {
+        title: 'mainMenu.deliveryManagement',
+        isLabel: true,
+    },
+    {
+        title: 'mainMenu.order',
+        falIcon: 'fa-truck-loading',
+        href: ROUTES.ORDER,
+    },
+
+]
+
+export const MAIN_MENU_SHIPPER = [
+    {
+        title: 'mainMenu.dashboard',
+        falIcon: 'fa-tachometer-alt',
+        href: ROUTES.HOME,
+    },
+    {
+        title: 'mainMenu.deliveryManagement',
+        isLabel: true,
+    },
+    {
+        title: 'mainMenu.order',
+        falIcon: 'fa-truck-loading',
+        href: ROUTES.ORDER,
+    },
+
+]
+
 export const API_HOST = process.env.API_HOST;
 export const INTERNAL_API_HOST = process.env.INTERNAL_API_HOST;
 

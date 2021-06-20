@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {DataTableProvider, useDataTable} from "providers/dataTable";
 import PropTypes from "prop-types";
 import ContentWrapper from "layouts/contentWrapper";
@@ -15,11 +15,14 @@ import {useToasts} from "react-toast-notifications";
 import More from "sharedComponents/more";
 import {getUserProfile} from "utils/localStorage";
 import {UserApi} from "services/user";
+import FormAddressModal from "./formAddressModal";
 
 function DealerAddressManagement(props) {
   const {t} = useTranslation('common');
   const {addToast} = useToasts();
   const {refresh: refreshTable} = useDataTable();
+  const [selected, setSelected] = useState({});
+  const [showFormModal, setShowFormModal] = useState(false);
 
 
   const actionButton = (row) => {
@@ -28,10 +31,41 @@ function DealerAddressManagement(props) {
         {
           <button className="dropdown-item"
                   onClick={() => {
+                    setSelected(row.original || {});
+                    setShowFormModal(true);
                   }}
           >
-            <i className="fal fa-lock"/>
-            {t('usersManagement.actionBlock.lock')}
+            <i className="fal fa-pencil"/>
+            Sửa
+          </button>
+        }
+        {!row.original.is_default &&
+          <button className="dropdown-item bg-white"
+                  onClick={async () => {
+                    const payload = {
+                      ...row.original,
+                      is_default: true
+                    }
+                    const response =  await UserApi.updateUserAddress(row.original.id, payload);
+                    if (Response.isSuccessAPI(response)) {
+                      addToast(t('common.message.editSuccess'), {appearance: 'success'});
+                      refreshTable();
+                    } else {
+                      addToast(Response.getAPIError(response), {appearance: 'error'});
+                    }
+                  }}
+          >
+            <i className="fal fa-shield-check"/>
+            Chọn là mặc định
+          </button>
+        }
+        {
+          <button className="dropdown-item"
+                  onClick={() => {
+                  }}
+          >
+            <i className="fal fa-trash"/>
+            Xóa
           </button>
         }
       </More>
@@ -138,6 +172,10 @@ function DealerAddressManagement(props) {
                    rightControl={
                      () => (
                        <button className="btn btn-primary btn-md"
+                               onClick={() => {
+                                 setSelected(null);
+                                 setShowFormModal(true);
+                               }}
                        >
                          {t('usersManagement.userDetail.addNew')}
                        </button>
@@ -145,6 +183,17 @@ function DealerAddressManagement(props) {
                    }
         />
       }
+      <FormAddressModal
+        show={showFormModal}
+        detail={selected}
+        provinces={props.provinces}
+        userId={props.userId}
+        onClose={() => {
+          setShowFormModal(false);
+          refreshTable();
+        }}
+      />
+
     </ContentWrapper>
   );
 }

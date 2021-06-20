@@ -399,8 +399,8 @@ function OrderList(props) {
         className: 'td-6 text-truncate',
         headerClassName: 'td-6 text-truncate',
         Cell: ({row = {}}) => <span>
-                    <div className="font-weight-bold">{row.original.order_packages[0]?.package?.name || ''}</div>
-                    <div>SL: {row.original.order_packages[0]?.quantity || ''}</div>
+                    <div className="font-weight-bold">{row.original?.order_packages?.length > 0 ? row.original?.order_packages[0]?.package?.name || '' : ''}</div>
+                    <div>SL: {row.original?.order_packages?.length > 0 ? row.original?.order_packages[0]?.quantity || '' : ''}</div>
                 </span>
       },
       {

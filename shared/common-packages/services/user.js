@@ -39,13 +39,6 @@ export const UserApi = {
       data
     )
   },
-  async updateSystemRole(id, data) {
-    return await request(
-      'POST',
-      `${process.env.API_HOST}auth-command/user/${id}/update-system-role`,
-      data
-    )
-  },
   async delete(id) {
     return await request(
       'POST',
@@ -86,7 +79,48 @@ export const UserApi = {
       headers
     )
   },
-
+  async createAddress(data) {
+    return await request(
+      'POST',
+      `${process.env.API_HOST}api/user-address/create`,
+      data
+    )
+  },
+  async createPackage(data) {
+    return await request(
+      'POST',
+      `${process.env.API_HOST}api/user-package/create`,
+      data
+    )
+  },
+  async createReceiver(data) {
+    return await request(
+      'POST',
+      `${process.env.API_HOST}api/user-receiver/create`,
+      data
+    )
+  },
+  async updateUserAddress(id, data) {
+    return await request(
+      'POST',
+      `${process.env.API_HOST}api/user-address/update/${id}`,
+      data
+    )
+  },
+  async updateUserPackage(id, data) {
+    return await request(
+      'POST',
+      `${process.env.API_HOST}api/user-package/update/${id}`,
+      data
+    )
+  },
+  async updateUserReceiver(id, data) {
+    return await request(
+      'POST',
+      `${process.env.API_HOST}api/user-receiver/update/${id}`,
+      data
+    )
+  },
   async activeUser(data) {
     const body = data.request;
     return await request(

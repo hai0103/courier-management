@@ -13,12 +13,15 @@ import DataTable from "sharedComponents/dataTable";
 import filters from "utils/filters";
 import {UserApi} from "services/user";
 import {getUserProfile} from "utils/localStorage";
+import FormPackageModal from "./formPackageModal";
 
 function DealerPackageManagement(props) {
   const {t} = useTranslation('common');
   const {addToast} = useToasts();
   const {refresh: refreshTable} = useDataTable();
   const [loggedUser, setLoggedUser] = useState({});
+  const [selected, setSelected] = useState(null);
+  const [showFormModal, setShowFormModal] = useState(false);
 
   useEffect(() => {
     setLoggedUser(getUserProfile() || {});
@@ -30,10 +33,21 @@ function DealerPackageManagement(props) {
         {
           <button className="dropdown-item"
                   onClick={() => {
+                    setSelected(row.original);
+                    setShowFormModal(true);
                   }}
           >
-            <i className="fal fa-lock"/>
-            {t('usersManagement.actionBlock.lock')}
+            <i className="fal fa-pencil"/>
+            Sửa
+          </button>
+        }
+        {
+          <button className="dropdown-item"
+                  onClick={() => {
+                  }}
+          >
+            <i className="fal fa-trash"/>
+            Xóa
           </button>
         }
       </More>
@@ -146,6 +160,10 @@ function DealerPackageManagement(props) {
                    rightControl={
                      () => (
                        <button className="btn btn-primary btn-md"
+                               onClick={() => {
+                                 setSelected(null);
+                                 setShowFormModal(true);
+                               }}
                        >
                          {t('usersManagement.userDetail.addNew')}
                        </button>
@@ -153,6 +171,16 @@ function DealerPackageManagement(props) {
                    }
         />
       }
+
+      <FormPackageModal
+        isEdit={selected !== null && selected !== {} && !!selected.id}
+        show={showFormModal}
+        detail={selected}
+        onClose={() => {
+          setShowFormModal(false);
+          refreshTable();
+        }}
+      />
     </ContentWrapper>
   );
 }

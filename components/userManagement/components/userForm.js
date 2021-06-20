@@ -687,15 +687,15 @@ function UserForm(props) {
                           </div>}
 
                           {/*Quyền hệ thống*/}
-                          {(isEdit && !props.isDealer) ?
+                          {(!props.isDealer) ?
                             <div className="col-xl-3 col-lg-4 col-md-6 col-6">
                               <fieldset className="form-group form-group-sm">
                                 <label>
-                                  Vai trò
+                                  Vị trí
                                 </label>
                                 <article>
                                   <div className="position-relative has-icon-right">
-                                    <InlineInput
+                                    {isEdit ? <InlineInput
                                       type="select"
                                       options={props.roles}
                                       optionLabel="name"
@@ -703,11 +703,27 @@ function UserForm(props) {
                                       name="user_type_id"
                                       register={register()}
                                       handleSubmit={handleSubmit(save)}
-                                      defaultValue={detail?.user_type_id}
+                                      defaultValue={detail?.user_type_id || 1}
                                       defaultLabel={detail?.user_type}
-                                      placeholder={t('createUser.titlePermissionPlaceHolder')}
+                                      placeholder="Chọn vị trí"
                                     >
                                     </InlineInput>
+                                      : <Controller
+                                        render={(ctrl) => (
+                                          <SelectBox
+                                            placeholder="Chọn vị trí"
+                                            options={props.roles}
+                                            onChange={ctrl.onChange}
+                                            value={ctrl.value}
+                                            optionValue="id"
+                                            optionLabel="name"
+                                          />
+                                        )}
+                                        name="user_type_id"
+                                        control={control}
+                                        defaultValue={3}
+                                      />
+                                    }
                                   </div>
                                 </article>
                               </fieldset>
