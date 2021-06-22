@@ -38,10 +38,10 @@ function PasswordBlock(props) {
     }
 
     const save = (data) => {
-        if (!isValidPassword()) {
-            passwordError()
-            return false
-        }
+        // if (!isValidPassword()) {
+        //     passwordError()
+        //     return false
+        // }
 
         if (props.onSave) {
             props.onSave(data, setError)
@@ -148,27 +148,28 @@ function PasswordBlock(props) {
 
     return (
         <>
-            <article className="mb-1">
-                <h6 className="spacing text-transform-none">Mật khẩu bao gồm:</h6>
-                <ul className="list-group list-group-sm list-group-flush pl-50">
-                    {
-                        passwordRules.map((item, i) => {
-                            return <li className="list-group-item" key={i}>
-                                {
-                                    item.status ? <i className="fal fa-check-circle text-success align-middle"/> :
-                                        <i className="fal fa-circle align-middle"/>
-                                }
-                                <span className={item.status ? 'text-success' : ''}
-                                      title={t(item.title)}>{t(item.title)}</span>
-                            </li>
-                        })
-                    }
-                </ul>
-            </article>
+            {/*<article className="mb-1">*/}
+            {/*    <h6 className="spacing text-transform-none">Mật khẩu bao gồm:</h6>*/}
+            {/*    <ul className="list-group list-group-sm list-group-flush pl-50">*/}
+            {/*        {*/}
+            {/*            passwordRules.map((item, i) => {*/}
+            {/*                return <li className="list-group-item" key={i}>*/}
+            {/*                    {*/}
+            {/*                        item.status ? <i className="fal fa-check-circle text-success align-middle"/> :*/}
+            {/*                            <i className="fal fa-circle align-middle"/>*/}
+            {/*                    }*/}
+            {/*                    <span className={item.status ? 'text-success' : ''}*/}
+            {/*                          title={t(item.title)}>{t(item.title)}</span>*/}
+            {/*                </li>*/}
+            {/*            })*/}
+            {/*        }*/}
+            {/*    </ul>*/}
+            {/*</article>*/}
             <form autoComplete="off">
                 {
                     props.hasCurrentPassword && <fieldset className="form-group form-group-sm">
                         <article>
+                            <label>Mật khẩu hiện tại</label>
                             <div className="position-relative has-icon-right">
                                 <input id="oldPassword"
                                        placeholder={props.placeholderOldPass}
@@ -185,6 +186,7 @@ function PasswordBlock(props) {
                     </fieldset>
                 }
                 <fieldset className="form-group form-group-sm">
+                    <label>Mật khẩu mới</label>
                     <article>
                         <div className="position-relative has-icon-right">
                             <input id="password" className={passwordControl().classNames}
@@ -200,6 +202,7 @@ function PasswordBlock(props) {
                     </article>
                 </fieldset>
                 <fieldset className="form-group form-group-sm">
+                    <label>Xác nhận mật khẩu mới</label>
                     <article>
                         <div className="position-relative has-icon-right">
                             <input id="verifyPassword"

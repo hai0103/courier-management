@@ -18,15 +18,20 @@ function ChangePassword(props) {
 
     const onChangePassword = (data) => {
         const userProfile = getUserProfile();
-        UserApi.changePassword(userProfile.userName, data).then(response => {
+        const payload = {
+          ...data,
+          userId: userProfile?.id,
+        }
+      console.log("pass", data)
+        UserApi.changePassword(payload).then(response => {
             if (Response.isSuccessAPI(response)) {
                 addToast(t('common.message.changePasswordSuccess'), {appearance: 'success'});
                 props.onClose()
             } else {
-                setCallOutMessage(Response.getAPIError(response))
+                setCallOutMessage(Response.getAPIErrorV1(response))
             }
         }).catch(error => {
-            setCallOutMessage(Response.getErrorMessage(error))
+            setCallOutMessage(Response.getAPIErrorV1(error))
         })
     }
 

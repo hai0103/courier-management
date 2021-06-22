@@ -101,7 +101,7 @@ function UserForm(props) {
       ...data
     }
 
-    console.log(payload)
+    console.log(data, payload, payloadEdit)
     try {
       isEdit ? await onSubmitUpdate(Utility.trimObjValues(payloadEdit)) : await onSubmitCreate(Utility.trimObjValues(payload));
     } catch (error) {
@@ -701,13 +701,13 @@ function UserForm(props) {
                                       optionLabel="name"
                                       optionValue="id"
                                       name="user_type_id"
-                                      register={register()}
+                                      register={register({name: 'user_type_id', value: detail?.user_type_id})}
+                                      onChange={(e) => setValue('user_type_id', e)}
                                       handleSubmit={handleSubmit(save)}
                                       defaultValue={detail?.user_type_id || 1}
                                       defaultLabel={detail?.user_type}
                                       placeholder="Chọn vị trí"
-                                    >
-                                    </InlineInput>
+                                    />
                                       : <Controller
                                         render={(ctrl) => (
                                           <SelectBox

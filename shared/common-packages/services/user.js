@@ -144,8 +144,8 @@ export const UserApi = {
 
   async updateStatus(id, data) {
     return await request(
-      'POST',
-      `${process.env.API_HOST}api/user/update-status/${id}`,
+      'GET',
+      `${process.env.API_HOST}api/user/update-status?userId=${id}&status=${data}`,
       data
     )
   },
@@ -205,10 +205,10 @@ export const UserApi = {
       `${process.env.API_HOST}auth-query/user/list-permission`
     )
   },
-  async changePassword(username, data) {
+  async changePassword(data) {
     return await request(
       'POST',
-      `${process.env.API_HOST}auth-command/user/change-password/${username}`,
+      `${process.env.API_HOST}api/user/change-password`,
       data
     )
   },

@@ -46,4 +46,7 @@ export default class Response {
 
         throw new Error('Can not get error message from response');
     }
+    static getAPIErrorV1(response) {
+        return response.data.messageError;
+    }
 }

@@ -13,7 +13,7 @@ export default function OrdersManagementPage(props) {
             <Head>
                 <title>Quản lý đơn hàng - vận đơn</title>
             </Head>
-            <OrderManagement {...props}/>
+            <OrderManagement {...props} isStaff={true}/>
         </React.Fragment>
     );
 }

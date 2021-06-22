@@ -153,6 +153,13 @@ function OrderForm(props) {
 
   }
 
+  useEffect(() => {
+    if(watch('sender') && watch('receiver_province') && watch('package_weight')) {
+      calculatePrice();
+    }
+  }, [watch('sender'), watch('receiver_province'), watch('package_weight'), watch('type'),
+    watch('service'), watch('is_send_post_office'), watch('is_receive_post_office'), watch('is_sender_pay_charge'), watch('collection_money')])
+
   const statusMapping = (status) => {
     const mapping = {
       1: {
@@ -408,12 +415,12 @@ function OrderForm(props) {
                     </ul>
                     :
                     <>
-                      <button onClick={() => {
-                        calculatePrice()
-                      }}
-                              className="btn btn-outline-danger mr-50">
-                        Tính
-                      </button>
+                      {/*<button onClick={() => {*/}
+                      {/*  calculatePrice()*/}
+                      {/*}}*/}
+                      {/*        className="btn btn-outline-danger mr-50">*/}
+                      {/*  Tính*/}
+                      {/*</button>*/}
                       <button onClick={() => {
                         reset();
                         setReceiver({});
@@ -830,7 +837,7 @@ function OrderForm(props) {
                                 </fieldset>
                               </div>
 
-                              <div className="col-4 d-flex">
+                              <div className="col-6 d-flex">
                                 {/*Nhận tại bưu cục*/}
                                 <fieldset className="form-group form-group-sm d-flex">
                                   <article style={{alignSelf: "flex-end"}}>

@@ -1,407 +1,759 @@
-import React, {useState} from "react";
-import Head from "next/head";
-import {useForm} from "react-hook-form";
+import SelectBox from "sharedComponents/selectBox";
+import {ROUTES, SYSTEM_PERMISSIONS} from "constants/common";
+import _, {isEmpty} from "lodash";
+import {useRouter} from 'next/router';
+import PropTypes from "prop-types";
+import React, {useEffect, useState} from "react";
+import {FormProvider, useForm, Controller} from "react-hook-form";
 import {useTranslation} from "react-i18next";
-
-import {FormControl} from "utils/common";
+import {useToasts} from 'react-toast-notifications';
+import {UserApi} from "services/user";
+import {FormControl, Response, Utility} from "utils/common";
 import FormRules from "utils/formRules";
+import moment from "moment";
+import {InlineInput} from "sharedComponents/formControl";
+import {SimpleInlineInput} from "sharedComponents/formControl/simpleInlineInput";
+import DateTimeInput from "sharedComponents/dateTimeInput";
+import {useSocket} from "providers/socket";
+import {confirmation} from "utils/helpers";
+import Badge from "sharedComponents/blocks/badge";
+import {useGate} from "providers/accessControl";
+import filters from "utils/filters";
+import InvalidFeedBack from "sharedComponents/formControl/invalidFeedback";
+import {getUserProfile, storeUserProfile} from "utils/localStorage";
+import * as Banks from 'fixtures/banks.json';
+import AddressInfo from "../addressInfo";
+import ChangeAddressModal from "../addressInfo/modalChangeAddress";
 
-function Profile() {
-    const {register, errors, handleSubmit, clearErrors} = useForm();
-    const {t} = useTranslation('common');
-    const [edit, setEdit] = useState(false);
-    const [gender1, setGender1] = useState('Male');
-    const [gender2, setGender2] = useState('Female');
-    const [startDate, setStartDate] = useState(new Date());
+function ProfileForm(props) {
+  const {register, errors, handleSubmit, setError, formState, setValue, control, watch} = useForm();
+  const {addToast} = useToasts();
+  const {t} = useTranslation('common');
+  const router = useRouter();
+  const [isEdit] = useState(() => {
+    return !(_.isEmpty(props.id));
+  });
+  const [readOnly, setReadOnly] = useState(props.readOnly);
+  const [detail, setDetail] = useState({});
+  const [showModalAdd, setShowModalAdd] = useState(false);
+  const {socketClient} = useSocket();
+  const [allows] = useGate()
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
+  const [selectedItem, setSelectedItem] = useState({});
+  const listBank = Banks.default;
 
-    const onSubmit = (data) => {
-        console.log(data);
+  const onClose = () => {
+    router.push(props.isDealer ? ROUTES.DEALER : ROUTES.EMPLOYEE);
+  }
+  //
+  // useEffect(() => {
+  //     props.companies.forEach(item => {
+  //         if (!item.status) {
+  //             item.isDisabled = true
+  //         }
+  //     })
+  // }, [])
+
+  useEffect(() => {
+    getDetail().catch(e => console.log(e))
+  }, [])
+
+
+  const getDetail = async () => {
+    const _loggedUser = getUserProfile();
+
+    const response = await UserApi.findById(_loggedUser?.id);
+    if (Response.isSuccessAPI(response)) {
+      const responseData = Response.getAPIData(response);
+      setDetail(responseData);
+      console.log("detail>>>", responseData, detail)
+    } else {
+      addToast(Response.getAPIError(response), {appearance: 'error'});
+    }
+  }
+
+  useEffect(() => {
+    if (detail && detail.id) {
+      const loggedUser = getUserProfile();
+      if (loggedUser && loggedUser.id === detail.id) {
+        storeUserProfile(detail);
+      }
+    }
+  }, [detail])
+
+  const statusMapping = (status) => {
+    const mapping = {
+      1: {
+        label: t('status.active'),
+        bg: 'success',
+      },
+      2: {
+        label: t('status.waitActive'),
+        bg: 'warning',
+      },
+      0: {
+        label: t('status.block'),
+        bg: 'danger',
+      }
+    }
+
+    return mapping[status] || [];
+  };
+
+  const save = async (data) => {
+    const dateFormat = 'YYYY/MM/DD HH:mm:ss';
+    const payload = {
+      ...data,
+      name: data.full_name,
+      user_type_id: props.isDealer ? 2 : 3
+    }
+    const payloadEdit = {
+      ...detail,
+      ...data,
+      birth_date: moment(data.birth_date).format(dateFormat),
+    }
+
+    console.log(payloadEdit)
+    try {
+      await onSubmitUpdate(Utility.trimObjValues(payloadEdit))
+    } catch (error) {
+      addToast(Response.getErrorMessage(error), {appearance: 'error'});
+    }
+  }
+
+  const onSubmitUpdate = async (data) => {
+    const _loggedUser = getUserProfile();
+    const response = await UserApi.update(_loggedUser?.id, data);
+    if (Response.isSuccessAPI(response)) {
+      addToast(t('common.message.editSuccess'), {appearance: 'success'});
+      setTimeout(() => {
+        reGetDetail();
+      }, 500)
+      setReadOnly(true)
+    } else {
+      addToast(Response.getAPIError(response), {appearance: 'error'});
+    }
+  };
+
+  const updateDetail = (responseData) => {
+    if (responseData) {
+      const mergedData = {
+        ...detail,
+        ...responseData
+      }
+
+      setDetail(mergedData);
+    }
+  }
+
+
+  const reGetDetail = async () => {
+    const _loggedUser = getUserProfile();
+    const response = await UserApi.findById(_loggedUser?.id);
+    if (Response.isSuccessAPI(response)) {
+      const responseData = Response.getAPIData(response);
+      updateDetail(responseData);
+    } else {
+      addToast(Response.getAPIError(response), {appearance: 'error'});
+    }
+  }
+
+  const requiredTextControl = (field) => {
+    const validation = FormControl.getValidation(field, errors);
+    const classNames = FormControl.getControlClassNames([
+      'form-control',
+      validation.className
+    ]);
+    const rules = {
+      required: FormRules.required(),
     };
-    console.log(errors);
 
-    const usernameControl = () => {
-        const validation = FormControl.getValidation('name', errors);
-        const classNames = FormControl.getControlClassNames([
-            'form-control',
-            validation.className
-        ]);
-        const rules = {
-            minLength: FormRules.minLength(6),
-            required: FormRules.required(),
-        };
-
-        return {
-            classNames,
-            rules,
-            ...validation
-        }
+    return {
+      classNames,
+      rules,
+      ...validation
     }
+  };
 
-    const phoneControl = () => {
-        const validation = FormControl.getValidation('Phone', errors);
-        const classNames = FormControl.getControlClassNames([
-            'form-control',
-            validation.className
-        ]);
-        const rules = {
-            minLength: FormRules.maxLength(11),
-            required: FormRules.required(),
-            pattern: FormRules.isNumber(),
-        };
+  const phoneControl = () => {
+    const validation = FormControl.getValidation('phone', errors);
+    const classNames = FormControl.getControlClassNames([
+      'form-control',
+      validation.className
+    ]);
+    const rules = {
+      required: FormRules.required(),
+      minLength: FormRules.minLength(10),
+    };
 
-        return {
-            classNames,
-            rules,
-            ...validation
-        }
+    return {
+      classNames,
+      rules,
+      ...validation
     }
+  }
 
-    const ICControl = () => {
-        const validation = FormControl.getValidation('identityCard', errors);
-        const classNames = FormControl.getControlClassNames([
-            'form-control',
-            validation.className
-        ]);
-        const rules = {
-            minLength: FormRules.maxLength(12),
-            required: FormRules.required(),
-            pattern: FormRules.isNumber(),
-        };
-
-        return {
-            classNames,
-            rules,
-            ...validation
-        }
+  const emailControl = () => {
+    const validation = FormControl.getValidation('email', errors);
+    const classNames = FormControl.getControlClassNames([
+      'form-control',
+      validation.className
+    ]);
+    const rules = {
+      // required: FormRules.required(),
+      pattern: FormRules.isEmail()
+    };
+    return {
+      classNames,
+      rules,
+      ...validation
     }
-
-    const licensePlaceControl = () => {
-        const validation = FormControl.getValidation('licensePlace', errors);
-        const classNames = FormControl.getControlClassNames([
-            'form-control',
-            validation.className
-        ]);
-        const rules = {
-            required: FormRules.required(),
-        };
-
-        return {
-            classNames,
-            rules,
-            ...validation
-        }
-    }
-
-    const AddressControl = () => {
-        const validation = FormControl.getValidation('address', errors);
-        const classNames = FormControl.getControlClassNames([
-            'form-control',
-            validation.className
-        ]);
-        const rules = {
-            required: FormRules.required(),
-        };
-
-        return {
-            classNames,
-            rules,
-            ...validation
-        }
-    }
-
-    const dobControl = () => {
-        const validation = FormControl.getValidation('DOB', errors);
-        const classNames = FormControl.getControlClassNames([
-            'form-control',
-            validation.className
-        ]);
-        const rules = {
-            required: FormRules.required()
-        };
-
-        return {
-            classNames,
-            rules,
-            ...validation
-        }
-    }
-
-    const licenseDateControl = () => {
-        const validation = FormControl.getValidation('date', errors);
-        const classNames = FormControl.getControlClassNames([
-            'form-control',
-            validation.className
-        ]);
-        const rules = {
-            required: FormRules.required()
-        };
-
-        return {
-            classNames,
-            rules,
-            ...validation
-        }
-    }
-
-    const emailControl = () => {
-        const validation = FormControl.getValidation('email', errors);
-        console.log(validation);
-        const classNames = FormControl.getControlClassNames([
-            'form-control',
-            validation.className
-        ]);
-        // console.log(classNames)
-        const rules = {
-            required: FormRules.required(),
-            pattern: FormRules.isEmail(),
-            // validate: (value) => { return !!value.trim()}
-        };
-        // console.log(rules)
-        return {
-            classNames,
-            rules,
-            ...validation
-        }
-    }
-
-    return (
-        <React.Fragment>
-            <Head>
-                <title>profile page</title>
-            </Head>
-            <section id="striped-row-form-layouts">
-                <div className="row">
-                    <div className="col-md-12">
-                        <div className="card card-no-border">
-                            <div className="card-content collpase show">
-                                <div className="card-body">
-
-                                    <form className="form form-horizontal striped-rows form-bordered" onSubmit={handleSubmit(onSubmit)}>
-                                        <div className="form-body">
-                                            <h4 className="form-section">
-                                                <i className="fal fa-user"/>
-                                                {t('profile.title1')}
-                                            </h4>
-                                            <div className="form-group row">
-                                                <label className="col-md-3 label-control">
-                                                    {t('profile.name')}
-                                                </label>
-                                                <div className="col-md-6">
-                                                    <input id="inputName" readOnly={!edit} className={usernameControl().classNames} placeholder={t('profile.name')} name="name"
-                                                        ref={register(usernameControl().rules)}
-                                                    />
-                                                    <div className="invalid-feedback">
-                                                        {usernameControl().errorMessage}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="form-group row">
-                                                <label className="col-md-3 label-control">
-                                                    {t('profile.phone')}
-                                                </label>
-                                                <div className="col-md-6 controls">
-                                                    <input type="text"
-                                                        id="inputPhone" readOnly={!edit} className={phoneControl().classNames} placeholder={t('profile.phone')} name="Phone"
-                                                        ref={register(phoneControl().rules)}
-                                                    />
-                                                    <div className="invalid-feedback">
-                                                        {phoneControl().errorMessage}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="form-group row">
-                                                <label className="col-md-3 label-control">
-                                                    {t('profile.email')}
-                                                </label>
-                                                <div className="col-md-6 controls">
-                                                    <input type="email" id="email" readOnly={!edit} className={emailControl().classNames} placeholder={t('profile.email')} name="email"
-                                                        ref={register(emailControl().rules)}
-                                                    />
-                                                    <div className="invalid-feedback">
-                                                        {emailControl().errorMessage}
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                            <div className="form-group row">
-                                                <label className="col-md-3 label-control">
-                                                    {t('profile.address')}
-                                                </label>
-                                                <div className="col-md-6">
-                                                    <input type="text" id="inputAdd" readOnly={!edit} className={AddressControl().classNames} placeholder={t('profile.address')} name="address"
-                                                        ref={register(AddressControl().rules)}
-                                                    />
-                                                    <div className="invalid-feedback">
-                                                        {AddressControl().errorMessage}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="form-group row">
-                                                <label className="col-md-3 label-control">
-                                                    {t('profile.DOB')}
-                                                </label>
-                                                <div className="col-md-6">
-                                                    <input type="date" id="inputDOB" readOnly={!edit} className={dobControl().classNames} name="DOB"
-                                                        ref={register(dobControl().rules)}
-                                                    />
-                                                    <div className="invalid-feedback">
-                                                        {dobControl().errorMessage}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="form-group row">
-                                                <label className="col-md-3 label-control">
-                                                    {t('profile.gender')}
-                                                </label>
-                                                <div className="col-md-6">
-                                                    <div className='input-group'>
-                                                        <div className="d-inline-block custom-control custom-radio mr-1">
-                                                            <input type="radio" id="male" value={gender1} readOnly={!edit} className="custom-control-input" checked={gender1 === "Male"} name='gender'
-                                                                ref={register}
-                                                            />
-                                                            <label className="custom-control-label" htmlFor="Male">{t('profile.gen-1')}</label>
-                                                        </div>
-                                                        <div className="d-inline-block custom-control custom-radio mr-1">
-                                                            <input type="radio" id="female" value={gender2} readOnly={!edit} className="custom-control-input" checked={gender2 === "Male"} name="gender"
-                                                                ref={register({
-                                                                    required: true
-                                                                })}
-                                                            />
-                                                            <label className="custom-control-label" htmlFor="female">{t('profile.gen-2')}</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <h4 className="form-section">
-                                                <i className="fa fa-paperclip"></i>
-                                                {t('profile.title2')}
-                                            </h4>
-                                            <div className="form-group row">
-                                                <label className="col-md-3 label-control">
-                                                    {t('profile.IC')}
-                                                </label>
-                                                <div className="col-md-6">
-                                                    <input type="text" id="inputIC" readOnly={!edit} className={ICControl().classNames} placeholder={t('profile.IC')} name="identityCard"
-                                                        ref={register(ICControl().rules)}
-                                                    />
-                                                    <div className="invalid-feedback">
-                                                        {ICControl().errorMessage}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="form-group row">
-                                                <label className="col-md-3 label-control">
-                                                    {t('profile.licensePlace')}
-                                                </label>
-                                                <div className="col-md-6">
-                                                    <input type="text" id="inputPlace" readOnly={!edit} className={licensePlaceControl().classNames} placeholder={t('profile.licensePlace')} name="licensePlace"
-                                                        ref={register(licensePlaceControl().rules)}
-                                                    />
-
-                                                    <div className="invalid-feedback">
-                                                        {licensePlaceControl().errorMessage}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="form-group row">
-                                                <label className="col-md-3 label-control">
-                                                    {t('profile.licenseDate')}
-                                                </label>
-                                                <div className="col-md-6">
-                                                    <input type="date" id="inputDate" readOnly={!edit} className={licenseDateControl().classNames} name="date"
-                                                        ref={register(licenseDateControl().rules)}
-                                                    />
-                                                    <div className="invalid-feedback">
-                                                        {licenseDateControl().errorMessage}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="form-group row">
-                                                <label className="col-md-3 label-control">
-                                                    {t('profile.address')}
-                                                </label>
-                                                <div className="col-md-6">
-                                                    <input type="text" id="inputAdd2" readOnly={!edit} className={licensePlaceControl().classNames} placeholder={t('profile.address')} name="address2"
-                                                        ref={register(licensePlaceControl().rules)}
-                                                    />
-                                                    <div className="invalid-feedback">
-                                                        {ICControl().errorMessage}
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                        {!edit ?
-                                            <div className='col-md-12 d-flex justify-content-center align-content-center pt-2'>
-                                                <div className='col-md-6 d-flex justify-content-end pl-2 pr-2'>
-                                                    <button type="button" className="bg-white rounded btn w-80 btn-primary"
-                                                        onClick={() => {
-                                                            setEdit(true)
-                                                        }}
-                                                    >
-                                                        <span className="d-none d-sm-block ml-3 mr-3">{t('profile.changeInfo')}</span>
-                                                    </button>
-                                                </div>
-                                                <div className='col-md-6 d-flex pl-2 pr-2'>
-                                                    <button type="button" className="bg-white rounded w-90 btn btn-primary" data-toggle="modal" data-target="#change-password">
-
-                                                        <span className="d-none d-sm-block ml-2 mr-2">{t('profile.changePass')}</span>
-                                                    </button>
-                                                </div>
-                                            </div> :
-                                            <div className='col-md-12 d-flex justify-content-center align-content-center pt-2'>
-                                                <div className='col-md-6 d-flex justify-content-end pl-2 pr-2'>
-                                                    <button type="button" className="bg-white rounded btn w-80 btn-secondary"
-                                                        onClick={() => {
-                                                            setEdit(false);
-                                                            clearErrors()
-                                                        }}
-                                                    >
-                                                        <span className="d-none d-sm-block ml-3 mr-3">{t('profile.cancel')}</span>
-                                                    </button>
-                                                </div>
-                                                <div className='col-md-6 d-flex pl-2 pr-2'>
-                                                    <button type="submit" className="bg-white rounded  btn btn-primary">
-                                            <span className="d-none d-sm-block ml-3 mr-3">
-                                                {t('profile.confirm')}
-                                            </span>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        }
+  };
 
 
-                                    </form>
+  return (
+    <div className="animated slideInRight">
+      <div className="row">
+        <div className="col-md-12">
+          <div className="card card-no-border mb-0 shadow-none max-height">
+            <div className={'card-header card-header-main bg-light-primary' + (!isEdit ? '' : ' card-header-main-o')}>
+              <h3 className="content-header-title mb-0">
+                Thông tin cá nhân
+              </h3>
+              {
+                !isEdit ? '' : <>
+                  <Badge {...statusMapping(detail?.status)} />
+                </>
+              }
+              <div className="heading-elements">
+                <button onClick={handleSubmit(save)}
+                        className="btn btn-primary"
+                >
+                  {t('common.button.save')}
+                </button>
+              </div>
+            </div>
 
-                                    {/*<Tooltip html={true}*/}
-                                    {/*         positions={"top"}*/}
-                                    {/*         trigger={"hover"}*/}
-                                    {/*         // method={}*/}
-                                    {/*         type={"button"}*/}
-                                    {/*         className="col-md-1 font-large-1 d-flex p-5 align-content-center"*/}
-                                    {/*         content={"<html>\n" +*/}
-                                    {/*         "<body>\n" +*/}
-                                    {/*         "\n" +*/}
-                                    {/*         "<h1>This is heading 1</h1>\n" +*/}
-                                    {/*         "<h2>This is heading 2</h2>\n" +*/}
-                                    {/*         "<h3>This is heading 3</h3>\n" +*/}
-                                    {/*         "<h4>This is heading 4</h4>\n" +*/}
-                                    {/*         "<h5>This is heading 5</h5>\n" +*/}
-                                    {/*         "<h6>This is heading 6</h6>\n" +*/}
-                                    {/*         "\n" +*/}
-                                    {/*         "</body>\n" +*/}
-                                    {/*         "</html>"}*/}
-                                    {/*         title={'Test'}*/}
-                                    {/*/>*/}
-                                </div>
-                            </div>
+            <div className="slide-content">
+              <div className="card-content card-scroll">
+                <FormProvider formState={formState} errors={errors} watch={watch} control={control}>
+                  <form onSubmit={handleSubmit(save)}>
+                    <div className="card card-section">
+                      <div className="card-header">
+                        <div
+                          className="form-section d-flex align-items-center justify-content-between">
+                          <h5 className="mb-0">Thông tin chung</h5>
                         </div>
+                      </div>
+                      <div className="card-body px-0">
+                        <div className="form-row">
+                          {/*            /!* Tên đăng nhập *!/*/}
+                          {/*            <div className="col-xl-3 col-lg-4 col-md-6 col-6">*/}
+                          {/*                <fieldset className="form-group form-group-sm">*/}
+                          {/*                    <label>*/}
+                          {/*                        {t('createUser.loginName')} <sup*/}
+                          {/*                        className="text-danger">*</sup>*/}
+                          {/*                    </label>*/}
+                          {/*                    <article>*/}
+                          {/*                        <div className="position-relative has-icon-right">*/}
+                          {/*                            {*/}
+                          {/*                                isEdit ? <InlineInput*/}
+                          {/*                                        className={loginNameControl().classNames}*/}
+                          {/*                                        defaultValue={detail?.userName}*/}
+                          {/*                                        disabled={true}*/}
+                          {/*                                    /> :*/}
+                          {/*                                    <input id="inputLoginName"*/}
+                          {/*                                           className={loginNameControl().classNames}*/}
+                          {/*                                           placeholder={t('createUser.loginNamePlaceHolder')}*/}
+                          {/*                                           name="userName"*/}
+                          {/*                                           ref={register(loginNameControl().rules)}*/}
+                          {/*                                           readOnly={readOnly || isEdit}*/}
+                          {/*                                           defaultValue={detail?.userName}*/}
+                          {/*                                    />*/}
+                          {/*                            }*/}
+                          {/*                            <InvalidFeedBack*/}
+                          {/*                                message={loginNameControl().errorMessage}/>*/}
+                          {/*                        </div>*/}
+                          {/*                    </article>*/}
+                          {/*                </fieldset>*/}
+                          {/*            </div>*/}
+                          {/* Họ và tên */}
+                          <div className="col-xl-3 col-lg-4 col-md-6 col-6">
+                            <fieldset className="form-group form-group-sm required">
+                              <label>
+                                {t('createUser.fullName')}
+                              </label>
+                              <article>
+                                <div className="position-relative has-icon-right">
+                                    <input id="inputName"
+                                           className={requiredTextControl('full_name').classNames}
+                                           placeholder={t('createUser.fullNamePlaceHolder')}
+                                           name="full_name"
+                                           defaultValue={detail?.full_name}
+                                           ref={register(requiredTextControl('full_name').rules)}
+                                    />
+                                  <InvalidFeedBack
+                                    message={requiredTextControl('full_name').errorMessage}/>
+                                </div>
+                              </article>
+                            </fieldset>
+                          </div>
+                          {/* CMND */}
+                          <div className="col-xl-3 col-lg-4 col-md-6 col-6">
+                            <fieldset className="form-group form-group-sm required">
+                              <label>
+                                Số CMND/CCCD
+                              </label>
+                              <article>
+                                <div className="position-relative has-icon-right">
+                                  {isEdit ?
+                                    <InlineInput className={requiredTextControl('identity_code').classNames}
+                                                 type="number"
+                                                 defaultValue={detail?.identity_code}
+                                                 placeholder={t('createUser.fullNamePlaceHolder')}
+                                                 name="full_name"
+                                                 register={register(requiredTextControl('identity_code').rules)}
+                                                 handleSubmit={handleSubmit(save)}
+                                    />
+                                    :
+                                    <input type="number"
+                                           className={requiredTextControl('identity_code').classNames}
+                                           placeholder="Nhập số CMND/CCCD"
+                                           name="identity_code"
+                                           defaultValue={detail?.identity_code}
+                                           ref={register(requiredTextControl('identity_code').rules)}
+                                    />}
+                                  <InvalidFeedBack
+                                    message={requiredTextControl('identity_code').errorMessage}/>
+                                </div>
+                              </article>
+                            </fieldset>
+                          </div>
+                          {/* Điện thoại */}
+                          <div className="col-xl-3 col-lg-4 col-md-6 col-6">
+                            <fieldset className="form-group form-group-sm required">
+                              <label>
+                                {t('createUser.phone')}
+                              </label>
+                              <article>
+                                <div className="position-relative has-icon-right">
+                                  {(readOnly && isEdit) ?
+                                    <InlineInput defaultValue={detail?.phone}
+                                                 className={phoneControl().classNames}
+                                                 placeholder={t('createUser.phonePlaceHolder')}
+                                                 name="phone"
+                                                 register={register(phoneControl().rules)}
+                                                 handleSubmit={handleSubmit(save)}
+                                    />
+                                    :
+                                    <input type="number"
+                                           defaultValue={detail?.phone}
+                                           className={phoneControl().classNames}
+                                           placeholder={t('createUser.phonePlaceHolder')}
+                                           name="phone"
+                                           ref={register(phoneControl().rules)}
+                                    />}
+                                  <InvalidFeedBack
+                                    message={phoneControl().errorMessage}/>
+                                </div>
+                              </article>
+                            </fieldset>
+                          </div>
+                          {/* Email */}
+                          <div className="col-xl-3 col-lg-4 col-md-6 col-6">
+                            <fieldset className="form-group form-group-sm">
+                              <label>
+                                {t('createUser.email')}
+                              </label>
+                              <article>
+                                <div className="position-relative has-icon-right">
+                                  {
+                                    (isEdit) ?
+                                      <InlineInput defaultValue={detail?.email}
+                                                   className={emailControl().classNames}
+                                                   placeholder={t('createUser.emailPlaceHolder')}
+                                                   name="email"
+                                                   register={register(emailControl().rules)}
+                                                   handleSubmit={handleSubmit(save)}
+                                                   inlineClassName="text-lowercase"
+                                      /> :
+                                      <input type="email"
+                                             defaultValue={detail?.email}
+                                             className={emailControl().classNames}
+                                             placeholder={t('createUser.emailPlaceHolder')}
+                                             name="email"
+                                             ref={register(emailControl().rules)}
+                                      />
+                                  }
+                                  <InvalidFeedBack
+                                    message={emailControl().errorMessage}/>
+                                </div>
+                              </article>
+                            </fieldset>
+                          </div>
+                          {/*<div className="col-xl-3 col-lg-4 col-md-6 col-6">*/}
+                          {/*  <fieldset className="form-group form-group-sm">*/}
+                          {/*    <label>*/}
+                          {/*      {t('agencyManagement.actionEdit.gender')}*/}
+                          {/*    </label>*/}
+                          {/*    <article>*/}
+                          {/*      <div*/}
+                          {/*        className={`position-relative has-icon-right`}>*/}
+                          {/*        {*/}
+                          {/*          isEdit ? <InlineInput*/}
+                          {/*              defaultValue={props.detail?.gender}*/}
+                          {/*              type="select"*/}
+                          {/*              options={GlobalData.gender()}*/}
+                          {/*              optionValue="value"*/}
+                          {/*              optionLabel="label"*/}
+                          {/*              handleSubmit={handleSubmit(save)}*/}
+                          {/*              register={register({name: 'gender', value: props.detail?.gender})}*/}
+                          {/*              onChange={(e) => setValue('gender', e)}*/}
+                          {/*            /> :*/}
+                          {/*            <Controller*/}
+                          {/*              render={(ctrl) => (*/}
+                          {/*                <SelectBox*/}
+                          {/*                  placeholder={t('agencyManagement.actionEdit.placeholderGender')}*/}
+                          {/*                  options={GlobalData.gender()}*/}
+                          {/*                  onChange={ctrl.onChange}*/}
+                          {/*                  value={ctrl.value}*/}
+                          {/*                />*/}
+                          {/*              )}*/}
+                          {/*              name="gender"*/}
+                          {/*              control={control}*/}
+                          {/*              defaultValue={null}*/}
+                          {/*            />*/}
+                          {/*        }*/}
+                          {/*      </div>*/}
+                          {/*    </article>*/}
+                          {/*  </fieldset>*/}
+                          {/*</div>*/}
+                          <div className="col-xl-3 col-lg-4 col-md-6 col-6">
+                            <fieldset className="form-group form-group-sm">
+                              <label>
+                                {t('agencyManagement.actionEdit.dateOfBirth')}
+                              </label>
+                              <article>
+                                <div className="position-relative has-icon-right">
+                                  {
+                                    isEdit ? <InlineInput
+                                        className="form-control"
+                                        defaultValue={detail?.birth_date ? moment(detail?.birth_date).toDate() : null}
+                                        type="dateTime"
+                                        name="birth_date"
+                                        register={register()}
+                                        handleSubmit={handleSubmit(save)}
+                                        filter={filters.date}
+                                        placeholder={t('agencyManagement.actionEdit.placeholderDateOfBirth')}
+                                        opt={{
+                                          showMonthDropdown: true,
+                                          showYearDropdown: true,
+                                          useDateFormat: true
+                                        }}
+                                      /> :
+                                      <Controller
+                                        render={(ctrl) => (
+                                          <DateTimeInput
+                                            placeholder={t('agencyManagement.actionEdit.placeholderDateOfBirth')}
+                                            onChange={ctrl.onChange}
+                                            selected={ctrl.value}
+                                            useDateFormat
+                                            showYearDropdown
+                                            showMonthDropdown
+                                            isDefaultEmpty
+                                          />
+                                        )}
+                                        name="birth_date"
+                                        control={control}
+                                        defaultValue={detail?.birth_date ? moment(detail?.birth_date).toDate() : null}
+                                      />
+                                  }
+                                </div>
+                              </article>
+                            </fieldset>
+                          </div>
+
+                          {/* MST */}
+                          {props.isDealer && <div className="col-xl-3 col-lg-4 col-md-6 col-6">
+                            <fieldset className="form-group form-group-sm">
+                              <label>
+                                Mã số thuế
+                              </label>
+                              <article>
+                                <div className="position-relative has-icon-right">
+                                  {isEdit ?
+                                    <InlineInput
+                                      className={`form-control ${FormControl.getValidation('tax_code', errors).className}`}
+                                      type="number"
+                                      defaultValue={detail?.tax_code}
+                                      name="tax_code"
+                                      register={register({
+                                        minLength: FormRules.minLength(10)
+                                      })}
+                                      handleSubmit={handleSubmit(save)}
+                                    />
+                                    :
+                                    <input
+                                      type="number"
+                                      className={`form-control ${FormControl.getValidation('tax_code', errors).className}`}
+                                      placeholder="Nhập số Mã số thuế"
+                                      name="tax_code"
+                                      defaultValue={detail?.tax_code}
+                                      ref={register({
+                                        minLength: FormRules.minLength(10)
+                                      })}
+                                    />}
+                                  <InvalidFeedBack
+                                    message={FormControl.getValidation('tax_code', errors).errorMessage}/>
+                                </div>
+                              </article>
+                            </fieldset>
+                          </div>}
+
+                        </div>
+                      </div>
                     </div>
-                </div>
-            </section>
-        </React.Fragment>
-    )
+
+
+                    {props.isDealer && <div className="card card-section card-list">
+                      <div className="card-header">
+                        <div className="form-section d-flex align-items-center">
+                          <h5 className="mb-0">{t('companyManagement.bankAccounts')}</h5>
+                        </div>
+                      </div>
+                      <div className="card-body px-0 pt-1">
+                        <div className="form-row pt-0">
+                          {/* Ngân hàng */}
+                          <div className="col-xl-3 col-lg-4 col-md-6 col-6">
+                            <fieldset
+                              className="form-group form-group-sm">
+                              <label>{t('companyManagement.actionCreate.bank')}</label>
+                              <article>
+                                <div
+                                  className='position-relative has-icon-right'>
+                                  {isEdit ?
+                                    <SimpleInlineInput
+                                      defaultValue={detail?.bank_id}
+                                      placeholder={t('companyManagement.actionCreate.bankPlaceholder')}
+                                      type="select"
+                                      options={listBank}
+                                      optionLabel="nameVN"
+                                      optionValue="id"
+                                      name="bank_id"
+                                      register={register()}
+                                      getOptionLabel={(option) => `${option.nameVN} (${option.name})`}
+                                      handleSubmit={handleSubmit(save)}
+                                    >
+                                    </SimpleInlineInput>
+                                    :
+                                    <Controller
+                                      render={(ctrl) => (
+                                        <SelectBox
+                                          options={listBank}
+                                          optionLabel="nameVN"
+                                          optionValue="id"
+                                          placeholder={t('companyManagement.actionCreate.bankPlaceholder')}
+                                          onChange={ctrl.onChange}
+                                          getOptionLabel={(option) => `${option.nameVN} (${option.name})`}
+                                        >
+                                        </SelectBox>
+                                      )}
+                                      name="bank_id"
+                                      control={control}
+                                      defaultValue={detail?.bank_id}
+                                    />
+                                  }
+                                </div>
+                              </article>
+                            </fieldset>
+                          </div>
+                          {/* Số tài khoản */}
+                          <div className="col-xl-3 col-lg-4 col-md-6 col-6">
+                            <fieldset
+                              className="form-group form-group-sm">
+                              <label>{t('companyManagement.actionCreate.accountNumber')}</label>
+                              <article>
+                                <div
+                                  className='position-relative has-icon-right'>
+                                  {isEdit ?
+                                    <SimpleInlineInput
+                                      className="form-control"
+                                      defaultValue={detail.bank_account_number}
+                                      type="text"
+                                      name="bank_account_number"
+                                      register={register()}
+                                      handleSubmit={handleSubmit(save)}
+                                      placeholder={t('companyManagement.actionCreate.accountNumberPlaceholder')}
+                                    >
+                                    </SimpleInlineInput>
+                                    :
+                                    <input type="text"
+                                           className="form-control"
+                                           placeholder={t('companyManagement.actionCreate.accountNumberPlaceholder')}
+                                           name="bank_account_number"
+                                           ref={register}
+                                           defaultValue={detail.bank_account_number}
+                                    />}
+                                </div>
+                              </article>
+                            </fieldset>
+                          </div>
+                          {/* Tên tài khoản */}
+                          <div className="col-xl-3 col-lg-4 col-md-6 col-6">
+                            <fieldset
+                              className="form-group form-group-sm">
+                              <label>{t('companyManagement.actionCreate.accountName')}</label>
+                              <article>
+                                <div
+                                  className='position-relative has-icon-right'>
+                                  {
+                                    isEdit ?
+                                      <SimpleInlineInput
+                                        className="form-control"
+                                        defaultValue={detail?.bank_account_name}
+                                        type="text"
+                                        name="bank_account_name"
+                                        register={register()}
+                                        handleSubmit={handleSubmit(save)}
+                                        placeholder={t('companyManagement.actionCreate.accountNamePlaceholder')}
+                                      >
+                                      </SimpleInlineInput>
+                                      :
+                                      <input type="text"
+                                             className="form-control"
+                                             placeholder={t('companyManagement.actionCreate.accountNamePlaceholder')}
+                                             name="bank_account_name"
+                                             ref={register}
+                                             defaultValue={detail?.bank_account_name}
+                                      />}
+                                </div>
+                              </article>
+                            </fieldset>
+                          </div>
+                        </div>
+                      </div>
+                    </div>}
+
+                    {<div className="card card-section">
+                      <div className="card-header">
+                        <div
+                          className="form-section d-flex align-items-center">
+                          <h5
+                            className={`mb-0 ${isEdit && ''}`}>{props.isDealer ? "Thông tin địa chỉ thường chú - xuất hóa đơn" : "Thông tin địa chỉ"}</h5>
+
+                        </div>
+                      </div>
+                      <div className="card-body px-0">
+                        <div className="form-row">
+                          <AddressInfo
+                            detail={detail}
+                            provinces={props.provinces}
+                            isEdit={true}
+                            isRequired={false}
+                          />
+                          <div className="col-xl-3 col-lg-4 col-md-6 col-6">
+                            <fieldset className="form-group form-group-sm">
+                              <label>
+                                {t('agencyManagement.actionEdit.address')}
+                              </label>
+                              <article>
+                                <div className="position-relative has-icon-right">
+                                  {
+                                    isEdit ? <InlineInput
+                                        type="textarea"
+                                        className="form-control"
+                                        defaultValue={detail?.address}
+                                        placeholder={t('agencyManagement.actionEdit.placeholderAddress')}
+                                        name="address"
+                                        register={register()}
+                                        handleSubmit={handleSubmit(save)}
+                                      /> :
+                                      <textarea className="form-control"
+                                                placeholder={t('agencyManagement.actionEdit.placeholderAddress')}
+                                                name="address"
+                                                ref={register()}
+                                                defaultValue={detail?.address}
+                                      />
+                                  }
+                                </div>
+                              </article>
+                            </fieldset>
+                          </div>
+                        </div>
+                        <div className="pt-50">
+                          {
+                            isEdit && <a onClick={() => {
+                              setShowModalAdd(true)
+                            }}
+                                         type="button" className={`has-addon`}
+                                         title={t('agencyManagement.actionEdit.editAddress')}>
+                              <i className="fal fa-pen"/><span>{t('agencyManagement.actionEdit.editAddress')}</span>
+                            </a>
+                          }
+                        </div>
+                      </div>
+                    </div>}
+
+
+                    <ChangeAddressModal
+                      isRequired={false}
+                      title={t('agencyManagement.actionEdit.editAddress')}
+                      show={showModalAdd}
+                      onClose={() => {
+                        setShowModalAdd(false);
+                      }}
+                      detail={props.detail}
+                      provinces={props.provinces}
+                      onSave={(obj = {}) => {
+                        save({
+                          ...detail,
+                          province_id: obj.province_id,
+                          district_id: obj.district_id,
+                          wards_id: obj.wards_id,
+                        });
+                        setShowModalAdd(false);
+                      }}
+                    />
+                  </form>
+                </FormProvider>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/*<StatusSwitcher*/}
+      {/*    show={showModalConfirm}*/}
+      {/*    onClose={() => {*/}
+      {/*        setShowModalConfirm(false);*/}
+      {/*    }}*/}
+      {/*    onConfirm={statusHandler}*/}
+      {/*    reasonLabel={t('usersManagement.actionBlock.reason')}*/}
+      {/*    targetLabel={t('usersManagement.title')}*/}
+      {/*    blockLabel={t('usersManagement.actionBlock.lock')}*/}
+      {/*    unBlockLabel={t('usersManagement.actionBlock.unlock')}*/}
+      {/*    entity={selectedItem}*/}
+      {/*/>*/}
+
+    </div>
+  )
 }
 
-export default Profile;
+ProfileForm.propTypes = {
+  readOnly: PropTypes.bool,
+  postOffices: PropTypes.array,
+  roles: PropTypes.array,
+  provinces: PropTypes.array,
+  detail: PropTypes.object,
+  isDealer: PropTypes.bool
+};
+
+ProfileForm.defaultProps = {
+  readOnly: false,
+  postOffices: [],
+  roles: [],
+  provinces: [],
+  isDealer: false
+};
+
+export default ProfileForm;

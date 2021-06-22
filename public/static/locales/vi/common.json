@@ -97,6 +97,7 @@
     "receiver": "Người nhận",
     "package": "Gói hàng",
 
+    "profile": "Thông tin cá nhân",
     "users": "Người dùng",
     "management": "Quản lý",
     "company": "Đơn Vị",
@@ -133,7 +134,7 @@
     "register": " Đăng ký",
     "login": " Đăng nhập",
     "rememberMe": "Nhớ thông tin của tôi",
-    "loginFailure": "Tên người dùng hoặc mật khẩu không đúng.",
+    "loginFailure": "Tên người dùng hoặc mật khẩu không đúng. Hoặc tài khoản chưa được kích hoạt.",
     "loginBlocked": "Tài khoản của bạn đang bị khóa."
   },
   "register": {

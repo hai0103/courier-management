@@ -75,6 +75,11 @@ export const MAIN_MENU = [
         href: ROUTES.HOME,
     },
     {
+        title: 'mainMenu.profile',
+        falIcon: 'fa-address-card',
+        href: ROUTES.PROFILE,
+    },
+    {
         title: 'mainMenu.organizationsManagement',
         isLabel: true,
     },
@@ -170,6 +175,11 @@ export const MAIN_MENU_CRM = [
         href: ROUTES.CRM_DASHBOARD,
     },
     {
+        title: 'mainMenu.profile',
+        falIcon: 'fa-address-card',
+        href: ROUTES.PROFILE,
+    },
+    {
         title: 'mainMenu.newOrder',
         falIcon: 'fa-newspaper',
         href: ROUTES.CRM_NEW_ORDER,
@@ -226,6 +236,11 @@ export const MAIN_MENU_EMPLOYEE = [
         href: ROUTES.HOME,
     },
     {
+        title: 'mainMenu.profile',
+        falIcon: 'fa-address-card',
+        href: ROUTES.PROFILE,
+    },
+    {
         title: 'mainMenu.deliveryManagement',
         isLabel: true,
     },
@@ -242,6 +257,11 @@ export const MAIN_MENU_SHIPPER = [
         title: 'mainMenu.dashboard',
         falIcon: 'fa-tachometer-alt',
         href: ROUTES.HOME,
+    },
+    {
+        title: 'mainMenu.profile',
+        falIcon: 'fa-address-card',
+        href: ROUTES.PROFILE,
     },
     {
         title: 'mainMenu.deliveryManagement',

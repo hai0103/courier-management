@@ -90,11 +90,11 @@ function OrderList(props) {
   const actionButton = (row) => {
     return (
       <More>
-        <Link href={`/users/${row.original.id}?readOnly`}>
+        {row.original.status_id === 1 && <Link href={`${props.isStaff ? ROUTES.ORDER : ROUTES.CRM_ORDER}/${row.original.id}?readOnly`}>
           <button className="dropdown-item edit">
             <i className="fal fa-pen"/>{t('usersManagement.actionBlock.edit')}
           </button>
-        </Link>
+        </Link>}
         {
           (loggedUser?.user_type_code === "DEALER" && row.original.status_id === 10) &&
           <button className="dropdown-item"
@@ -325,7 +325,7 @@ function OrderList(props) {
         className: 'td-6 text-truncate',
         headerClassName: 'td-6 text-truncate',
         Cell: ({row = {}}) =>
-          <Link href={`${ROUTES.ORDER}/${row.original.id}?readOnly`}><a
+          <Link href={`${props.isStaff ? ROUTES.ORDER : ROUTES.CRM_ORDER}/${row.original.id}?readOnly`}><a
             title={row.original.code}>{row.original.code}</a></Link>
       },
       {
@@ -577,6 +577,19 @@ function OrderList(props) {
                              </div>
                            </li>
                          </ul>
+                       )
+                     }
+                     rightControl={
+                       () => (
+                         <>
+                           {props.isStaff && <Link href={ROUTES.CRM_NEW_ORDER}>
+                             <button className="btn btn-primary btn-md"
+                               // disabled={!allows(SYSTEM_PERMISSIONS.CREATE_USER)}
+                             >
+                               Tạo
+                             </button>
+                           </Link>}
+                         </>
                        )
                      }
           />

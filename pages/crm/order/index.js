@@ -46,4 +46,4 @@ export async function getServerSideProps() {
 
 OrdersManagementPage.Layout = CommonLayout;
 OrdersManagementPage.Title = 'Quản lý đơn hàng - vận đơn';
-OrdersManagementPage.Href = ROUTES.ORDER;
+OrdersManagementPage.Href = ROUTES.CRM_ORDER;
