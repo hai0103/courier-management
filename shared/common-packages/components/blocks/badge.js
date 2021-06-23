@@ -15,10 +15,14 @@ function Badge(props) {
               <span className="text-truncate" title={label}>{label}</span>
             </div>
           </div> :
-          <div className="d-flex align-items-center">
-            <i className={"fas fa-circle fa-xs mx-50 small text-" + bg}></i>
-            <div className="text-truncate" title={label}>{label}</div>
-          </div>
+          props.isClassicBadge
+            ? <div className={"badge badge-" + bg}>
+              {label}
+            </div>
+            : <div className="d-flex align-items-center">
+        <i className={"fas fa-circle fa-xs mx-50 small text-" + bg}></i>
+        <div className="text-truncate" title={label}>{label}</div>
+        </div>
       }
     </div>
   );
@@ -28,13 +32,15 @@ Badge.propTypes = {
   label: PropTypes.string,
   title: PropTypes.string,
   bg: PropTypes.string,
-  isInForm: PropTypes.bool
+  isInForm: PropTypes.bool,
+  isClassicBadge: PropTypes.bool
 };
 
 Badge.defaultProps = {
   label: 'No label',
   bg: 'primary',
-  isInForm: false
+  isInForm: false,
+  isClassicBadge: false,
 };
 
 export default Badge;

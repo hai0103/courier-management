@@ -121,4 +121,20 @@ export const GlobalData = {
             },
         ];
     },
+    processStatusPayment() {
+        return [
+            {
+                label: "Chưa đối soát",
+                value: 4,
+            },
+            {
+                label: "Đã đối soát",
+                value: 13,
+            },
+            {
+                label: "Đã trả tiền",
+                value: 14,
+            },
+        ];
+    },
 }

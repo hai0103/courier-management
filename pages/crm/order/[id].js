@@ -57,11 +57,18 @@ export async function getServerSideProps(router) {
     // });
     // const roles = Response.getAPIData(roleResponse);
 
+    const historyResponse = await OrderApi.trackingOrder({
+      orderId: id,
+      type: "1"
+    });
+    const histories = Response.getAPIData(historyResponse) || [];
+
     return {
       props: {
         id,
         postOffices: postOffices,
         provinces: provinces,
+        histories: histories,
         detail,
         readOnly,
         isDealer: true

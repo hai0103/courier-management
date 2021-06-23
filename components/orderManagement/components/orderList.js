@@ -45,6 +45,14 @@ function OrderList(props) {
         label: "Giao thành công",
         bg: 'success',
       },
+      13: {
+        label: "Giao thành công",
+        bg: 'success',
+      },
+      14: {
+        label: "Giao thành công",
+        bg: 'success',
+      },
       5: {
         label: "Chờ xử lý",
         bg: 'warning',
@@ -82,6 +90,26 @@ function OrderList(props) {
     return mapping[status] || [];
   };
 
+  const statusMappingPayment = (status) => {
+    const mapping = {
+
+      4: {
+        label: "Chưa đối soát",
+        bg: 'warning',
+      },
+      13: {
+        label: "Đã đối soát",
+        bg: 'primary',
+      },
+      14: {
+        label: "Đã trả tiền",
+        bg: 'success',
+      },
+    }
+
+    return mapping[status] || [];
+  };
+
   useEffect(() => {
     setLoggedUser(getUserProfile() || {});
     countOrder().catch(e => console.log(e));
@@ -90,7 +118,7 @@ function OrderList(props) {
   const actionButton = (row) => {
     return (
       <More>
-        {row.original.status_id === 1 && <Link href={`${props.isStaff ? ROUTES.ORDER : ROUTES.CRM_ORDER}/${row.original.id}?readOnly`}>
+        {(row.original.status_id === 1 || row.original.status_id === 10 || row.original.status_id === 5) && <Link href={`${props.isStaff ? ROUTES.ORDER : ROUTES.CRM_ORDER}/${row.original.id}?readOnly`}>
           <button className="dropdown-item edit">
             <i className="fal fa-pen"/>{t('usersManagement.actionBlock.edit')}
           </button>
@@ -262,6 +290,54 @@ function OrderList(props) {
           >
             <i className="fal fa-unlock"/>
             Đã giao đơn
+          </button>
+        }
+        {
+          ((loggedUser?.user_type_code === "SHIPPER" || loggedUser?.user_type_code === "EMPLOYEE" || loggedUser?.user_type_code === "SUPER_ADMIN") && (row.original.status_id === 4)) &&
+          <button className="dropdown-item"
+                  onClick={() => {
+                    confirmation({
+                      content: "Xác nhận đã đối soát thành công đơn hàng này",
+                      title: "Xác nhận đối soát",
+                      onConfirm: async ({onClose}) => {
+                        await updateStatus(row.original.id, 13)
+                          .then(() => {
+                            onClose()
+                            setTimeout(() => {
+                              reloadTable()
+                            }, 300)
+                          })
+                          .catch(error => addToast(Response.getErrorMessage(error), {appearance: 'error'}))
+                      }
+                    })
+                  }}
+          >
+            <i className="fal fa-tasks"/>
+            Đã đối soát
+          </button>
+        }
+        {
+          ((loggedUser?.user_type_code === "SHIPPER" || loggedUser?.user_type_code === "EMPLOYEE" || loggedUser?.user_type_code === "SUPER_ADMIN") && (row.original.status_id === 13)) &&
+          <button className="dropdown-item"
+                  onClick={() => {
+                    confirmation({
+                      content: "Xác nhận đã thanh toán thành công đơn hàng này",
+                      title: "Xác nhận thanh toán",
+                      onConfirm: async ({onClose}) => {
+                        await updateStatus(row.original.id, 14)
+                          .then(() => {
+                            onClose()
+                            setTimeout(() => {
+                              reloadTable()
+                            }, 300)
+                          })
+                          .catch(error => addToast(Response.getErrorMessage(error), {appearance: 'error'}))
+                      }
+                    })
+                  }}
+          >
+            <i className="fal fa-file-invoice"/>
+            Thanh toán
           </button>
         }
         {
@@ -442,6 +518,14 @@ function OrderList(props) {
         headerClassName: 'td-6 text-truncate',
         sortable: false,
         Cell: ({value = ''}) => <Badge {...statusMapping(value)} />
+      },
+      {
+        Header: 'Đối soát',
+        accessor: 'status',
+        className: 'td-6 text-truncate',
+        headerClassName: 'td-6 text-truncate',
+        sortable: false,
+        Cell: ({row = {}}) => [4, 13, 14].includes(row.original.status_id) ? <Badge {...statusMappingPayment(row.original.status_id)} isClassicBadge/> : ""
       },
     ];
 

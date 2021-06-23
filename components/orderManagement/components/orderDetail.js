@@ -91,6 +91,14 @@ function OrderDetail(props) {
         label: "Giao thành công",
         bg: 'success',
       },
+      13: {
+        label: "Giao thành công",
+        bg: 'success',
+      },
+      14: {
+        label: "Giao thành công",
+        bg: 'success',
+      },
       5: {
         label: "Chờ xử lý",
         bg: 'warning',
@@ -127,7 +135,6 @@ function OrderDetail(props) {
 
     return mapping[status] || [];
   };
-
 
   const save = async (data) => {
     const payload = {
@@ -278,7 +285,7 @@ function OrderDetail(props) {
                   <form onSubmit={handleSubmit(save)}>
                     <div className="row">
                       <div className="col-4">
-                        <div className="card-section box-shadow-1 bg-white">
+                        <div className="card-section box-shadow-1 bg-white" style={{minHeight: 550}}>
                           <div className="card-body px-1">
                             <div className="form-row m-0">
                               <div className="col-6">
@@ -315,6 +322,7 @@ function OrderDetail(props) {
                               <div className="col-12 mt-50">
                                 {`${detail?.sender_address || '_'} - ${detail?.sender_wards_name || '_'} - ${detail?.sender_district_name || '_'} - ${detail?.sender_province_name || '_'}`}
                               </div>
+
                               {/*Nhan*/}
                               <div className="nav col-12 my-1" style={{height: 4}}>
                                 <div className="dropdown-divider m-0 w-100"></div>
@@ -329,15 +337,53 @@ function OrderDetail(props) {
                                 {`${detail?.receiver_address || '_'} - ${detail?.receiver_wards_name || '_'} - ${detail?.receiver_district_name || '_'} - ${detail?.receiver_province_name || '_'}`}
                               </div>
 
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-4">
-                        <div className="card-section box-shadow-1 bg-white">
-                          <div className="card-body px-0">
-                            <div className="form-row m-0">
-                              123
+                              {/*Phi*/}
+                              <div className="nav col-12 my-1" style={{height: 4}}>
+                                <div className="dropdown-divider m-0 w-100"></div>
+                              </div>
+                              <div className="col-12 red font-weight-bold">
+                                Cước phí và tiền thu hộ
+                              </div>
+                              <div className="col-6 mt-50 font-weight-bold">
+                                Phí vận chuyển:
+                              </div>
+                              <div className="col-6 mt-50 text-right red font-weight-bold">
+                                {detail?.ship_money ? filters.currency(detail?.ship_money) : ""} đ
+                              </div>
+                              <div className="col-6 mt-50 font-weight-bold">
+                                {detail?.is_sender_pay_charge ? "(Người gửi trả phí)" : "(Người nhận trả phí)"}
+                              </div>
+                              <div className="col-6">
+                                {" "}
+                              </div>
+                              <div className="col-6 mt-50 font-weight-bold">
+                                Tổng cước:
+                              </div>
+                              <div className="col-6 mt-50 text-right red font-weight-bold">
+                                {detail?.ship_money ? filters.currency(detail?.ship_money) : ""} đ
+                              </div>
+                              <div className="col-6 mt-50">
+                                Tiền thu hộ:
+                              </div>
+                              <div className="col-6 mt-50 text-right">
+                                {detail?.collection_money ? filters.currency(detail?.collection_money) : ""} đ
+                              </div>
+                              <div className="col-6 mt-50 font-weight-bold">
+                                Tiền thu người nhận:
+                              </div>
+                              <div className="col-6 mt-50 text-right font-weight-bold">
+                                {detail?.is_sender_pay_charge
+                                  ? filters.currency(detail?.collection_money)
+                                  : filters.currency(detail?.collection_money + detail?.ship_money)} đ
+                              </div>
+                              <div className="col-6 mt-50">
+                                Tiền trả người gửi:
+                              </div>
+                              <div className="col-6 mt-50 text-right">
+                                {detail?.is_sender_pay_charge
+                                  ? filters.currency(detail?.collection_money - detail?.ship_money)
+                                  : filters.currency(detail?.collection_money)} đ
+                              </div>
 
 
                             </div>
@@ -345,12 +391,102 @@ function OrderDetail(props) {
                         </div>
                       </div>
                       <div className="col-4">
-                        <div className="card-section box-shadow-1 bg-white">
-                          <div className="card-body px-0">
+                        <div className="card-section box-shadow-1 bg-white" style={{minHeight: 550}}>
+                          <div className="card-body px-1">
                             <div className="form-row m-0">
-                              456
+                              <div className="col-12 red font-weight-bold">
+                                Hàng hóa
+                              </div>
+                              <div className="col-6 mt-50">
+                                Tên hàng:
+                              </div>
+                              <div className="col-6 mt-50 text-right font-weight-bold">
+                                {detail?.order_packages ? detail?.order_packages[0]?.package?.name : ""}
+                              </div>
+                              <div className="col-6 mt-50">
+                                Số lượng:
+                              </div>
+                              <div className="col-6 mt-50 text-right">
+                                {detail?.order_packages ? detail?.order_packages[0]?.quantity : ""}
+                              </div>
+                              <div className="col-6 mt-50">
+                                Trọng lượng:
+                              </div>
+                              <div className="col-6 mt-50 text-right font-weight-bold">
+                                {detail?.order_packages ? detail?.order_packages[0]?.package?.weight : ""} g
+                              </div>
+                              <div className="col-6 mt-50">
+                                Giá trị:
+                              </div>
+                              <div className="col-6 mt-50 text-right">
+                                {detail?.order_packages ? filters.currency(detail?.order_packages[0]?.package?.price) : ""} đ
+                              </div>
+                              <div className="col-6 mt-50">
+                                Kích thước:
+                              </div>
+                              <div className="col-6 mt-50 text-right">
+                                {detail?.order_packages
+                                  ? `Dài: ${detail?.order_packages[0]?.package?.length}; Rộng: ${detail?.order_packages[0]?.package?.wide}; Cao: ${detail?.order_packages[0]?.package?.height}`
+                                  : ""} cm
+                              </div>
 
+                              {/*Nhan*/}
+                              <div className="nav col-12 my-1" style={{height: 4}}>
+                                <div className="dropdown-divider m-0 w-100"></div>
+                              </div>
+                              <div className="col-12 red font-weight-bold">
+                                Thông tin khác
+                              </div>
+                              <div className="col-6 mt-50">
+                                Kiểm tra hàng:
+                              </div>
+                              <div className="col-6 mt-50 text-right">
+                                {detail?.is_allow_check ? "Cho phép kiểm tra" : "Không"}
+                              </div>
+                              <div className="col-6 mt-50">
+                                Thời gian giao:
+                              </div>
+                              <div className="col-6 mt-50 text-right">
+                                {detail?.delivery_time ? detail?.delivery_time?.name : ""}
+                              </div>
+                              <div className="col-6 mt-50">
+                                Ghi chú:
+                              </div>
+                              <div className="col-6 mt-50 text-right">
+                                {detail?.note ? detail?.note : ""}
+                              </div>
 
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-4">
+                        <div className="card-section box-shadow-1 bg-white" style={{minHeight: 550}}>
+                          <div className="card-body px-1">
+                            <div className="form-row m-0">
+                              <div className="col-12 red font-weight-bold">
+                                Hành trình đơn hàng
+                              </div>
+                              {!isEmpty(props.histories) ? <div className="widget-timeline">
+                                  <ul>
+                                    {props.histories.reverse().map((item, index) => (
+                                      <li className="timeline-items" key={index}>
+                                        <div className="timeline-title font-weight-normal" style={{fontSize: 14}}>
+                                          <b>{item.title}</b>
+                                          <div className="timeline-subtitle black" style={{fontSize: 12}}>
+                                            <i className="fal fa-clock pr-25"/> {filters.dateTime(item.updated_at)}
+                                          </div>
+                                        </div>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div> :
+                                <div className="widget-timeline">
+                                  <ul>
+                                    <li className="timeline-items">{t('common.noData')}</li>
+                                  </ul>
+                                </div>
+                              }
                             </div>
                           </div>
                         </div>
@@ -375,6 +511,7 @@ OrderDetail.propTypes = {
   readOnly: PropTypes.bool,
   postOffices: PropTypes.array,
   provinces: PropTypes.array,
+  histories: PropTypes.array,
   detail: PropTypes.object,
   isDealer: PropTypes.bool
 };
@@ -383,6 +520,7 @@ OrderDetail.defaultProps = {
   readOnly: false,
   postOffices: [],
   provinces: [],
+  histories: [],
   isDealer: false
 };
 

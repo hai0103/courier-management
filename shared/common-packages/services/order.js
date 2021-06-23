@@ -26,10 +26,26 @@ export const OrderApi = {
       headers
     )
   },
+  async getCountMoneyOrder(data, useInternal = false, headers = {}) {
+    return await request(
+      'GET',
+      `${Utility.getRemoteHost(useInternal)}api/order/count-money-order`,
+      data,
+      headers
+    )
+  },
   async calculatePrice(data, useInternal = false, headers = {}) {
     return await request(
       'GET',
       `${Utility.getRemoteHost(useInternal)}api/config-formula/calculate-postage`,
+      data,
+      headers
+    )
+  },
+  async trackingOrder(data, useInternal = false, headers = {}) {
+    return await request(
+      'GET',
+      `${Utility.getRemoteHost(useInternal)}api/order-history/get-history`,
       data,
       headers
     )

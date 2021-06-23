@@ -6,7 +6,7 @@ import {Response} from "utils/common";
 import {ROUTES} from "constants/common";
 import {AddressApi} from "services/address";
 import {DataTableProvider} from "providers/dataTable";
-import MoenyManagement from "../../../components/infoOfDealerManagement/money";
+import MoneyManagement from "../../../components/infoOfDealerManagement/money";
 
 export default function MoneyManagementPage(props) {
   return (
@@ -15,7 +15,7 @@ export default function MoneyManagementPage(props) {
         <title>Quản lý tiền hàng</title>
       </Head>
       <DataTableProvider>
-        <MoenyManagement {...props} isStaff={false}/>
+        <MoneyManagement {...props} isStaff={false}/>
       </DataTableProvider>
     </React.Fragment>
   );
@@ -41,4 +41,4 @@ export async function getServerSideProps() {
 
 MoneyManagementPage.Layout = CommonLayout;
 MoneyManagementPage.Title = 'Quản lý tiền hàng';
-MoneyManagementPage.Href = ROUTES.CRM_PACKAGE;
+MoneyManagementPage.Href = ROUTES.CRM_MONEY;
