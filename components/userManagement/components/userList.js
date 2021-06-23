@@ -69,6 +69,7 @@ function UserList(props) {
           row.original.status === "2" || row.original.status === "0" ? null :
             <button
               className="dropdown-item"
+              disabled={row.original.user_type_code === "SUPER_ADMIN"}
               onClick={() => {
                 confirmation({
                   content: "Xác nhận khóa tài khoản này",

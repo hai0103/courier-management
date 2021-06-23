@@ -13,7 +13,9 @@ const DateTimeInput = ({selected, onChange, isPortal, useDateFormat, ...props}) 
 
     useEffect(() => {
         if (selected) {
+            console.log(selected)
             setDate(selected)
+            console.log(date)
         }
     }, [selected])
 

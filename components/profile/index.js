@@ -344,6 +344,7 @@ function ProfileForm(props) {
                                                  name="phone"
                                                  register={register(phoneControl().rules)}
                                                  handleSubmit={handleSubmit(save)}
+                                                 disabled
                                     />
                                     :
                                     <input type="number"
@@ -352,6 +353,7 @@ function ProfileForm(props) {
                                            placeholder={t('createUser.phonePlaceHolder')}
                                            name="phone"
                                            ref={register(phoneControl().rules)}
+                                           disabled
                                     />}
                                   <InvalidFeedBack
                                     message={phoneControl().errorMessage}/>
@@ -465,7 +467,7 @@ function ProfileForm(props) {
                                         )}
                                         name="birth_date"
                                         control={control}
-                                        defaultValue={detail?.birth_date ? moment(detail?.birth_date).toDate() : null}
+                                        defaultValue={new Date(detail.birth_date) || null}
                                       />
                                   }
                                 </div>

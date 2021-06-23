@@ -28,6 +28,8 @@ export const ROUTES = {
     ORDER: '/delivery/order',
     NEW_ORDER: '/delivery/order/new',
     CONFIG_FORMULA: '/delivery/config-formula',
+    USER_TYPE: '/role/user-type',
+    PERMISSION: '/role/permission',
     CRM_DASHBOARD: '/crm/dashboard',
     CRM_NEW_ORDER: '/crm/order/new',
     CRM_ORDER:'/crm/order',
@@ -124,12 +126,12 @@ export const MAIN_MENU = [
     {
         title: 'mainMenu.userType',
         falIcon: 'fa-user-tag',
-        href: ROUTES.HIERARCHY
+        href: ROUTES.USER_TYPE
     },
     {
         title: 'mainMenu.configPermission',
         falIcon: 'fa-user-shield',
-        href: ROUTES.SYSTEM_DECENTRALIZATION,
+        href: ROUTES.PERMISSION,
     },
     {
         title: 'mainMenu.otherManagement',
