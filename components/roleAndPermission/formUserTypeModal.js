@@ -6,21 +6,26 @@ import {Response, Utility} from "utils/common";
 import {useToasts} from "react-toast-notifications";
 import {getUserProfile} from "utils/localStorage";
 import {UserTypeApi} from "services/userType";
+import {Controller} from "react-hook-form";
+import ICheckbox from "sharedComponents/iCheckbox";
 
 function FormUserTypeModal(props) {
   const {t} = useTranslation('common');
   const [detail, setDetail] = useState(props.detail);
   const [code, setCode] = useState(props.isEdit ? props.detail?.code : "")
   const [name, setName] = useState(props.isEdit ? props.detail?.name : "")
+  const [is_staff, setIsStaff] = useState(props.isEdit ? props.detail?.is_staff : false)
   const {addToast} = useToasts();
 
   useEffect(() => {
     if (!props.isEdit) {
       setCode("")
       setName("")
+      setIsStaff(false)
     } else {
       setCode(props.detail?.code)
       setName(props.detail?.name)
+      setIsStaff(props.detail?.is_staff)
     }
   }, [props.isEdit, props.detail])
 
@@ -31,10 +36,12 @@ function FormUserTypeModal(props) {
       ...props.detail,
       code,
       name,
+      is_staff
     } : {
       code,
       name,
-      user_id: _loggedUser?.id
+      is_staff,
+      // user_id: _loggedUser?.id
     }
     console.log("payload>>>>>", payload)
     try {
@@ -120,6 +127,22 @@ function FormUserTypeModal(props) {
                           value={name}
                         />
                       </div>
+                    </article>
+                  </fieldset>
+                </div>
+                {/* trực thuộc */}
+                <div className="col-12 mt-50">
+                  <fieldset className="form-group form-group-sm position-relative">
+                    <article style={{alignSelf: "flex-end"}}>
+                      <label className="mr-1">
+                                      Trực thuộc
+                                    </label>
+                          <ICheckbox
+                            checked={is_staff}
+                            onChange={(e) => {
+                              setIsStaff(!e.target.checked);
+                            }}
+                          />
                     </article>
                   </fieldset>
                 </div>

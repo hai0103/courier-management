@@ -147,15 +147,15 @@ function OrderList(props) {
             Duyệt đơn
           </button>
         }
-        {
-          (row.original.status_id === 10 || row.original.status_id === 5) &&
-          <button className="dropdown-item"
+        {((row.original.status_id !== 4 && row.original.status_id !== 13 && row.original.status_id !== 14 && row.original.status_id !== 9 && loggedUser?.user_type_code !== "DEALER")
+          || ((row.original.status_id === 10 && row.original.status_id === 5) && loggedUser?.user_type_code === "DEALER")) &&
+           <button className="dropdown-item"
                   onClick={() => {
                     confirmation({
-                      content: "Xác nhận hủy đơn hàng này",
-                      title: "Hủy đơn",
+                      content: (row.original.status_id === 10 || row.original.status_id === 5) ? "Xác nhận hủy đơn hàng này?" : "Xác nhận hủy đơn hàng, chuyển hoàn trả người gửi?",
+                      title: (row.original.status_id === 10 || row.original.status_id === 5) ? "Hủy đơn" : "Hủy và hoàn trả đơn",
                       onConfirm: async ({onClose}) => {
-                        await updateStatus(row.original.id, 12)
+                        await updateStatus(row.original.id, (row.original.status_id === 10 || row.original.status_id === 5) ? 12 : 6)
                           .then(() => {
                             onClose()
                             setTimeout(() => {
@@ -269,7 +269,7 @@ function OrderList(props) {
           </button>
         }
         {
-          ((loggedUser?.user_type_code === "SHIPPER" || loggedUser?.user_type_code === "EMPLOYEE") && (row.original.status_id === 3)) &&
+          ((loggedUser?.user_type_code === "SHIPPER" || loggedUser?.user_type_code === "EMPLOYEE") && (row.original.status_id === 3 || row.original.status_id === 8)) &&
           <button className="dropdown-item"
                   onClick={() => {
                     confirmation({
@@ -290,6 +290,79 @@ function OrderList(props) {
           >
             <i className="fal fa-unlock"/>
             Đã giao đơn
+          </button>
+        }
+        {
+          ((loggedUser?.user_type_code === "SHIPPER" || loggedUser?.user_type_code === "EMPLOYEE") && (row.original.status_id === 3)) &&
+          <button className="dropdown-item"
+                  onClick={() => {
+                    confirmation({
+                      content: "Shipper xác nhận sẽ phát lại đơn hàng này",
+                      title: "Xác nhận phát lại đơn",
+                      onConfirm: async ({onClose}) => {
+                        await updateStatus(row.original.id, 8)
+                          .then(() => {
+                            onClose()
+                            setTimeout(() => {
+                              reloadTable()
+                            }, 300)
+                          })
+                          .catch(error => addToast(Response.getErrorMessage(error), {appearance: 'error'}))
+                      }
+                    })
+                  }}
+          >
+            <i className="fal fa-unlock"/>
+            Phát lại đơn
+          </button>
+        }
+
+        {
+          ((loggedUser?.user_type_code === "SHIPPER" || loggedUser?.user_type_code === "EMPLOYEE") && (row.original.status_id === 6)) &&
+          <button className="dropdown-item"
+                  onClick={() => {
+                    confirmation({
+                      content: "Xác nhận duyệt hoàn trả đơn hàng này cho người gửi?",
+                      title: "Xác nhận duyệt hoàn đơn",
+                      onConfirm: async ({onClose}) => {
+                        await updateStatus(row.original.id, 7)
+                          .then(() => {
+                            onClose()
+                            setTimeout(() => {
+                              reloadTable()
+                            }, 300)
+                          })
+                          .catch(error => addToast(Response.getErrorMessage(error), {appearance: 'error'}))
+                      }
+                    })
+                  }}
+          >
+            <i className="fal fa-unlock"/>
+            Duyệt hoàn
+          </button>
+        }
+        {
+          ((loggedUser?.user_type_code === "SHIPPER" || loggedUser?.user_type_code === "EMPLOYEE") && (row.original.status_id === 7)) &&
+          <button className="dropdown-item"
+                  onClick={() => {
+                    confirmation({
+                      content: "Xác nhận dã hoàn trả đơn hàng này cho người gửi",
+                      title: "Xác nhận đã trả hàng",
+                      onConfirm: async ({onClose}) => {
+                        await updateStatus(row.original.id, 9)
+                          .then(() => {
+                            onClose()
+                            setTimeout(() => {
+                              reloadTable()
+                            }, 300)
+                          })
+                          .catch(error => addToast(Response.getErrorMessage(error), {appearance: 'error'}))
+                      }
+                    })
+                  }}
+          >
+            <i className="fal fa-unlock"/>
+            Đã trả hàng
           </button>
         }
         {

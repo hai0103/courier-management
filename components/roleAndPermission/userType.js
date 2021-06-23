@@ -11,6 +11,8 @@ import filters from "utils/filters";
 import {getUserProfile} from "utils/localStorage";
 import FormUserTypeModal from "./formUserTypeModal";
 import {UserTypeApi} from "services/userType";
+import {confirmation} from "utils/helpers";
+import {UserApi} from "services/user";
 
 function UserTypeManagement(props) {
   const {t} = useTranslation('common');
@@ -39,9 +41,29 @@ function UserTypeManagement(props) {
           </button>
         }
         {
-          <button className="dropdown-item"
-                  onClick={() => {
-                  }}
+          <button
+            className="dropdown-item"
+            onClick={() => {
+              confirmation({
+                content: "Xác nhận xóa loại người dùng này",
+                title: "Cảnh báo",
+                onConfirm: async ({onClose}) => {
+                  await UserTypeApi.delete(row.original.id).then((response) => {
+                    if (Response.isSuccess(response)) {
+                      addToast("Đã xóa", {appearance: 'success'})
+                      onClose()
+                      setTimeout(() => {
+                        refreshTable()
+                      }, 500)
+                    } else {
+                      addToast(Response.getAPIError(response), {appearance: 'error'});
+                    }
+                  }).catch(error => {
+                    addToast(Response.getErrorMessage(error), {appearance: 'error'})
+                  });
+                }
+              })
+            }}
           >
             <i className="fal fa-trash"/>
             Xóa

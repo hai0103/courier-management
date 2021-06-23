@@ -106,7 +106,9 @@ function NavBarRight(props) {
                                 height: 36,
                                 lineHeight: '36px'
                             }}
-                        >{loggedUser?.full_name}</h5>
+                        >
+                            {loggedUser?.full_name} - <span className="font-weight-light">{loggedUser?.user_type}</span>
+                        </h5>
                         <div className="avatar avatar-online">
                             <img
                                 src="/app-assets/images/portrait/small/no-avt.jpg"
